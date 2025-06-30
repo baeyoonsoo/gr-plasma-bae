@@ -5,8 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef INCLUDED_PLASMA_USRP_RADAR_H
-#define INCLUDED_PLASMA_USRP_RADAR_H
+#ifndef INCLUDED_PLASMA_PLUTO_RADAR_BAE_H
+#define INCLUDED_PLASMA_PLUTO_RADAR_BAE_H
 
 #include <gnuradio/block.h>
 #include <gnuradio/plasma/api.h>

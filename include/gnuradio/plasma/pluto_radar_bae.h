@@ -51,4 +51,4 @@ public:
 } // namespace plasma
 } // namespace gr
 
-#endif /* INCLUDED_PLASMA_USRP_RADAR_H */
+#endif /* INCLUDED_PLASMA_PLUTO_RADAR_BAE_H */

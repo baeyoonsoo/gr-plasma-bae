@@ -193,6 +193,34 @@ blocks:
     coordinate: [680, 468.0]
     rotation: 0
     state: true
+- name: pluto_radar_bae_0
+  id: pluto_radar_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    args: '""'
+    cal_file: '""'
+    comment: ''
+    elevate_priority: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rx_freq: center_freq
+    rx_freq_key: core:rx_freq
+    rx_gain: '0'
+    samp_rate: samp_rate
+    sample_start_key: core:sample_start
+    start_delay: '0.1'
+    tx_freq: center_freq
+    tx_freq_key: core:tx_freq
+    tx_gain: '0'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 556.0]
+    rotation: 0
+    state: true
 
 connections:
 - [plasma_cw_to_pulsed_0, out, plasma_usrp_radar_0, in]
@@ -204,3 +232,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.7.0

@@ -109,8 +109,13 @@ find_package(pybind11 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qwt REQUIRED)
 find_package(UHD REQUIRED)
-find_package(IIO REQUIRED)
-target_link_libraries(gnuradio-plasma PUBLIC IIO::IIO)
+
+# libiio via pkg-config (instead of CMake package)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(IIO REQUIRED libiio)
+
+include_directories(${IIO_INCLUDE_DIRS})
+link_directories(${IIO_LIBRARY_DIRS})
 
 include(FetchContent)
 if (NOT TARGET nlohmann_json)

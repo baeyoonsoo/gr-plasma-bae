@@ -35,3 +35,5 @@
 .vscode/*
 build/*
 .history/
+
+workarea/*

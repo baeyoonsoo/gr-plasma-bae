@@ -109,6 +109,8 @@ find_package(pybind11 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qwt REQUIRED)
 find_package(UHD REQUIRED)
+find_package(IIO REQUIRED)
+target_link_libraries(gnuradio-plasma PUBLIC IIO::IIO)
 
 include(FetchContent)
 if (NOT TARGET nlohmann_json)

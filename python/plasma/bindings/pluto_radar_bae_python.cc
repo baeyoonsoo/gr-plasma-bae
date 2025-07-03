@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Free Software Foundation, Inc.
+ * Copyright 2025 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(pluto_radar_bae.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(d214b918d379c97e0d7d5afc01af0a46)                     */
+/* BINDTOOL_HEADER_FILE_HASH(ae6522d3bbe5d8a9276caf7349a442d2)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -62,12 +62,12 @@ void bind_pluto_radar_bae(py::module& m)
 
 
         
-        .def("set_metadata_keys",
-             &pluto_radar_bae::set_metadata_keys,
-             py::arg("tx_freq_key"),
-             py::arg("rx_freq_key"),
-             py::arg("sample_start_key"),
-             D(pluto_radar_bae, set_metadata_keys))
+        .def("set_metadata_keys",&pluto_radar_bae::set_metadata_keys,       
+            py::arg("tx_freq_key"),
+            py::arg("rx_freq_key"),
+            py::arg("sample_start_key"),
+            D(pluto_radar_bae,set_metadata_keys)
+        )
 
         ;
 
@@ -75,3 +75,11 @@ void bind_pluto_radar_bae(py::module& m)
 
 
 }
+
+
+
+
+
+
+
+

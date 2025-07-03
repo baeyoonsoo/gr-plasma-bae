@@ -1,6 +1,8 @@
 // pluto_radar_bae_impl.cc
 #include "pluto_radar_bae_impl.h"
+#include <gnuradio/plasma/pluto_radar_bae.h>
 #include <gnuradio/io_signature.h>
+
 #include <gnuradio/blocks/short_to_float.h>
 #include <gnuradio/blocks/float_to_complex.h>
 #include <pmt/pmt.h>
@@ -8,9 +10,9 @@
 #include <stdexcept>
 #include <iio.h>
 
+
 namespace gr {
 namespace plasma {
-
 
 pluto_radar_bae_impl::sptr pluto_radar_bae::make(const std::string &uri,
                  unsigned long long frequency,
@@ -22,8 +24,8 @@ pluto_radar_bae_impl::sptr pluto_radar_bae::make(const std::string &uri,
                  const char *gain1, double gain1_value,
                  const char *gain2, double gain2_value,
                  const char *rf_port_select,
-                 const char *filter = "",
-                 bool auto_filter = true)
+                 const char *filter,
+                 bool auto_filter)
 {
     return gnuradio::make_block_sptr<pluto_radar_bae_impl>(uri,
         frequency,
@@ -191,7 +193,7 @@ bool pluto_radar_bae_impl::start()
     
     std::vector<std::string> params;
 
-    if (filter && filter[0])
+    if (!filter.empty())
         auto_filter = false;
 
     params.push_back("out_altvoltage0_RX_LO_frequency=" +
@@ -229,23 +231,26 @@ bool pluto_radar_bae_impl::start()
             rf_port_select);
 
     pluto_radar_bae_impl::set_params(phy, params);
-
-    if (auto_filter) {
-        int ret = ad9361_set_bb_rate(phy, samplerate);
-        if (ret) {
-            throw std::runtime_error("Unable to set BB rate");
-        }
-    } else if (filter && filter[0]) {
-        std::string filt(filter);
-        if (!load_fir_filter(filt, phy))
-            throw std::runtime_error("Unable to load filter file");
-    }
+    
+    // you can use filter with this code but you need to change ad9361_set_bb_rate.
+    // or you can connect FIR block provided by GNURadio.
+    // if (auto_filter) {
+    //     int ret = ad9361_set_bb_rate(phy, samplerate);
+    //     if (ret) {
+    //         throw std::runtime_error("Unable to set BB rate");
+    //     }
+    // } else if (!filter.empty()) {
+    //     std::string filt(filter);
+    //     if (!load_fir_filter(filt, phy))
+    //         throw std::runtime_error("Unable to load filter file");
+    // }
     // Conversion blocks
-    s2f_i = gr::blocks::short_to_float::make(1, 2048.0f);
-    s2f_q = gr::blocks::short_to_float::make(1, 2048.0f);
-    f2c   = gr::blocks::float_to_complex::make(1);
-    temp_i.resize(buffer_size);
-    temp_q.resize(buffer_size);
+    // you can use later, not now
+    // s2f_i = gr::blocks::short_to_float::make(1, 2048.0f);
+    // s2f_q = gr::blocks::short_to_float::make(1, 2048.0f);
+    // f2c   = gr::blocks::float_to_complex::make(1);
+    // temp_i.resize(buffer_size);
+    // temp_q.resize(buffer_size);
 
     finished = false;
     refill_thread = std::thread([this](){

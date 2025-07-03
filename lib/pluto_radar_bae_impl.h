@@ -19,7 +19,7 @@ namespace plasma {
 
 class pluto_radar_bae_impl : public gr::block {
 public:
-    typedef boost::shared_ptr<pluto_radar_bae_impl> sptr;
+    typedef std::shared_ptr<pluto_radar_bae_impl> sptr;
 
     // Factory
     static sptr make(const std::string &uri,
@@ -34,6 +34,18 @@ public:
                      const char *rf_port_select,
                      const char *filter = "",
                      bool auto_filter = true);
+    pluto_radar_bae_impl(const std::string &uri,
+                         unsigned long long frequency,
+                         unsigned long samplerate,
+                         unsigned long bandwidth,
+                         bool rx1_en, bool rx2_en,
+                         unsigned long buffer_size,
+                         bool quadrature, bool rfdc, bool bbdc,
+                         const char *gain1, double gain1_value,
+                         const char *gain2, double gain2_value,
+                         const char *rf_port_select,
+                         const char *filter,
+                         bool auto_filter);
 
     // Destructor
     ~pluto_radar_bae_impl() override;
@@ -52,20 +64,8 @@ public:
     // GNU Radio block overrides
     bool start() override;
     bool stop() override;
-
+    static bool load_fir_filter(std::string &filter, struct iio_device *phy);
 private:
-    pluto_radar_bae_impl(const std::string &uri,
-                         unsigned long long frequency,
-                         unsigned long samplerate,
-                         unsigned long bandwidth,
-                         bool rx1_en, bool rx2_en,
-                         unsigned long buffer_size,
-                         bool quadrature, bool rfdc, bool bbdc,
-                         const char *gain1, double gain1_value,
-                         const char *gain2, double gain2_value,
-                         const char *rf_port_select,
-                         const char *filter,
-                         bool auto_filter);
     
     // mutex
     std::mutex               refill_mtx;

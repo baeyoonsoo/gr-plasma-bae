@@ -9,52 +9,74 @@ category: "[plasma]"
 #     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 #     * default
 parameters:
-  - id: args
-    label: Device Arguments
+  - id: uri
+    label: Device URI
     dtype: string
     default: '""'
-    hide: ${ ('part' if args == "" else 'none') }
-  - id: samp_rate
-    label: Sample Rate
-    dtype: float
-    default: "samp_rate"
-  - id: tx_freq
-    label: Tx Frequency
-    dtype: float
-    default: "center_freq"
-  - id: rx_freq
-    label: Rx Frequency
-    dtype: float
-    default: "center_freq"
-  - id: tx_gain
-    label: Tx Gain (dB)
-    dtype: float
-    default: 0
-  - id: rx_gain
-    label: Rx Gain (dB)
-    dtype: float
-    default: 0
-  - id: start_delay
-    label: Start Delay
-    dtype: float
-    default: 0.1
-  - id: elevate_priority
-    label: Elevate thread priority
+  - id: frequency
+    label: Center Frequency (Hz)
+    dtype: int
+    default: 2400000000
+  - id: samplerate
+    label: Sample Rate (Hz)
+    dtype: int
+    default: 2000000
+  - id: bandwidth
+    label: RF Bandwidth (Hz)
+    dtype: int
+    default: 1500000
+  - id: rx1_en
+    label: Enable RX1
     dtype: bool
-    options: [False, True]
-    default: False
-    hide: ${ ('part' if elevate_priority == False else 'none') }
-  - id: cal_file
-    label: Calibration file
-    dtype: file_save
+    default: true
+  - id: rx2_en
+    label: Enable RX2
+    dtype: bool
+    default: false
+  - id: buffer_size
+    label: Buffer Size
+    dtype: int
+    default: 4096
+  - id: quadrature
+    label: Quadrature Tracking
+    dtype: bool
+    default: true
+  - id: rfdc
+    label: RF DC Tracking
+    dtype: bool
+    default: true
+  - id: bbdc
+    label: BB DC Tracking
+    dtype: bool
+    default: true
+  - id: gain1
+    label: RX1 Gain Mode
+    dtype: string
+    default: '"manual"'
+  - id: gain1_value
+    label: RX1 Gain Value (dB)
+    dtype: float
+    default: 10.0
+  - id: gain2
+    label: RX2 Gain Mode
+    dtype: string
+    default: '"manual"'
+  - id: gain2_value
+    label: RX2 Gain Value (dB)
+    dtype: float
+    default: 10.0
+  - id: rf_port_select
+    label: RF Port Select
+    dtype: string
+    default: '"A_BALANCED"'
+  - id: filter
+    label: FIR Filter File
+    dtype: string
     default: '""'
-    hide: part
-  - id: verbose
-    label: Verbose
+  - id: auto_filter
+    label: Auto Filter
     dtype: bool
-    options: [False, True]
-    default: False
-    hide: part
+    default: true
   # Metadata keys
   - id: tx_freq_key
     label: Tx frequency key
@@ -88,7 +110,24 @@ outputs:
 templates:
   imports: from gnuradio import plasma
   make: |-
-    plasma.pluto_radar_bae(${args}, ${samp_rate}, ${samp_rate}, ${tx_freq}, ${rx_freq}, ${tx_gain}, ${rx_gain}, ${start_delay}, ${elevate_priority}, ${cal_file}, ${verbose})
+    plasma.pluto_radar_bae(
+      ${uri},
+      ${frequency},
+      ${samplerate},
+      ${bandwidth},
+      ${rx1_en},
+      ${rx2_en},
+      ${buffer_size},
+      ${quadrature},
+      ${rfdc},
+      ${bbdc},
+      ${gain1},
+      ${gain1_value},
+      ${gain2},
+      ${gain2_value},
+      ${rf_port_select},
+      ${filter},
+      ${auto_filter})
     self.${id}.set_metadata_keys(${tx_freq_key}, ${rx_freq_key}, ${sample_start_key})
     
 

@@ -13,27 +13,30 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/blocks/short_to_float.h>
 #include <gnuradio/blocks/float_to_complex.h>
+#include <gnuradio/plasma/pluto_radar_bae.h>
+#include <gnuradio/plasma/pmt_constants.h>
 
 namespace gr {
 namespace plasma {
 
-class pluto_radar_bae_impl : public gr::block {
+class pluto_radar_bae_impl : public pluto_radar_bae
+{
 public:
-    typedef std::shared_ptr<pluto_radar_bae_impl> sptr;
+    //typedef std::shared_ptr<pluto_radar_bae_impl> sptr;
 
     // Factory
-    static sptr make(const std::string &uri,
-                     unsigned long long frequency,
-                     unsigned long samplerate,
-                     unsigned long bandwidth,
-                     bool rx1_en, bool rx2_en,
-                     unsigned long buffer_size,
-                     bool quadrature, bool rfdc, bool bbdc,
-                     const char *gain1, double gain1_value,
-                     const char *gain2, double gain2_value,
-                     const char *rf_port_select,
-                     const char *filter = "",
-                     bool auto_filter = true);
+    // static sptr make(const std::string &uri,
+    //                  unsigned long long frequency,
+    //                  unsigned long samplerate,
+    //                  unsigned long bandwidth,
+    //                  bool rx1_en, bool rx2_en,
+    //                  unsigned long buffer_size,
+    //                  bool quadrature, bool rfdc, bool bbdc,
+    //                  const char *gain1, double gain1_value,
+    //                  const char *gain2, double gain2_value,
+    //                  const char *rf_port_select,
+    //                  const char *filter = "",
+    //                  bool auto_filter = true);
     pluto_radar_bae_impl(const std::string &uri,
                          unsigned long long frequency,
                          unsigned long samplerate,

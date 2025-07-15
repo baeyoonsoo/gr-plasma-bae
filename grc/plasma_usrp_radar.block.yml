@@ -1,5 +1,5 @@
 id: plasma_usrp_radar
-label: "UHD: USRP Radar"
+label: "Customized SDR Radar"
 category: "[plasma]"
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.

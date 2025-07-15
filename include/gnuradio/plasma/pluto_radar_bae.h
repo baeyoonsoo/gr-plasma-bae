@@ -23,6 +23,7 @@ class PLASMA_API pluto_radar_bae : virtual public gr::block
 {
 public:
     typedef std::shared_ptr<pluto_radar_bae> sptr;
+    
     /*!
      * \brief Return a shared_ptr to a new instance of plasma::usrp_radar.
      *

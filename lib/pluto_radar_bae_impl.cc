@@ -14,7 +14,7 @@
 namespace gr {
 namespace plasma {
 
-pluto_radar_bae_impl::sptr pluto_radar_bae::make(const std::string &uri,
+pluto_radar_bae::sptr pluto_radar_bae::make(const std::string &uri,
                  unsigned long long frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
@@ -46,6 +46,7 @@ pluto_radar_bae_impl::sptr pluto_radar_bae::make(const std::string &uri,
         auto_filter
     );
 }
+
 void pluto_radar_bae_impl::set_params(struct iio_device *phy,
 		    const std::vector<std::string> &params)
 {
@@ -380,7 +381,7 @@ void pluto_radar_bae_impl::run()
         //           {out_ptr});
 
         // add metadata
-        pmt::pmt_t pdu = pmt::make_c32vector(idx, cplx_buf.data());
+        pmt::pmt_t pdu = pmt::init_c32vector(idx, cplx_buf.data());
         pmt::pmt_t meta = pmt::make_dict();
         meta = pmt::dict_add(meta, pmt::intern(rx_freq_key), pmt::from_double(frequency));
         message_port_pub(pmt::mp("out"), pmt::cons(meta, pdu));

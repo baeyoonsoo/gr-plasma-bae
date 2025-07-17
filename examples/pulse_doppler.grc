@@ -165,43 +165,49 @@ blocks:
     coordinate: [1144, 76.0]
     rotation: 0
     state: enabled
-- name: plasma_usrp_radar_0
-  id: plasma_usrp_radar
+- name: pluto_source_bae_0
+  id: pluto_source_bae
   parameters:
     affinity: ''
     alias: ''
-    args: '"addr=192.168.30.2,use_dpdk=1"'
-    cal_file: '"/home/shane/.uhd/delay.json"'
+    auto_filter: 'True'
+    bandwidth: '1500000'
+    bbdc: 'True'
+    buffer_size: '4096'
     comment: ''
-    elevate_priority: 'True'
+    filter: '""'
+    frequency: '2400000000'
+    gain1: '"manual"'
+    gain1_value: '10.0'
+    gain2: '"manual"'
+    gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
-    rx_freq: 2.3e9
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
     rx_freq_key: core:rx_freq
-    rx_gain: '10'
-    samp_rate: samp_rate
     sample_start_key: core:sample_start
-    start_delay: '0.1'
-    tx_freq: 2.3e9
+    samplerate: '20000000'
     tx_freq_key: core:tx_freq
-    tx_gain: '10'
-    verbose: 'False'
+    uri: ip:192.168.2.1
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 292.0]
+    coordinate: [512, 180.0]
     rotation: 0
     state: true
 
 connections:
-- [plasma_cw_to_pulsed_0, out, plasma_usrp_radar_0, in]
+- [plasma_cw_to_pulsed_0, out, pluto_source_bae_0, in]
 - [plasma_lfm_source_0, out, plasma_cw_to_pulsed_0, in]
 - [plasma_lfm_source_0, out, plasma_pulse_doppler_0, tx]
 - [plasma_pulse_doppler_0, out, plasma_range_doppler_sink_0, in]
 - [plasma_pulse_to_cpi_0, out, plasma_pulse_doppler_0, rx]
-- [plasma_usrp_radar_0, out, plasma_pulse_to_cpi_0, in]
+- [pluto_source_bae_0, out, plasma_pulse_to_cpi_0, in]
 
 metadata:
   file_format: 1
-  grc_version: 3.10.7.0

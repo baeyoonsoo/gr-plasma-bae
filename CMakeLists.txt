@@ -119,7 +119,7 @@ find_package(UHD REQUIRED)
 set(LIBIIO_INCLUDE_DIR "/usr/include")
 set(LIBIIO_LIBRARY     "/usr/lib/x86_64-linux-gnu/libiio.so")
 include_directories(${LIBIIO_INCLUDE_DIR})
-target_link_libraries(gnuradio-plasma PRIVATE ${LIBIIO_LIBRARY})
+set(IIO_LIBRARIES ${LIBIIO_LIBRARY} CACHE INTERNAL "")
 
 include(FetchContent)
 if (NOT TARGET nlohmann_json)

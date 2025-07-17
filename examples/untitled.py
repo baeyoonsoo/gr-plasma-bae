@@ -6,11 +6,20 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
-# GNU Radio version: 3.10.7.0
+# GNU Radio version: 3.10.1.1
 
 from packaging.version import Version as StrictVersion
-from PyQt5 import Qt
-from gnuradio import qtgui
+
+if __name__ == '__main__':
+    import ctypes
+    import sys
+    if sys.platform.startswith('linux'):
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
+            x11.XInitThreads()
+        except:
+            print("Warning: failed to XInitThreads()")
+
 from PyQt5 import Qt
 from gnuradio import plasma
 import sip
@@ -25,6 +34,8 @@ from gnuradio import eng_notation
 
 
 
+from gnuradio import qtgui
+
 class untitled(gr.top_block, Qt.QWidget):
 
     def __init__(self):
@@ -34,8 +45,8 @@ class untitled(gr.top_block, Qt.QWidget):
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except BaseException as exc:
-            print(f"Qt GUI: Could not set Icon: {str(exc)}", file=sys.stderr)
+        except:
+            pass
         self.top_scroll_layout = Qt.QVBoxLayout()
         self.setLayout(self.top_scroll_layout)
         self.top_scroll = Qt.QScrollArea()
@@ -55,8 +66,8 @@ class untitled(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(self.settings.value("geometry").toByteArray())
             else:
                 self.restoreGeometry(self.settings.value("geometry"))
-        except BaseException as exc:
-            print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
+        except:
+            pass
 
         ##################################################
         # Variables
@@ -67,9 +78,25 @@ class untitled(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-
-        self.plasma_usrp_radar_0 = plasma.usrp_radar("addr=192.168.30.2,use_dpdk=1", samp_rate, samp_rate, 2.3e9, 2.3e9, 10, 10, 0.1, True, "/home/shane/.uhd/delay.json", False)
-        self.plasma_usrp_radar_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
+          'ip:192.168.2.1',
+          2400000000,
+          20000000,
+          1500000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True)
+        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
         self.plasma_range_doppler_sink_0 = plasma.range_doppler_sink(samp_rate, n_pulse_cpi, 2.3e9)
         self.plasma_range_doppler_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:tx_freq', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_range_doppler_sink_0.set_dynamic_range(60)
@@ -91,12 +118,12 @@ class untitled(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.plasma_cw_to_pulsed_0, 'out'), (self.plasma_usrp_radar_0, 'in'))
+        self.msg_connect((self.plasma_cw_to_pulsed_0, 'out'), (self.pluto_source_bae_0, 'in'))
         self.msg_connect((self.plasma_lfm_source_0, 'out'), (self.plasma_cw_to_pulsed_0, 'in'))
         self.msg_connect((self.plasma_lfm_source_0, 'out'), (self.plasma_pulse_doppler_0, 'tx'))
         self.msg_connect((self.plasma_pulse_doppler_0, 'out'), (self.plasma_range_doppler_sink_0, 'in'))
         self.msg_connect((self.plasma_pulse_to_cpi_0, 'out'), (self.plasma_pulse_doppler_0, 'rx'))
-        self.msg_connect((self.plasma_usrp_radar_0, 'out'), (self.plasma_pulse_to_cpi_0, 'in'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_pulse_to_cpi_0, 'in'))
 
 
     def closeEvent(self, event):

@@ -88,6 +88,7 @@ private:
     void read_calibration_file(const std::string &filename);
 
     // IIO / Pluto members
+    size_t sample_bytes;
     std::string               uri;
     struct iio_context       *ctx{nullptr};
     struct iio_device        *dev{nullptr}, *phy{nullptr};
@@ -106,8 +107,8 @@ private:
     unsigned long long        frequency{0};
     unsigned long             samplerate{0};
     unsigned long             bandwidth{0};
-    bool                      rx1_en{true};
-    bool                      rx2_en{false};
+    bool                      rx1_en{true};     // I channel
+    bool                      rx2_en{true};    // Q channel
     bool                      quadrature{true};
     bool                      rfdc{true};
     bool                      bbdc{true};

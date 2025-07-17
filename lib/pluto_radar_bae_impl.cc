@@ -119,7 +119,7 @@ pluto_radar_bae_impl::pluto_radar_bae_impl(const std::string &uri,
       filter(filter),
       auto_filter(auto_filter)
 {
-    // message_port_register_in(PMT_IN);
+    message_port_register_in(pmt::mp("in"));
     message_port_register_out(pmt::mp("out"));
     // set_msg_handler(PMT_IN, [this](const pmt::pmt_t& msg) { handle_message(msg); });
 }
@@ -145,21 +145,27 @@ bool pluto_radar_bae_impl::start()
 {
     unsigned int nb_channels, i;
 	unsigned short vid, pid;
-    std::vector<std::string> channels = get_channels_vector(rx1_en, rx2_en);
+    
     // IIO setup
+    // 1. context, device, physical
     ctx = uri.empty() ? iio_create_default_context() : iio_create_context_from_uri(uri.c_str());
     if (!ctx)
 		throw std::runtime_error("Unable to create context");
     destroy_ctx = true;
     dev = iio_context_find_device(ctx, "cf-ad9361-lpc");
     phy = iio_context_find_device(ctx, "ad9361-phy");
-    buf = iio_device_create_buffer(dev, buffer_size, false);
+    
     bool is_fmcomms4 = !iio_device_find_channel(phy, "voltage1", false);
     if (!dev || !phy) {
 		    if (destroy_ctx)
 			    iio_context_destroy(ctx);
 		    throw std::runtime_error("Device not found");
 	    }
+
+    // 2. channel_list initialize
+    std::vector<std::string> channels = get_channels_vector(rx1_en, rx2_en);
+
+    // 3. channel_list fill & enable
     /* First disable all channels */
     nb_channels = iio_device_get_channels_count(dev);
     for (i = 0; i < nb_channels; i++)
@@ -191,6 +197,24 @@ bool pluto_radar_bae_impl::start()
             channel_list.push_back(chn);
         }
     }
+    
+    // 4. calculate sample_bytes
+    sample_bytes = iio_channel_get_data_format(channel_list[0])->length / 8;
+
+    if(sample_bytes == 0)
+        throw std::runtime_error("Invalid sample size");
+    
+    // 5. buffer_size check, buffer_size needs to meet the equation (buffer_size % sample_bytes == 0)
+    // Because a pointer has to point exact memory.
+    buffer_size = (buffer_size / sample_bytes) * sample_bytes;
+    
+    if(buffer_size == 0)
+        throw std::runtime_error("buffer_size if too small after alignment");
+    
+    // 6. create buffer
+    buf = iio_device_create_buffer(dev, buffer_size, false);
+    if (!buf)
+        throw std::runtime_error("Failed to create IIO buffer");
     
     std::vector<std::string> params;
 
@@ -322,8 +346,7 @@ void pluto_radar_bae_impl::run()
 {
     const int decimation = 0;
     const int timeout_ms = 1000;
-
-    size_t sample_bytes = iio_channel_get_data_format(channel_list[0])->length / 8;
+    
     size_t step_bytes = iio_buffer_step(buf) * (decimation + 1);
     size_t nelem = buffer_size / (step_bytes * 2);
 
@@ -345,6 +368,12 @@ void pluto_radar_bae_impl::run()
         //cv.wait(lk, [this]{ return data_ready; });
         data_ready = false;
         if (finished) return;
+        
+        // Now debugging ...
+        std::cerr << "[DEBUG] channel_list.size() = " << channel_list.size() << "\n";
+        for (auto *chn : channel_list)
+            std::cerr << "  CHN ptr: " << chn << "\n";
+        // ...
 
         // read channel
         void* ptr_i = /*(void*)*/ iio_buffer_first(buf, /*iio_device_find_channel(dev, "voltage0", false)*/channel_list[0]);
@@ -352,6 +381,9 @@ void pluto_radar_bae_impl::run()
         uintptr_t src_i = (uintptr_t)ptr_i;
         uintptr_t src_q = (uintptr_t)ptr_q;
         uintptr_t end   = (uintptr_t)iio_buffer_end(buf);
+
+        std::cout << "Now we read channel, successfully" << "\n";
+        std::cerr << "Now we read channel, successfully" << "\n";
 
         size_t idx = 0;
         while (src_i < end && src_q < end && idx < nelem) {

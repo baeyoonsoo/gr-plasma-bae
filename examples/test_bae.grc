@@ -33,6 +33,18 @@ options:
     state: enabled
 
 blocks:
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: '2490000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 28.0]
+    rotation: 0
+    state: enabled
 - name: n_pulse_cpi
   id: variable
   parameters:
@@ -49,7 +61,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '20000000'
+    value: '40000000'
   states:
     bus_sink: false
     bus_source: false
@@ -69,7 +81,7 @@ blocks:
     filter: ''
     filter_source: '''Auto'''
     fpass: '0'
-    frequency: '2450000000'
+    frequency: fc
     fstop: '0'
     gain1: '''manual'''
     len_tag_key: packet_len
@@ -85,7 +97,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [240, 404.0]
+    coordinate: [544, 212.0]
     rotation: 0
     state: enabled
 - name: qtgui_waterfall_sink_x_0
@@ -116,7 +128,7 @@ blocks:
     color8: '0'
     color9: '0'
     comment: ''
-    fc: '1000000'
+    fc: fc
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -146,7 +158,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [632, 468.0]
+    coordinate: [928, 284.0]
     rotation: 0
     state: enabled
 

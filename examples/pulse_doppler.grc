@@ -33,6 +33,18 @@ options:
     state: enabled
 
 blocks:
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: '2430000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 12.0]
+    rotation: 0
+    state: true
 - name: n_pulse_cpi
   id: variable
   parameters:
@@ -49,7 +61,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 20e6
+    value: '20000000'
   states:
     bus_sink: false
     bus_source: false
@@ -57,6 +69,68 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
+- name: iio_pluto_source_0
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '20000000'
+    bbdc: 'True'
+    buffer_size: '32768'
+    comment: ''
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: '2430000000'
+    fstop: '0'
+    gain1: '''slow_attack'''
+    len_tag_key: packet_len
+    manual_gain1: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rfdc: 'True'
+    samplerate: samp_rate
+    type: fc32
+    uri: '"192.168.2.1"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 44.0]
+    rotation: 0
+    state: disabled
+- name: iio_pluto_source_0_0
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '20000000'
+    bbdc: 'True'
+    buffer_size: '32768'
+    comment: ''
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: '2430000000'
+    fstop: '0'
+    gain1: '''slow_attack'''
+    len_tag_key: packet_len
+    manual_gain1: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rfdc: 'True'
+    samplerate: samp_rate
+    type: fc32
+    uri: '"192.168.3.3"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 244.0]
+    rotation: 0
+    state: disabled
 - name: plasma_cw_to_pulsed_0
   id: plasma_cw_to_pulsed
   parameters:
@@ -73,9 +147,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 252.0]
+    coordinate: [352, 260.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_lfm_source_0
   id: plasma_lfm_source
   parameters:
@@ -99,9 +173,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [48, 212.0]
+    coordinate: [320, 124.0]
     rotation: 0
-    state: true
+    state: disabled
+- name: plasma_pdu_file_sink_0
+  id: plasma_pdu_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    data_filename: /home/bae/Desktop/Pluto_debug/pdu_file_07_17_2.dat
+    meta_filename: ''
+    save_meta: 'False'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [856, 340.0]
+    rotation: 0
+    state: disabled
 - name: plasma_pulse_doppler_0
   id: plasma_pulse_doppler
   parameters:
@@ -119,9 +210,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 124.0]
+    coordinate: [864, 140.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_pulse_to_cpi_0
   id: plasma_pulse_to_cpi
   parameters:
@@ -136,9 +227,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [768, 260.0]
+    coordinate: [792, 292.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_range_doppler_sink_0
   id: plasma_range_doppler_sink
   parameters:
@@ -162,21 +253,21 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 76.0]
+    coordinate: [1040, 364.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pluto_source_bae_0
   id: pluto_source_bae
   parameters:
     affinity: ''
     alias: ''
     auto_filter: 'True'
-    bandwidth: '1500000'
+    bandwidth: '20000000'
     bbdc: 'True'
     buffer_size: '4096'
     comment: ''
     filter: '""'
-    frequency: '2400000000'
+    frequency: fc
     gain1: '"manual"'
     gain1_value: '10.0'
     gain2: '"manual"'
@@ -190,24 +281,574 @@ blocks:
     rx2_en: 'True'
     rx_freq_key: core:rx_freq
     sample_start_key: core:sample_start
-    samplerate: '20000000'
+    samplerate: samp_rate
     tx_freq_key: core:tx_freq
     uri: ip:192.168.2.1
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [512, 180.0]
+    coordinate: [368, 636.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: pluto_source_bae_0_0
+  id: pluto_source_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    auto_filter: 'True'
+    bandwidth: '20000000'
+    bbdc: 'True'
+    buffer_size: '4096'
+    comment: ''
+    filter: '""'
+    frequency: fc
+    gain1: '"manual"'
+    gain1_value: '10.0'
+    gain2: '"manual"'
+    gain2_value: '10.0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
+    rx_freq_key: core:rx_freq
+    sample_start_key: core:sample_start
+    samplerate: samp_rate
+    tx_freq_key: core:tx_freq
+    uri: ip:192.168.3.3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 636.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: fc
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'True'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: msg_complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 772.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: fc
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'True'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: msg_complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1136, 772.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_1
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: 2.43e9
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1640, 76.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_freq_sink_x_1_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: 2.43e9
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1624, 276.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: fc
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: msg_complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 532.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_0_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: fc
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: msg_complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 220.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_1
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: 2.43e9
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1560, 188.0]
+    rotation: 0
+    state: disabled
 
 connections:
+- [iio_pluto_source_0, '0', qtgui_freq_sink_x_1, '0']
+- [iio_pluto_source_0, '0', qtgui_waterfall_sink_x_1, '0']
+- [iio_pluto_source_0_0, '0', qtgui_freq_sink_x_1_0, '0']
 - [plasma_cw_to_pulsed_0, out, pluto_source_bae_0, in]
 - [plasma_lfm_source_0, out, plasma_cw_to_pulsed_0, in]
 - [plasma_lfm_source_0, out, plasma_pulse_doppler_0, tx]
 - [plasma_pulse_doppler_0, out, plasma_range_doppler_sink_0, in]
 - [plasma_pulse_to_cpi_0, out, plasma_pulse_doppler_0, rx]
+- [pluto_source_bae_0, out, plasma_pdu_file_sink_0, in]
 - [pluto_source_bae_0, out, plasma_pulse_to_cpi_0, in]
+- [pluto_source_bae_0, out, qtgui_freq_sink_x_0, in]
+- [pluto_source_bae_0, out, qtgui_waterfall_sink_x_0, in]
+- [pluto_source_bae_0_0, out, qtgui_freq_sink_x_0_0, in]
+- [pluto_source_bae_0_0, out, qtgui_waterfall_sink_x_0_0, in]
 
 metadata:
   file_format: 1

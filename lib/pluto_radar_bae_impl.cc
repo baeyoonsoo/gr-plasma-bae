@@ -305,6 +305,8 @@ bool pluto_radar_bae_impl::start()
             data_ready = true;
         }
         cv.notify_one();
+
+        // we can process the signal here.
     }
     // stop thread
     thread_stopped = true;
@@ -370,9 +372,9 @@ void pluto_radar_bae_impl::run()
         if (finished) return;
         
         // Now debugging ...
-        std::cerr << "[DEBUG] channel_list.size() = " << channel_list.size() << "\n";
-        for (auto *chn : channel_list)
-            std::cerr << "  CHN ptr: " << chn << "\n";
+        //std::cerr << "[DEBUG] channel_list.size() = " << channel_list.size() << "\n";
+        //for (auto *chn : channel_list)
+        //    std::cerr << "  CHN ptr: " << chn << "\n";
         // ...
 
         // read channel
@@ -382,8 +384,8 @@ void pluto_radar_bae_impl::run()
         uintptr_t src_q = (uintptr_t)ptr_q;
         uintptr_t end   = (uintptr_t)iio_buffer_end(buf);
 
-        std::cout << "Now we read channel, successfully" << "\n";
-        std::cerr << "Now we read channel, successfully" << "\n";
+        //std::cout << "Now we read channel, successfully" << "\n";
+        //std::cerr << "Now we read channel, successfully" << "\n";
 
         size_t idx = 0;
         while (src_i < end && src_q < end && idx < nelem) {

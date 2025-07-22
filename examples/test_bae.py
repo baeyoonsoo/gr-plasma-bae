@@ -73,8 +73,9 @@ class test_bae(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20000000
+        self.samp_rate = samp_rate = 40000000
         self.n_pulse_cpi = n_pulse_cpi = 128
+        self.fc = fc = 2490000000
 
         ##################################################
         # Blocks
@@ -82,7 +83,7 @@ class test_bae(gr.top_block, Qt.QWidget):
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
-            1000000, #fc
+            fc, #fc
             samp_rate, #bw
             "", #name
             1, #number of inputs
@@ -116,7 +117,7 @@ class test_bae(gr.top_block, Qt.QWidget):
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('' if '' else iio.get_pluto_uri(), [True, True], 32768)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
-        self.iio_pluto_source_0.set_frequency(2450000000)
+        self.iio_pluto_source_0.set_frequency(fc)
         self.iio_pluto_source_0.set_samplerate(samp_rate)
         self.iio_pluto_source_0.set_gain_mode(0, 'manual')
         self.iio_pluto_source_0.set_gain(0, 64)
@@ -146,13 +147,21 @@ class test_bae(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.iio_pluto_source_0.set_samplerate(self.samp_rate)
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(1000000, self.samp_rate)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
 
     def get_n_pulse_cpi(self):
         return self.n_pulse_cpi
 
     def set_n_pulse_cpi(self, n_pulse_cpi):
         self.n_pulse_cpi = n_pulse_cpi
+
+    def get_fc(self):
+        return self.fc
+
+    def set_fc(self, fc):
+        self.fc = fc
+        self.iio_pluto_source_0.set_frequency(self.fc)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
 
 
 

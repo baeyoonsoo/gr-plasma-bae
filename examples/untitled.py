@@ -21,16 +21,17 @@ if __name__ == '__main__':
             print("Warning: failed to XInitThreads()")
 
 from PyQt5 import Qt
-from gnuradio import plasma
+from gnuradio import qtgui
+from gnuradio.filter import firdes
 import sip
 from gnuradio import gr
-from gnuradio.filter import firdes
 from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
+from gnuradio import plasma
 
 
 
@@ -72,17 +73,121 @@ class untitled(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20e6
+        self.samp_rate = samp_rate = 20000000
         self.n_pulse_cpi = n_pulse_cpi = 128
+        self.fc = fc = 2430000000
 
         ##################################################
         # Blocks
         ##################################################
+        self.qtgui_freq_sink_x_0_0 = qtgui.freq_sink_c(
+            1024, #size
+            window.WIN_BLACKMAN_hARRIS, #wintype
+            fc, #fc
+            samp_rate, #bw
+            "", #name
+            0,
+            None # parent
+        )
+        self.qtgui_freq_sink_x_0_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0_0.set_y_axis(-140, 10)
+        self.qtgui_freq_sink_x_0_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0_0.enable_control_panel(False)
+        self.qtgui_freq_sink_x_0_0.set_fft_window_normalized(True)
+
+
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_freq_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_freq_sink_x_0_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_freq_sink_x_0_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_0_win)
+        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
+            1024, #size
+            window.WIN_BLACKMAN_hARRIS, #wintype
+            fc, #fc
+            samp_rate, #bw
+            "", #name
+            0,
+            None # parent
+        )
+        self.qtgui_freq_sink_x_0.set_update_time(0.10)
+        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
+        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
+        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
+        self.qtgui_freq_sink_x_0.enable_autoscale(False)
+        self.qtgui_freq_sink_x_0.enable_grid(False)
+        self.qtgui_freq_sink_x_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
+        self.qtgui_freq_sink_x_0.enable_control_panel(False)
+        self.qtgui_freq_sink_x_0.set_fft_window_normalized(True)
+
+
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.pluto_source_bae_0_0 = plasma.pluto_radar_bae(
+          'ip:192.168.3.3',
+          fc,
+          samp_rate,
+          20000000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True)
+        self.pluto_source_bae_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
         self.pluto_source_bae_0 = plasma.pluto_radar_bae(
           'ip:192.168.2.1',
-          2400000000,
+          fc,
+          samp_rate,
           20000000,
-          1500000,
           True,
           True,
           4096,
@@ -97,33 +202,13 @@ class untitled(gr.top_block, Qt.QWidget):
           "",
           True)
         self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.plasma_range_doppler_sink_0 = plasma.range_doppler_sink(samp_rate, n_pulse_cpi, 2.3e9)
-        self.plasma_range_doppler_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:tx_freq', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
-        self.plasma_range_doppler_sink_0.set_dynamic_range(60)
-        self.plasma_range_doppler_sink_0.set_msg_queue_depth(10)
-        self._plasma_range_doppler_sink_0_win = sip.wrapinstance(self.plasma_range_doppler_sink_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._plasma_range_doppler_sink_0_win)
-        self.plasma_pulse_to_cpi_0 = plasma.pulse_to_cpi(n_pulse_cpi)
-        self.plasma_pulse_to_cpi_0.init_meta_dict('radar:n_pulse_cpi')
-        self.plasma_pulse_doppler_0 = plasma.pulse_doppler(n_pulse_cpi, n_pulse_cpi)
-        self.plasma_pulse_doppler_0.set_msg_queue_depth(100)
-        self.plasma_pulse_doppler_0.set_backend(plasma.Device.CUDA)
-        self.plasma_pulse_doppler_0.init_meta_dict('doppler_fft_size')
-        self.plasma_lfm_source_0 = plasma.lfm_source(samp_rate/2, -samp_rate/4, 10e-6, samp_rate, 0)
-        self.plasma_lfm_source_0.init_meta_dict('radar:bandwidth', 'radar:start_freq', 'radar:duration', 'core:sample_rate', 'core:label', 'radar:prf')
-        self.plasma_cw_to_pulsed_0 = plasma.cw_to_pulsed(10e3, samp_rate)
-        self.plasma_cw_to_pulsed_0.init_meta_dict('core:sample_rate', 'radar:prf')
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.plasma_cw_to_pulsed_0, 'out'), (self.pluto_source_bae_0, 'in'))
-        self.msg_connect((self.plasma_lfm_source_0, 'out'), (self.plasma_cw_to_pulsed_0, 'in'))
-        self.msg_connect((self.plasma_lfm_source_0, 'out'), (self.plasma_pulse_doppler_0, 'tx'))
-        self.msg_connect((self.plasma_pulse_doppler_0, 'out'), (self.plasma_range_doppler_sink_0, 'in'))
-        self.msg_connect((self.plasma_pulse_to_cpi_0, 'out'), (self.plasma_pulse_doppler_0, 'rx'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_pulse_to_cpi_0, 'in'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.qtgui_freq_sink_x_0, 'in'))
+        self.msg_connect((self.pluto_source_bae_0_0, 'out'), (self.qtgui_freq_sink_x_0_0, 'in'))
 
 
     def closeEvent(self, event):
@@ -139,12 +224,22 @@ class untitled(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.fc, self.samp_rate)
 
     def get_n_pulse_cpi(self):
         return self.n_pulse_cpi
 
     def set_n_pulse_cpi(self, n_pulse_cpi):
         self.n_pulse_cpi = n_pulse_cpi
+
+    def get_fc(self):
+        return self.fc
+
+    def set_fc(self, fc):
+        self.fc = fc
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.fc, self.samp_rate)
 
 
 

@@ -20,6 +20,8 @@ install(FILES
     range_doppler_sink.h 
     usrp_radar.h
     pluto_radar_bae.h       # add by bae
+    signal_processing.h     # add by bae
+    bae_sink.h              # add by bae
     waveform_controller.h
     match_filt.h
     doppler_processing.h

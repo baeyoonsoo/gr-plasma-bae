@@ -1,0 +1,477 @@
+options:
+  parameters:
+    author: bae
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: original_pluto
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: '2430000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 12.0]
+    rotation: 0
+    state: true
+- name: n_pulse_cpi
+  id: variable
+  parameters:
+    comment: ''
+    value: '128'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 12.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '20000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 12.0]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/bae/Desktop/pluto_plot_test.bin
+    type: complex
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 468.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/bae/Desktop/pluto_plot_test.bin
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 580.0]
+    rotation: 0
+    state: disabled
+- name: blocks_head_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '15000'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [504, 508.0]
+    rotation: 0
+    state: disabled
+- name: blocks_skiphead_0
+  id: blocks_skiphead
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '1024'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 436.0]
+    rotation: 0
+    state: disabled
+- name: iio_pluto_source_0
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '20000000'
+    bbdc: 'True'
+    buffer_size: '32768'
+    comment: ''
+    filter: ''
+    filter_source: '''Off'''
+    fpass: '0'
+    frequency: '2400000000'
+    fstop: '0'
+    gain1: '''manual'''
+    len_tag_key: packet_len
+    manual_gain1: '64'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rfdc: 'True'
+    samplerate: samp_rate
+    type: fc32
+    uri: '"ip:192.168.2.1"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 308.0]
+    rotation: 0
+    state: enabled
+- name: plasma_cw_to_pulsed_0
+  id: plasma_cw_to_pulsed
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    prf: 10e3
+    prf_key: radar:prf
+    samp_rate: samp_rate
+    sample_rate_key: core:sample_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 296.0]
+    rotation: 0
+    state: disabled
+- name: plasma_lfm_source_0
+  id: plasma_lfm_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: samp_rate/2
+    bandwidth_key: radar:bandwidth
+    comment: ''
+    duration_key: radar:duration
+    label_key: core:label
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    prf: '0'
+    prf_key: radar:prf
+    pulse_width: 10e-6
+    samp_rate: samp_rate
+    sample_rate_key: core:sample_rate
+    start_freq: -samp_rate/4
+    start_freq_key: radar:start_freq
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 132.0]
+    rotation: 0
+    state: disabled
+- name: plasma_pdu_file_sink_0
+  id: plasma_pdu_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    data_filename: /home/bae/Desktop/Pluto_debug/pdu_file_07_17_2.dat
+    meta_filename: ''
+    save_meta: 'False'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [880, 376.0]
+    rotation: 0
+    state: disabled
+- name: plasma_pulse_doppler_0
+  id: plasma_pulse_doppler
+  parameters:
+    affinity: ''
+    alias: ''
+    backend: plasma.Device.CUDA
+    comment: ''
+    depth: '100'
+    doppler_fft_size_key: doppler_fft_size
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_pulse_cpi: n_pulse_cpi
+    nfft: n_pulse_cpi
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [888, 156.0]
+    rotation: 0
+    state: disabled
+- name: plasma_pulse_to_cpi_0
+  id: plasma_pulse_to_cpi
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_pulse_cpi: n_pulse_cpi
+    n_pulse_cpi_key: radar:n_pulse_cpi
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 328.0]
+    rotation: 0
+    state: disabled
+- name: plasma_range_doppler_sink_0
+  id: plasma_range_doppler_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: 2.3e9
+    center_freq_key: core:tx_freq
+    comment: ''
+    depth: '10'
+    detection_indices_key: detection_indices
+    dynamic_range: '60'
+    dynamic_range_key: dynamic_range
+    gui_hint: ''
+    n_matrix_col_key: n_matrix_col
+    nrow: n_pulse_cpi
+    prf_key: radar:prf
+    pulsewidth_key: radar:duration
+    samp_rate: samp_rate
+    samp_rate_key: core:sample_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 400.0]
+    rotation: 0
+    state: disabled
+- name: pluto_source_bae_0
+  id: pluto_source_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    auto_filter: 'True'
+    bandwidth: '20000000'
+    bbdc: 'True'
+    buffer_size: '4096'
+    comment: ''
+    filter: '""'
+    frequency: fc
+    gain1: '"manual"'
+    gain1_value: '10.0'
+    gain2: '"manual"'
+    gain2_value: '10.0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
+    rx_freq_key: core:rx_freq
+    sample_start_key: core:sample_start
+    samplerate: samp_rate
+    tx_freq_key: core:tx_freq
+    uri: ip:192.168.2.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [544, 200.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: 2.4e9
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.0001'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [696, 596.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_waterfall_sink_x_1
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: 2.4e9
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [504, 372.0]
+    rotation: 0
+    state: true
+
+connections:
+- [blocks_file_source_0, '0', qtgui_waterfall_sink_x_0, '0']
+- [blocks_head_0, '0', blocks_file_sink_0, '0']
+- [blocks_skiphead_0, '0', blocks_head_0, '0']
+- [iio_pluto_source_0, '0', blocks_skiphead_0, '0']
+- [iio_pluto_source_0, '0', qtgui_waterfall_sink_x_1, '0']
+- [plasma_cw_to_pulsed_0, out, pluto_source_bae_0, in]
+- [plasma_lfm_source_0, out, plasma_cw_to_pulsed_0, in]
+- [plasma_lfm_source_0, out, plasma_pulse_doppler_0, tx]
+- [plasma_pulse_doppler_0, out, plasma_range_doppler_sink_0, in]
+- [plasma_pulse_to_cpi_0, out, plasma_pulse_doppler_0, rx]
+- [pluto_source_bae_0, out, plasma_pdu_file_sink_0, in]
+- [pluto_source_bae_0, out, plasma_pulse_to_cpi_0, in]
+
+metadata:
+  file_format: 1

@@ -37,7 +37,7 @@ from gnuradio import plasma
 
 from gnuradio import qtgui
 
-class untitled(gr.top_block, Qt.QWidget):
+class bae_flow(gr.top_block, Qt.QWidget):
 
     def __init__(self):
         gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
@@ -60,7 +60,7 @@ class untitled(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "untitled")
+        self.settings = Qt.QSettings("GNU Radio", "bae_flow")
 
         try:
             if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -73,48 +73,11 @@ class untitled(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20000000
-        self.n_pulse_cpi = n_pulse_cpi = 128
-        self.fc = fc = 2430000000
+        self.samp_rate = samp_rate = 32000
 
         ##################################################
         # Blocks
         ##################################################
-        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
-            1024, #size
-            window.WIN_BLACKMAN_hARRIS, #wintype
-            fc, #fc
-            samp_rate, #bw
-            "", #name
-            0, #number of inputs
-            None # parent
-        )
-        self.qtgui_waterfall_sink_x_0.set_update_time(0.0001)
-        self.qtgui_waterfall_sink_x_0.enable_grid(True)
-        self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
-
-
-
-        labels = ['', '', '', '', '',
-                  '', '', '', '', '']
-        colors = [0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 0]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-
-        for i in range(1):
-            if len(labels[i]) == 0:
-                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
-            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
-
-        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.qwidget(), Qt.QWidget)
-
-        self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
             1024, #size
             samp_rate, #samp_rate
@@ -122,7 +85,7 @@ class untitled(gr.top_block, Qt.QWidget):
             0, #number of inputs
             None # parent
         )
-        self.qtgui_time_sink_x_0.set_update_time(0.000010)
+        self.qtgui_time_sink_x_0.set_update_time(0.10)
         self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
 
         self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
@@ -166,56 +129,14 @@ class untitled(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
-            1024, #size
-            window.WIN_BLACKMAN_hARRIS, #wintype
-            fc, #fc
-            samp_rate, #bw
-            "", #name
-            0,
-            None # parent
-        )
-        self.qtgui_freq_sink_x_0.set_update_time(0.000001)
-        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(False)
-        self.qtgui_freq_sink_x_0.enable_grid(False)
-        self.qtgui_freq_sink_x_0.set_fft_average(1.0)
-        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
-        self.qtgui_freq_sink_x_0.set_fft_window_normalized(True)
-
-
-
-        labels = ['', '', '', '', '',
-            '', '', '', '', '']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-            "magenta", "yellow", "dark red", "dark green", "dark blue"]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
-
-        for i in range(1):
-            if len(labels[i]) == 0:
-                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.pluto_source_bae_0 = plasma.pluto_radar_bae(
-          "ip:192.168.2.1",
-          fc,
-          samp_rate,
-          20000000,
+          "",
+          2400000000,
+          2000000,
+          1500000,
           True,
-          True,
-          32768,
+          False,
+          4096,
           True,
           True,
           True,
@@ -227,18 +148,22 @@ class untitled(gr.top_block, Qt.QWidget):
           "",
           True)
         self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.plasma_signal_processing_0 = plasma.signal_processing(128)
+        self.plasma_signal_processing_0.set_metadata_keys('n_pulse_cpi')
+        self.plasma_signal_processing_0.set_msg_queue_depth(1)
+        self.plasma_signal_processing_0.set_backend(plasma.Device.DEFAULT)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.qtgui_freq_sink_x_0, 'in'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.qtgui_time_sink_x_0, 'in'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.qtgui_waterfall_sink_x_0, 'in'))
+        self.msg_connect((self.plasma_signal_processing_0, 'out'), (self.qtgui_time_sink_x_0, 'in'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'tx'))
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "untitled")
+        self.settings = Qt.QSettings("GNU Radio", "bae_flow")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -250,28 +175,12 @@ class untitled(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
-
-    def get_n_pulse_cpi(self):
-        return self.n_pulse_cpi
-
-    def set_n_pulse_cpi(self, n_pulse_cpi):
-        self.n_pulse_cpi = n_pulse_cpi
-
-    def get_fc(self):
-        return self.fc
-
-    def set_fc(self, fc):
-        self.fc = fc
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
-        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.fc, self.samp_rate)
 
 
 
 
-def main(top_block_cls=untitled, options=None):
+def main(top_block_cls=bae_flow, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')

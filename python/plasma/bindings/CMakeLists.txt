@@ -54,6 +54,8 @@ list(APPEND plasma_python_files
     range_doppler_sink_python.cc
     usrp_radar_python.cc
     pluto_radar_bae_python.cc         # add by bae
+    signal_processing_python.cc       # add by bae
+    bae_sink_python.cc                # add by bae
     waveform_controller_python.cc
     device_python.cc
 )

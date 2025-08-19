@@ -19,11 +19,11 @@ add_subdirectory(bindings)
 ########################################################################
 # Install python sources
 ########################################################################
-GR_PYTHON_INSTALL(
-    FILES
-    __init__.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
-)
+# GR_PYTHON_INSTALL(
+#     FILES
+#     __init__.py
+#     signal_processing.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
+# )
 
 ########################################################################
 # Handle the unit tests
@@ -43,6 +43,8 @@ GR_ADD_TEST(qa_lfm_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_lf
 GR_ADD_TEST(qa_waveform_controller ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_waveform_controller.py)
 GR_ADD_TEST(qa_usrp_radar ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_usrp_radar.py)
 GR_ADD_TEST(qa_pluto_radar_bae ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pluto_radar_bae.py)      # add by bae
+GR_ADD_TEST(qa_signal_processing ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_signal_processing.py)  # add by bae
+GR_ADD_TEST(qa_bae_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bae_sink.py)                    # add by bae
 GR_ADD_TEST(qa_pdu_file_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_file_sink.py)
 GR_ADD_TEST(qa_pdu_head ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head.py)
 GR_ADD_TEST(qa_pcfm_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pcfm_source.py)

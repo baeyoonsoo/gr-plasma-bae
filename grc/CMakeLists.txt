@@ -21,5 +21,7 @@ install(FILES
     plasma_pulse_doppler.block.yml
     plasma_cw_to_pulsed.block.yml
     plasma_pluto_radar_bae.block.yml        # add by bae
+    plasma_signal_processing.block.yml      # add by bae
+    plasma_bae_sink.block.yml               # add by bae
     DESTINATION share/gnuradio/grc/blocks
 )

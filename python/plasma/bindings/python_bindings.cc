@@ -37,7 +37,9 @@ namespace py = pybind11;
     void bind_pdu_file_source(py::module& m);
     void bind_pulse_doppler(py::module& m);
     void bind_cw_to_pulsed(py::module& m);
-    void bind_pluto_radar_bae(py::module& m);
+    void bind_pluto_radar_bae(py::module& m);       // add by bae
+    void bind_signal_processing(py::module& m);     // add by bae
+    void bind_bae_sink(py::module& m);              // add by bae
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -82,6 +84,8 @@ PYBIND11_MODULE(plasma_python, m)
     bind_pdu_file_source(m);
     bind_pulse_doppler(m);
     bind_cw_to_pulsed(m);
-    bind_pluto_radar_bae(m);
+    bind_pluto_radar_bae(m);        // add by bae
+    bind_signal_processing(m);      // add by bae
+    bind_bae_sink(m);               // add by bae
     // ) END BINDING_FUNCTION_CALLS
 }

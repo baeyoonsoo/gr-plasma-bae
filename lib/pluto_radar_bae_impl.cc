@@ -154,14 +154,13 @@ bool pluto_radar_bae_impl::start()
     destroy_ctx = true;
     dev = iio_context_find_device(ctx, "cf-ad9361-lpc");
     phy = iio_context_find_device(ctx, "ad9361-phy");
-    
     bool is_fmcomms4 = !iio_device_find_channel(phy, "voltage1", false);
     if (!dev || !phy) {
 		    if (destroy_ctx)
 			    iio_context_destroy(ctx);
 		    throw std::runtime_error("Device not found");
 	    }
-
+    
     // 2. channel_list initialize
     std::vector<std::string> channels = get_channels_vector(rx1_en, rx2_en);
 
@@ -378,8 +377,8 @@ void pluto_radar_bae_impl::run()
         // ...
 
         // read channel
-        void* ptr_i = /*(void*)*/ iio_buffer_first(buf, /*iio_device_find_channel(dev, "voltage0", false)*/channel_list[0]);
-        void* ptr_q = /*(void*)*/ iio_buffer_first(buf, /*iio_device_find_channel(dev, "voltage1", false)*/channel_list[1]);
+        void* ptr_i = iio_buffer_first(buf, channel_list[0]);
+        void* ptr_q = iio_buffer_first(buf, channel_list[1]);
         uintptr_t src_i = (uintptr_t)ptr_i;
         uintptr_t src_q = (uintptr_t)ptr_q;
         uintptr_t end   = (uintptr_t)iio_buffer_end(buf);
@@ -391,7 +390,7 @@ void pluto_radar_bae_impl::run()
         while (src_i < end && src_q < end && idx < nelem) {
             short s_i, s_q;
             iio_channel_convert(channel_list[0], &s_i, (const void*)src_i);
-            iio_channel_convert(channel_list[1], &s_q, (const void*)src_q);
+            iio_channel_convert(channel_list[1], &s_q, (const void*)src_q); //
 
             cplx_buf[idx] = std::complex<float>((float)s_i / 2048.0f, (float)s_q / 2048.0f);
 

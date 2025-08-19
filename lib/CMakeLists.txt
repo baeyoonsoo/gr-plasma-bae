@@ -15,6 +15,8 @@ list(APPEND plasma_sources
     waveform_controller_impl.cc
     usrp_radar_impl.cc
     pluto_radar_bae_impl.cc         # add by bae
+    signal_processing_impl.cc       # add by bae
+    bae_sink_impl.cc                # add by bae
     pdu_file_sink_impl.cc
     pdu_head_impl.cc
     pcfm_source_impl.cc

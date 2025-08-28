@@ -7,8 +7,8 @@ parameters:
   label: FFT size
   dtype: int
   default: 1024
-  options: [128, 256, 512, 1024, 2048, 4096, 8192]
-  option_labels: [128, 256, 512, 1024, 2048, 4096, 8192]
+  options: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+  option_labels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
 - id: backend
   label: Backend
   dtype: enum
@@ -21,6 +21,20 @@ parameters:
   label: FFT flag
   dtype: int
   default: 1
+- id: output_magnitude
+  label: Magnitude flag
+  dtype: int
+  default: 1
+- id: window_type
+  label: Window
+  dtype: int  
+  default: 0
+  options: [0, 1, 2]
+  option_labels: [NONE, Hanning, Hamming]
+- id: overlap_frac
+  label: overlap (%)
+  dtype: float
+  default: 0
 # Metadata keys
 - id: n_pulse_cpi_key
   label: Pulses per CPI Key
@@ -34,13 +48,15 @@ inputs:
   domain: message
 
 outputs:
-- id: out
+- id: time
+  domain: message
+- id: freq
   domain: message
 
 templates:
   imports: from gnuradio import plasma
   make: |-
-    plasma.signal_processing(${fft_size},${backend},${sample_rate},${fft_on})
+    plasma.signal_processing(${fft_size},${sample_rate},${fft_on},${output_magnitude},${window_type}, ${overlap_frac})
 #    self.${id}.set_metadata_keys(${n_pulse_cpi_key})
 #    self.${id}.set_msg_queue_depth(${depth})
 #    self.${id}.set_backend(${backend})

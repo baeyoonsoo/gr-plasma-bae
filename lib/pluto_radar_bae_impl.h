@@ -15,6 +15,7 @@
 #include <gnuradio/blocks/float_to_complex.h>
 #include <gnuradio/plasma/pluto_radar_bae.h>
 #include <gnuradio/plasma/pmt_constants.h>
+#include <arrayfire.h>
 
 namespace gr {
 namespace plasma {
@@ -75,6 +76,7 @@ private:
     std::condition_variable  refill_cv;
     bool                     please_refill{false};
     bool                     thread_stopped{false};
+    std::atomic<bool>        finished{false};
     
     void set_params(struct iio_device *phy,
 		    const std::vector<std::string> &params);
@@ -83,9 +85,11 @@ private:
     // void handle_message(const pmt::pmt_t &msg);
     // Main RX loop
     void run();
+    void receive();
 
     // Calibration file loader if needed
     void read_calibration_file(const std::string &filename);
+    af::array af_fftshift1d(const af::array &x);
 
     // IIO / Pluto members
     size_t sample_bytes;
@@ -95,6 +99,7 @@ private:
     struct iio_buffer        *buf{nullptr};
     bool                      destroy_ctx{false};
     size_t                    buffer_size{0x8000};
+    size_t                    samples_per_pdu;
     //std::vector<std::string>  channels;
     std::vector<struct iio_channel*> channel_list;
 
@@ -126,12 +131,11 @@ private:
     std::vector<float>                temp_i, temp_q;
 
     // Threading
-    std::thread                       refill_thread;
     std::thread                       rx_thread;
+    std::thread                       refill_thread;
     std::mutex                        mtx;
     std::condition_variable           cv;
     bool                              data_ready{false};
-    bool                              finished{false};
 
     // PDU metadata / TX state
     pmt::pmt_t                        next_meta;

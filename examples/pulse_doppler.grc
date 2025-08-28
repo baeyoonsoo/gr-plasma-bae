@@ -289,18 +289,19 @@ blocks:
     alias: ''
     backend: plasma.Device.DEFAULT
     comment: ''
-    depth: '1'
+    fft_on: '1'
+    fft_size: '1024'
     maxoutbuf: '0'
     minoutbuf: '0'
     n_pulse_cpi_key: n_pulse_cpi
-    num_pulse_cpi: '128'
+    sample_rate: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [672, 392.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: pluto_source_bae_0
   id: pluto_source_bae
   parameters:

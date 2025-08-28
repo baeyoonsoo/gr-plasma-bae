@@ -97,10 +97,10 @@ parameters:
     hide: part
     category: Metadata
 
-inputs:
-  - id: in
-    domain: message
-    optional: true
+# inputs:
+#   - id: in
+#     domain: message
+#     optional: true
 
 outputs:
   - id: out

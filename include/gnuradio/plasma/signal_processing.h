@@ -37,8 +37,11 @@ public:
      * \param fft_size
      * \param sample_rate
      * \param fft_on
+     * \param output_magnitude
+     * \param window_type
+     * \param overlap_frac
      */
-    static sptr make(size_t fft_size, double sample_rate, bool fft_on);
+    static sptr make(size_t fft_size, double sample_rate, bool fft_on, int output_magnitude, int window_type, float overlap_frac);
 
     virtual void set_msg_queue_depth(size_t depth) = 0;
     virtual void set_backend(Device::Backend backend) = 0;

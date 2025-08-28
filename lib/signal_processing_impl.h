@@ -47,12 +47,13 @@ private:
     pmt::pmt_t d_meta;
     pmt::pmt_t d_data;
     pmt::pmt_t d_rx_port;
-    pmt::pmt_t d_out_port;
-
+    pmt::pmt_t d_time_port;
+    pmt::pmt_t d_freq_port;
+    
     void handle_rx_msg(pmt::pmt_t msg);
 
 public:
-    signal_processing_impl(size_t fft_size, double sample_rate, bool fft_on);
+    signal_processing_impl(size_t fft_size, double sample_rate, bool fft_on, int output_magnitude, int window_type, float overlap_frac);
     ~signal_processing_impl();
 
     void set_msg_queue_depth(size_t depth) override;

@@ -13,7 +13,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(signal_processing.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(1ea014c5a594b0e4b30d11c1d8e70d23)                     */
+/* BINDTOOL_HEADER_FILE_HASH(dcf30ccb7a9583131433fcbd7ede0e37)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -38,6 +38,9 @@ void bind_signal_processing(py::module& m)
              py::arg("fft_size"),
              py::arg("sample_rate"),
              py::arg("fft_on"),
+             py::arg("utput_magnitude"),
+             py::arg("window_type"),
+             py::arg("overlap_frac"),
              D(signal_processing, make))
 
         /* original bindings kept */

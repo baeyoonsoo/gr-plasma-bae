@@ -84,13 +84,13 @@ class original_pluto(gr.top_block, Qt.QWidget):
         self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
-            2.4e9, #fc
-            samp_rate*2, #bw
+            1e9, #fc
+            samp_rate, #bw
             "", #name
             1, #number of inputs
             None # parent
         )
-        self.qtgui_waterfall_sink_x_1.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_1.set_update_time(0.1)
         self.qtgui_waterfall_sink_x_1.enable_grid(False)
         self.qtgui_waterfall_sink_x_1.enable_axis_labels(True)
 
@@ -118,10 +118,10 @@ class original_pluto(gr.top_block, Qt.QWidget):
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_1_win)
         self.iio_pluto_source_0 = iio.fmcomms2_source_fc32("ip:192.168.2.1" if "ip:192.168.2.1" else iio.get_pluto_uri(), [True, True], 32768)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
-        self.iio_pluto_source_0.set_frequency(2400000000)
-        self.iio_pluto_source_0.set_samplerate(samp_rate*2)
+        self.iio_pluto_source_0.set_frequency(1000000000)
+        self.iio_pluto_source_0.set_samplerate(samp_rate)
         self.iio_pluto_source_0.set_gain_mode(0, 'manual')
-        self.iio_pluto_source_0.set_gain(0, 64)
+        self.iio_pluto_source_0.set_gain(0, 00)
         self.iio_pluto_source_0.set_quadrature(True)
         self.iio_pluto_source_0.set_rfdc(True)
         self.iio_pluto_source_0.set_bbdc(True)
@@ -147,8 +147,8 @@ class original_pluto(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.iio_pluto_source_0.set_samplerate(self.samp_rate*2)
-        self.qtgui_waterfall_sink_x_1.set_frequency_range(2.4e9, self.samp_rate*2)
+        self.iio_pluto_source_0.set_samplerate(self.samp_rate)
+        self.qtgui_waterfall_sink_x_1.set_frequency_range(1e9, self.samp_rate)
 
     def get_n_pulse_cpi(self):
         return self.n_pulse_cpi

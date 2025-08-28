@@ -23,9 +23,12 @@ static const int WINDOW_HAMMING = 2;
 
 signal_processing::sptr signal_processing::make(size_t fft_size,
                                                 double sample_rate,
-                                                bool fft_on)
+                                                bool fft_on,
+                                                int output_magnitude,
+                                                int window_type,
+                                                float overlap_frac)
 {
-    return gnuradio::make_block_sptr<signal_processing_impl>(fft_size, sample_rate, fft_on);
+    return gnuradio::make_block_sptr<signal_processing_impl>(fft_size, sample_rate, fft_on, output_magnitude, window_type, overlap_frac);
 }
 
 
@@ -34,19 +37,22 @@ signal_processing::sptr signal_processing::make(size_t fft_size,
  */
 signal_processing_impl::signal_processing_impl(size_t fft_size,
                                                double sample_rate,
-                                               bool fft_on)
+                                               bool fft_on,
+                                               int output_magnitude,
+                                               int window_type,
+                                               float overlap_frac)
     : gr::block(
           "signal_processing", gr::io_signature::make(0, 0, 0), gr::io_signature::make(0, 0, 0)),
       fft_size(fft_size),
       sample_rate(sample_rate),
       fft_on(fft_on),
-      d_msg_queue_depth(64),
-      output_magnitude(true),
+      d_msg_queue_depth(512),
+      output_magnitude(output_magnitude),
       use_fft_plan_cache(false),
       use_inplace_fft(false),
       fft_plan_cache_size(8),
-      window_type(WINDOW_NONE),
-      overlap_frac(0.0),
+      window_type(window_type),
+      overlap_frac(overlap_frac),
       overlap_samples(0),
       process_partials(false)
 {
@@ -68,9 +74,12 @@ signal_processing_impl::signal_processing_impl(size_t fft_size,
 
     // Only RX and OUT ports
     d_rx_port = PMT_RX;
-    d_out_port = PMT_OUT;
+    d_time_port = pmt::mp("time");
+    d_freq_port = pmt::mp("freq");
+
     message_port_register_in(d_rx_port);
-    message_port_register_out(d_out_port);
+    message_port_register_out(d_time_port);
+    message_port_register_out(d_freq_port);
     set_msg_handler(d_rx_port, [this](pmt::pmt_t msg) { handle_rx_msg(msg); });
 
     // initialize ArrayFire fft plan cache if requested (can be toggled later)
@@ -90,21 +99,37 @@ signal_processing_impl::~signal_processing_impl() {}
 static std::vector<float> make_window(size_t N, int wtype)
 {
     std::vector<float> w(N, 1.0f);
-    if (wtype == WINDOW_NONE || N == 0) {
+    if (wtype == 0 || N == 0) {
         return w;
     }
-    if (wtype == WINDOW_HANN) {
+    if (wtype == 1) {
         // Hann: 0.5 * (1 - cos(2*pi*n/(N-1)))
         for (size_t n = 0; n < N; ++n) {
             w[n] = 0.5f * (1.0f - std::cos(2.0f * M_PI * static_cast<float>(n) / static_cast<float>(N - 1)));
         }
-    } else if (wtype == WINDOW_HAMMING) {
+    } else if (wtype == 2) {
         // Hamming: 0.54 - 0.46 cos(2*pi*n/(N-1))
         for (size_t n = 0; n < N; ++n) {
             w[n] = 0.54f - 0.46f * std::cos(2.0f * M_PI * static_cast<float>(n) / static_cast<float>(N - 1));
         }
     }
     return w;
+}
+
+static af::array af_fftshift1d(const af::array &x)
+{
+    af::dim4 d = x.dims();
+    const dim_t N = d[0];
+    const dim_t shift = N / 2; // integer division (floor)
+
+    if (N <= 1 || shift == 0) {
+        return x; // nothing to do
+    }
+
+    // a = x[shift : N-1], b = x[0 : shift-1]
+    af::array a = x(af::seq(shift, N - 1));
+    af::array b = x(af::seq(0, shift - 1));
+    return af::join(0, a, b);
 }
 
 void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
@@ -182,48 +207,56 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
                 bool used_inplace = false;
 
                 if (use_inplace_fft && n_samples == fft_size) {
-                    // perform in-place FFT if requested and sizes match
-                    af::array x_copy = x; // create modifiable array
-                    // try C++ API name; if your AF version uses a different name, adapt accordingly.
+                    // in-place FFT (사용하는 ArrayFire 버전에 따라 함수명이 다를 수 있음)
+                    af::array x_copy = x; // 소유권/수정 가능하게 복사
+                    // 예: af::fftInPlace(x_copy); 또는 af::fft_inplace(x_copy);
                     af::fftInPlace(x_copy);
                     X = x_copy;
                     used_inplace = true;
                 } else {
                     // out-of-place FFT with explicit output length (zero-pad/truncate)
-                    X = af::fft(x, static_cast<int>(fft_size));
+                    X = af::fft(x, static_cast<int>(fft_size)); // 1D FFT
                 }
+
+                af::array Xs = af_fftshift1d(X);
 
                 if (output_magnitude) {
                     // compute magnitude (abs) => real float vector of length fft_size
-                    af::array mag = af::abs(X); // float array
+                    // af::array mag = af::abs(Xs); // float array
+                    af::array mag = 20 * af::log10(af::abs(Xs) + 1e-12);
                     pmt::pmt_t out_pdu = pmt::make_f32vector(static_cast<int>(mag.elements()), 0.0f);
                     size_t io_out = 0;
                     float* out_ptr = pmt::f32vector_writable_elements(out_pdu, io_out);
                     mag.host(out_ptr);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 } else {
                     // output complex spectrum as c32vector of length fft_size
                     pmt::pmt_t out_pdu = pmt::make_c32vector(static_cast<int>(fft_size), gr_complex(0, 0));
                     size_t io_out = 0;
                     gr_complex* out_ptr = pmt::c32vector_writable_elements(out_pdu, io_out);
                     X.host(reinterpret_cast<af::cfloat*>(out_ptr));
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 }
             } else {
                 // fft_on == false: time-domain pass-through for this chunk (length n_samples)
                 if (output_magnitude) {
-                    af::array mag = af::abs(x);
+                    //af::array mag = af::abs(x);
+                    af::array mag = 20 * af::log10(af::abs(x) + 1e-12);
                     pmt::pmt_t out_pdu = pmt::make_f32vector(static_cast<int>(mag.elements()), 0.0f);
                     size_t io_out = 0;
                     float* out_ptr = pmt::f32vector_writable_elements(out_pdu, io_out);
                     mag.host(out_ptr);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_time = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("time"));
+                    message_port_pub(d_time_port, pmt::cons(meta_time, out_pdu));
                 } else {
                     pmt::pmt_t out_pdu = pmt::make_c32vector(static_cast<int>(n_samples), gr_complex(0, 0));
                     size_t io_out = 0;
                     gr_complex* out_ptr = pmt::c32vector_writable_elements(out_pdu, io_out);
                     std::memcpy(out_ptr, chunk_ptr, sizeof(gr_complex) * n_samples);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_time = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("time"));
+                    message_port_pub(d_time_port, pmt::cons(meta_time, out_pdu));
                 }
             }
         } catch (const af::exception& e) {
@@ -254,36 +287,43 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
 
             if (fft_on) {
                 af::array X = af::fft(x, static_cast<int>(fft_size));
+                af::array Xs = af_fftshift1d(X);
                 if (output_magnitude) {
-                    af::array mag = af::abs(X);
+                    //af::array mag = af::abs(Xs);
+                    af::array mag = 20 * af::log10(af::abs(Xs) + 1e-12);
                     pmt::pmt_t out_pdu = pmt::make_f32vector(static_cast<int>(mag.elements()), 0.0f);
                     size_t io_out = 0;
                     float* out_ptr = pmt::f32vector_writable_elements(out_pdu, io_out);
                     mag.host(out_ptr);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 } else {
                     pmt::pmt_t out_pdu = pmt::make_c32vector(static_cast<int>(fft_size), gr_complex(0,0));
                     size_t io_out = 0;
                     gr_complex* out_ptr = pmt::c32vector_writable_elements(out_pdu, io_out);
                     X.host(reinterpret_cast<af::cfloat*>(out_ptr));
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 }
             } else {
                 if (output_magnitude) {
-                    af::array mag = af::abs(x);
+                    //af::array mag = af::abs(x);                        // W
+                    af::array mag = 20 * af::log10(af::abs(x) + 1e-12);  // dB
                     std::vector<float> host_mag(remain);
                     mag.host(host_mag.data());
                     pmt::pmt_t out_pdu = pmt::make_f32vector(static_cast<int>(remain), 0.0f);
                     size_t io_out = 0;
                     float* out_ptr = pmt::f32vector_writable_elements(out_pdu, io_out);
                     std::memcpy(out_ptr, host_mag.data(), sizeof(float) * remain);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_time = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("time"));
+                    message_port_pub(d_time_port, pmt::cons(meta_time, out_pdu));
                 } else {
                     pmt::pmt_t out_pdu = pmt::make_c32vector(static_cast<int>(remain), gr_complex(0, 0));
                     size_t io_out = 0;
                     gr_complex* out_ptr = pmt::c32vector_writable_elements(out_pdu, io_out);
                     std::memcpy(out_ptr, tmp.data(), sizeof(gr_complex) * remain);
-                    message_port_pub(d_out_port, pmt::cons(d_meta, out_pdu));
+                    pmt::pmt_t meta_time = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("time"));
+                    message_port_pub(d_time_port, pmt::cons(meta_time, out_pdu));
                 }
             }
         } catch (const af::exception& e) {

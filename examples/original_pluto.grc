@@ -157,11 +157,11 @@ blocks:
     filter: ''
     filter_source: '''Off'''
     fpass: '0'
-    frequency: '2400000000'
+    frequency: '1000000000'
     fstop: '0'
     gain1: '''manual'''
     len_tag_key: packet_len
-    manual_gain1: '64'
+    manual_gain1: '00'
     maxoutbuf: '0'
     minoutbuf: '0'
     quadrature: 'True'
@@ -425,7 +425,7 @@ blocks:
     color8: '0'
     color9: '0'
     comment: ''
-    fc: 2.4e9
+    fc: 1e9
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -449,13 +449,13 @@ blocks:
     nconnections: '1'
     showports: 'False'
     type: complex
-    update_time: '0.10'
+    update_time: '0.1'
     wintype: window.WIN_BLACKMAN_hARRIS
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [504, 372.0]
+    coordinate: [520, 372.0]
     rotation: 0
     state: true
 

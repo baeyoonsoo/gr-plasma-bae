@@ -4,9 +4,17 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "bae_sink_impl.h"
 #include <gnuradio/io_signature.h>
+#include <gnuradio/prefs.h>
+#include <qwt_symbol.h>
+#include <volk/volk.h>
+#include <algorithm>
+#include <cstring>
 #include <chrono>
 #include <thread>
 

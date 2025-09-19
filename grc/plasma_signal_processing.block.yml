@@ -1,0 +1,61 @@
+id: plasma_signal_processing
+label: Signal Processing
+category: '[plasma]'
+
+parameters:
+- id: fft_size
+  label: FFT size
+  dtype: int
+  default: 1024
+  options: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+  option_labels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+- id: backend
+  label: Backend
+  dtype: enum
+  options: [plasma.Device.DEFAULT, plasma.Device.CPU, plasma.Device.CUDA, plasma.Device.OPENCL]
+  option_labels: [Default, CPU, Cuda, OpenCL]
+- id: sample_rate
+  label: Sampling rate
+  dtype: int
+- id: fft_on
+  label: FFT flag
+  dtype: int
+  default: 1
+- id: output_magnitude
+  label: Magnitude flag
+  dtype: int
+  default: 1
+- id: window_type
+  label: Window
+  dtype: int  
+  default: 0
+  options: [0, 1, 2]
+  option_labels: [NONE, Hanning, Hamming]
+
+# Metadata keys
+- id: n_pulse_cpi_key
+  label: Pulses per CPI Key
+  dtype: string
+  default: n_pulse_cpi
+  hide: part
+  category: Metadata
+
+inputs:
+- id: rx
+  domain: message
+
+outputs:
+# - id: time
+#   domain: message
+- id: freq
+  domain: message
+
+templates:
+  imports: from gnuradio import plasma
+  make: |-
+    plasma.signal_processing(${fft_size},${sample_rate},${fft_on},${output_magnitude},${window_type})
+#    self.${id}.set_metadata_keys(${n_pulse_cpi_key})
+#    self.${id}.set_msg_queue_depth(${depth})
+#    self.${id}.set_backend(${backend})
+
+file_format: 1

@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
 /* BINDTOOL_HEADER_FILE(bae_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(26efa4c47f894ce27043e89e3bb6b701)                     */
+/* BINDTOOL_HEADER_FILE_HASH(6d65600fc123c0295340eb061cefb5da)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -43,7 +43,8 @@ void bind_bae_sink(py::module& m)
              py::arg("samp_rate"),
              py::arg("ncol"),
              py::arg("center_freq"),
-             py::arg("parent") = nullptr,
+             py::arg("parent"),
+             py::arg("mode"),
              D(bae_sink, make))
 
 

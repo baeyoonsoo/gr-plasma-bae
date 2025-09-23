@@ -73,11 +73,9 @@ signal_processing_impl::signal_processing_impl(size_t fft_size,
 
     // Only RX and OUT ports
     d_rx_port = PMT_RX;
-    d_time_port = pmt::mp("time");
-    d_freq_port = pmt::mp("freq");
+    d_freq_port = pmt::mp("out");
 
     message_port_register_in(d_rx_port);
-    message_port_register_out(d_time_port);
     message_port_register_out(d_freq_port);
     set_msg_handler(d_rx_port, [this](pmt::pmt_t msg) { handle_rx_msg(msg); });
 
@@ -144,7 +142,6 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
     } else if (pmt::is_uniform_vector(msg)) {
         samples = msg;
     } else {
-        //GR_LOG_WARN(d_logger, "Invalid message type");
         std::cerr << "[signal_processing] WARN: Invalid message type\n";
         return;
     }
@@ -218,14 +215,19 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
 
                 if (output_magnitude) {
                     // compute magnitude (abs) => real float vector of length fft_size
-                    //af::array mag = af::abs(Xs); // float array
                     af::array amp_linear = af::abs(Xs) / static_cast<float>(fft_size);
                     af::array mag = 20.0f * af::log10(amp_linear + 1e-20f);
+
                     pmt::pmt_t out_pdu = pmt::make_f32vector(static_cast<int>(mag.elements()), 0.0f);
                     size_t io_out = 0;
                     float* out_ptr = pmt::f32vector_writable_elements(out_pdu, io_out);
                     mag.host(out_ptr);
+
+                    // build metadata: add domain, fft_size, samp_rate
                     pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    meta_freq = pmt::dict_add(meta_freq, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(fft_size)));
+                    meta_freq = pmt::dict_add(meta_freq, pmt::intern("samp_rate"), pmt::from_double(sample_rate));
+
                     message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 } else {
                     // output complex spectrum as c32vector of length fft_size
@@ -233,9 +235,15 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
                     size_t io_out = 0;
                     gr_complex* out_ptr = pmt::c32vector_writable_elements(out_pdu, io_out);
                     Xs.host(reinterpret_cast<af::cfloat*>(out_ptr));
+
+                    // build metadata: add domain, fft_size, samp_rate
                     pmt::pmt_t meta_freq = pmt::dict_add(d_meta, pmt::intern("domain"), pmt::intern("freq"));
+                    meta_freq = pmt::dict_add(meta_freq, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(fft_size)));
+                    meta_freq = pmt::dict_add(meta_freq, pmt::intern("samp_rate"), pmt::from_double(sample_rate));
+
                     message_port_pub(d_freq_port, pmt::cons(meta_freq, out_pdu));
                 }
+
             } else {
                 // fft_on == false: time-domain pass-through for this chunk (length n_samples)
                 if (output_magnitude) {
@@ -256,7 +264,6 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
                 }
             }
         } catch (const af::exception& e) {
-            //GR_LOG_ERROR(d_logger, std::string("ArrayFire error in handle_rx_msg: ") + e.what());
             std::cerr << "[signal_processing] ERROR: ArrayFire error in handle_rx_msg: " << e.what() << "\n";
             // On AF error, abort processing loop to avoid infinite tries
             break;

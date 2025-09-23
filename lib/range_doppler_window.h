@@ -100,7 +100,8 @@ class RangeDopplerWindow : public QWidget
 public:
     RangeDopplerWindow(QWidget* parent = nullptr,
                        double samp_rate = 0,
-                       double center_freq = 0);
+                       double center_freq = 0,
+                       int mode = 0);
     ~RangeDopplerWindow();
 
     bool is_closed() const;
@@ -141,6 +142,8 @@ private:
     double d_samp_rate;
     double d_pulsewidth;
     double d_center_freq;
+    long d_fft_size;
+    int d_mode;
 
     // Status variables
     std::atomic<bool> d_busy;
@@ -148,7 +151,7 @@ private:
     
     QVector<double> d_max_hold;           // save Max Hold temp
     QwtPlotCurve* d_max_hold_curve = nullptr;  // Max Hold curve
-    int d_mode = 0;
+    int mode = 0;
     QVector<double> d_avg;
     QwtPlotCurve* d_avg_curve = nullptr;
     double d_avg_alpha = 0.5;
@@ -160,8 +163,8 @@ private:
     pmt::pmt_t d_center_freq_key;
     pmt::pmt_t d_detection_indices_key;
 
-    void set_range_axis();
-    void set_velocity_axis();
+    void set_mag_axis();
+    void set_freq_axis(double d_center_freq, double d_samp_rate);
     void plot_detections(pmt::pmt_t indices, int nrow, int ncol);
 };
 

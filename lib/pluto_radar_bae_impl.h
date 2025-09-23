@@ -39,7 +39,7 @@ public:
     //                  const char *filter = "",
     //                  bool auto_filter = true);
     pluto_radar_bae_impl(const std::string &uri,
-                         unsigned long long frequency,
+                         double frequency,
                          unsigned long samplerate,
                          unsigned long bandwidth,
                          bool rx1_en, bool rx2_en,
@@ -110,7 +110,7 @@ private:
     typedef std::vector<ctxInfo>::iterator ctx_it;
 
     // Runtime configuration parameters
-    unsigned long long        frequency{0};
+    double                    frequency{0};
     unsigned long             samplerate{0};
     unsigned long             bandwidth{0};
     bool                      rx1_en{true};     // I channel

@@ -14,12 +14,13 @@ namespace gr {
 namespace plasma {
 
 bae_sink::sptr bae_sink::make(double samp_rate,
-                                                  size_t ncol,
-                                                  double center_freq,
-                                                  QWidget* parent)
+                              size_t ncol,
+                              double center_freq,
+                              QWidget* parent,
+                              int mode)
 {
     return gnuradio::make_block_sptr<bae_sink_impl>(
-        samp_rate, ncol, center_freq, parent);
+        samp_rate, ncol, center_freq, parent, mode);
 }
 
 /*
@@ -28,15 +29,17 @@ bae_sink::sptr bae_sink::make(double samp_rate,
 bae_sink_impl::bae_sink_impl(double samp_rate,
                              size_t ncol,
                              double center_freq,
-                             QWidget* parent)
+                             QWidget* parent,
+                             int mode)
     : gr::block("bae_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_samp_rate(samp_rate),
       d_ncol(ncol),
-      d_center_freq(center_freq)
-
+      d_center_freq(center_freq),
+      mode(mode)
 {
+    parent = nullptr;
     // Initialize the QApplication
     d_argc = 1;
     d_argv = new char;
@@ -45,7 +48,7 @@ bae_sink_impl::bae_sink_impl(double samp_rate,
         d_qapp = qApp;
     else
         d_qapp = new QApplication(d_argc, &d_argv);
-    d_main_gui = new RangeDopplerWindow(parent, samp_rate, center_freq);
+    d_main_gui = new RangeDopplerWindow(parent, samp_rate, center_freq, mode);
 
     // Initialize message ports
     d_in_port = PMT_IN;

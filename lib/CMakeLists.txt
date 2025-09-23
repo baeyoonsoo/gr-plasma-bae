@@ -11,28 +11,16 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND plasma_sources
-    lfm_source_impl.cc
-    waveform_controller_impl.cc
-    usrp_radar_impl.cc
     pluto_radar_bae_impl.cc         # add by bae
     signal_processing_impl.cc       # add by bae
     bae_sink_impl.cc                # add by bae
     pdu_file_sink_impl.cc
     pdu_head_impl.cc
-    pcfm_source_impl.cc
     qt_update_events.cc
-    range_doppler_sink_impl.cc
     range_doppler_window.cc
     range_doppler_window.h
-    match_filt_impl.cc
-    doppler_processing_impl.cc
-    pulse_to_cpi_impl.cc
-    phase_code.cc
     device.cc
-    cfar2D_impl.cc
     pdu_file_source_impl.cc
-    pulse_doppler_impl.cc
-    cw_to_pulsed_impl.cc
     )
 
 set(plasma_sources "${plasma_sources}" PARENT_SCOPE)
@@ -86,10 +74,10 @@ include(GrTest)
 # If your unit tests require special include paths, add them here
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
-list(APPEND test_plasma_sources
-qa_cfar2D.cc
-qa_phase_code.cc
-)
+# list(APPEND test_plasma_sources
+# qa_cfar2D.cc
+# qa_phase_code.cc
+# )
 # Anything we need to link to for the unit tests go here
 list(APPEND GR_TEST_TARGET_DEPS gnuradio-plasma)
 

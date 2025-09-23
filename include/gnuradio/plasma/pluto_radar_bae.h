@@ -33,7 +33,7 @@ public:
      * creating new instances.
      */
     static sptr make(const std::string &uri,
-                 unsigned long long frequency,
+                 double frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
                  bool rx1_en, bool rx2_en,

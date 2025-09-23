@@ -15,7 +15,7 @@ namespace gr {
 namespace plasma {
 
 pluto_radar_bae::sptr pluto_radar_bae::make(const std::string &uri,
-                 unsigned long long frequency,
+                 double frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
                  bool rx1_en, bool rx2_en,
@@ -91,7 +91,7 @@ void pluto_radar_bae_impl::set_params(struct iio_device *phy,
     }
 }
 pluto_radar_bae_impl::pluto_radar_bae_impl(const std::string &uri,
-                 unsigned long long frequency,
+                 double frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
                  bool rx1_en, bool rx2_en,
@@ -225,7 +225,7 @@ bool pluto_radar_bae_impl::start()
         auto_filter = false;
 
     params.push_back("out_altvoltage0_RX_LO_frequency=" +
-            std::to_string(frequency));
+            std::to_string(static_cast<unsigned long long>(frequency)));
     if (!auto_filter) {
         params.push_back("in_voltage_sampling_frequency=" +
                 std::to_string(samplerate));
@@ -365,7 +365,7 @@ void pluto_radar_bae_impl::receive()
                         reinterpret_cast<const gr_complex*>(pbuf.data()));
 
                     pmt::pmt_t meta = pmt::make_dict();
-                    meta = pmt::dict_add(meta, pmt::intern(rx_freq_key), pmt::from_double(frequency));
+                    meta = pmt::dict_add(meta, pmt::intern("center_freq"), pmt::from_double(frequency));
                     meta = pmt::dict_add(meta, pmt::intern("seq"), pmt::from_long(seq++));
 
                     auto now = std::chrono::system_clock::now();

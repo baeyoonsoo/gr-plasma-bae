@@ -1,5 +1,6 @@
 #include "range_doppler_window.h"
 #include <iostream>
+#include <qwt_plot_grid.h>
 
 class ColorMap : public QwtLinearColorMap
 {
@@ -31,25 +32,20 @@ public:
 
 RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
                                        double samp_rate,
-                                       double center_freq)
+                                       double center_freq,
+                                       int mode)
     : QWidget(parent), d_samp_rate(samp_rate), d_center_freq(center_freq)
 {
     
     d_curve = new QwtPlotCurve();
+    // d_curve->setPen(QPen(Qt::red));
 
-    // Spectrogram
     d_plot = new QwtPlot();
-    d_spectro = new QwtPlotSpectrogram();
-    d_spectro->setColorMap(new ColorMap());
-    d_spectro->attach(d_plot);
-    d_data = new RangeDopplerData();
-    d_plot->setAutoReplot(true);
 
-    // Colorbar setup
-    QwtScaleWidget* rightAxis = d_plot->axisWidget(QwtPlot::yRight);
-    rightAxis->setTitle("QWER");
-    rightAxis->setColorBarEnabled(true);
-    d_plot->enableAxis(QwtPlot::yRight);
+    d_plot->setCanvasBackground(Qt::white);
+    QwtPlotGrid* grid = new QwtPlotGrid();
+    grid->setMajorPen(QPen(Qt::gray, 0, Qt::DotLine));
+    grid->attach(d_plot);
 
     // Plot zoomer setup
     d_zoomer = new MyZoomer(d_plot->canvas());
@@ -73,7 +69,7 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
     d_busy = false;
     d_prf = 0;
     d_pulsewidth = 0;
-    d_mode = 1;
+    d_mode = mode;
 }
 
 RangeDopplerWindow::~RangeDopplerWindow() { d_closed = true; }
@@ -123,24 +119,20 @@ void RangeDopplerWindow::customEvent(QEvent* e)
 
         RangeDopplerUpdateEvent* event = static_cast<RangeDopplerUpdateEvent*>(e);
         double* data = event->data();
-        const size_t rows = event->rows();
-        const size_t cols = event->cols();
-        const size_t N = 1024; // need to change into fft_size meta data
-
-        if (N == 0) {
-            d_busy = false;
-            return;
-        }
+        size_t N = 1024;
 
         pmt::pmt_t meta = event->meta();
-        d_samp_rate = pmt::to_double(pmt::dict_ref(meta, d_samp_rate_key, pmt::from_double(d_samp_rate)));
-        d_center_freq = pmt::to_double(pmt::dict_ref(meta, d_center_freq_key, pmt::from_double(d_center_freq)));
+        d_fft_size = pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(N))));
+        d_samp_rate = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
+        d_center_freq = pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
+        size_t fft_size = static_cast<size_t>(d_fft_size);
+        N = fft_size;
 
         QVector<double> x(N);
         const double fs = d_samp_rate > 0 ? d_samp_rate : 1.0;
         const double df = fs / static_cast<double>(N);
 
-        const double start = -fs / 2.0;
+        const double start = d_center_freq - fs / 2.0;
         for (size_t i = 0; i < N; ++i) {
             x[static_cast<int>(i)] = start + i * df;
         }
@@ -148,8 +140,8 @@ void RangeDopplerWindow::customEvent(QEvent* e)
         QVector<double> y(N);
         std::copy(data, data + N, y.data());
 
-        set_range_axis();
-        set_velocity_axis();
+        set_mag_axis();
+        set_freq_axis(d_center_freq, fs);
 
         if(d_mode == 0) {
             if (d_curve->plot() == nullptr) {
@@ -203,30 +195,22 @@ void RangeDopplerWindow::customEvent(QEvent* e)
     d_busy = false;
 }
 
-
-void RangeDopplerWindow::set_range_axis()
+void RangeDopplerWindow::set_mag_axis()
 {
-    const double c = ::plasma::physconst::c;
-    double rmin = -140;
-    double rmax = 10;
-    ylim(rmin, rmax);
-    // Update the axes if we're plotting range and doppler
+    double mmin = -140;
+    double mmax = 10;
+    d_plot->setAxisScale(QwtPlot::yLeft, mmin, mmax);
     QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-    y->setTitle("ABDC");
-    y = d_plot->axisWidget(QwtPlot::xBottom);
+    y->setTitle("Magnitude (dBm)");
 }
 
-void RangeDopplerWindow::set_velocity_axis()
+
+void RangeDopplerWindow::set_freq_axis(double center_freq, double samp_rate)
 {
-    const double c = ::plasma::physconst::c;
-    // Center frequency not specified...Can set up the doppler axis but not velocity
-    double dmin = -512;
-    double dmax = 512;
-    xlim(dmin, dmax);
-    // Update the axes if we're plotting range and doppler
-    QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-    y = d_plot->axisWidget(QwtPlot::xBottom);
-    y->setTitle("EFGH");
+    double fmin = center_freq - samp_rate / 2.0;
+    double fmax = center_freq + samp_rate / 2.0;
+    d_plot->setAxisScale(QwtPlot::xBottom, fmin, fmax);
+    d_plot->setAxisTitle(QwtPlot::xBottom, QString("Frequency (Hz)"));
 }
 
 void RangeDopplerWindow::plot_detections(pmt::pmt_t indices, int nrow, int ncol)

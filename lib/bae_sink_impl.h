@@ -27,6 +27,7 @@ private:
     // GUI parameters
     int d_argc;
     char* d_argv;
+    int mode;
     RangeDopplerWindow* d_main_gui;
 
     std::atomic<bool> d_finished;
@@ -43,9 +44,10 @@ private:
 
 public:
     bae_sink_impl(double samp_rate,
-                            size_t ncol,
-                            double center_freq,
-                            QWidget* parent);
+                  size_t ncol,
+                  double center_freq,
+                  QWidget* parent,
+                  int mode);
     ~bae_sink_impl();
 
     bool start() override;

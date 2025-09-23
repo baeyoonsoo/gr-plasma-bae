@@ -27,10 +27,10 @@ parameters:
   default: 1
 - id: window_type
   label: Window
-  dtype: int  
-  default: 0
+  dtype: int
   options: [0, 1, 2]
-  option_labels: [NONE, Hanning, Hamming]
+  option_labels: ["NONE", "Hanning", "Hamming"]
+  default: 0
 
 # Metadata keys
 - id: n_pulse_cpi_key
@@ -45,9 +45,7 @@ inputs:
   domain: message
 
 outputs:
-# - id: time
-#   domain: message
-- id: freq
+- id: out
   domain: message
 
 templates:

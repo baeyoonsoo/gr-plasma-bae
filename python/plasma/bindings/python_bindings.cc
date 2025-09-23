@@ -21,22 +21,10 @@ namespace py = pybind11;
 // Please do not delete
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
-    void bind_lfm_source(py::module& m);
-    void bind_waveform_controller(py::module& m);
-    void bind_usrp_radar(py::module& m);
     void bind_pdu_file_sink(py::module& m);
     void bind_pdu_head(py::module& m);
-    void bind_pcfm_source(py::module& m);
-    void bind_range_doppler_sink(py::module& m);
-    void bind_match_filt(py::module& m);
-    void bind_doppler_processing(py::module& m);
-    void bind_pulse_to_cpi(py::module& m);
-    void bind_phase_code(py::module& m);
     void bind_device(py::module& m);
-    void bind_cfar2D(py::module& m);
     void bind_pdu_file_source(py::module& m);
-    void bind_pulse_doppler(py::module& m);
-    void bind_cw_to_pulsed(py::module& m);
     void bind_pluto_radar_bae(py::module& m);       // add by bae
     void bind_signal_processing(py::module& m);     // add by bae
     void bind_bae_sink(py::module& m);              // add by bae
@@ -68,22 +56,10 @@ PYBIND11_MODULE(plasma_python, m)
     // Please do not delete
     /**************************************/
     // BINDING_FUNCTION_CALLS(
-    bind_lfm_source(m);
-    bind_waveform_controller(m);
-    bind_usrp_radar(m);
     bind_pdu_file_sink(m);
     bind_pdu_head(m);
-    bind_pcfm_source(m);
-    bind_range_doppler_sink(m);
-    bind_match_filt(m);
-    bind_doppler_processing(m);
-    bind_pulse_to_cpi(m);
-    bind_phase_code(m);
     bind_device(m);
-    bind_cfar2D(m);
     bind_pdu_file_source(m);
-    bind_pulse_doppler(m);
-    bind_cw_to_pulsed(m);
     bind_pluto_radar_bae(m);        // add by bae
     bind_signal_processing(m);      // add by bae
     bind_bae_sink(m);               // add by bae

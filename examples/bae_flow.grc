@@ -88,6 +88,32 @@ blocks:
     coordinate: [2192, 604.0]
     rotation: 0
     state: disabled
+- name: plasma_bae_sink_0
+  id: plasma_bae_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: 1e9
+    center_freq_key: core:frequency
+    comment: ''
+    depth: '1'
+    detection_indices_key: detection_indices
+    dynamic_range: '60'
+    dynamic_range_key: dynamic_range
+    gui_hint: ''
+    n_matrix_col_key: n_matrix_col
+    nrow: '128'
+    prf_key: radar:prf
+    pulsewidth_key: radar:duration
+    samp_rate: samp_rate
+    samp_rate_key: core:sample_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [528, 348.0]
+    rotation: 0
+    state: enabled
 - name: plasma_pdu_file_sink_0
   id: plasma_pdu_file_sink
   parameters:
@@ -104,7 +130,7 @@ blocks:
     bus_structure: null
     coordinate: [1912, 756.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: plasma_signal_processing_0
   id: plasma_signal_processing
   parameters:
@@ -126,7 +152,7 @@ blocks:
     bus_structure: null
     coordinate: [1728, 636.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_signal_processing_0_0
   id: plasma_signal_processing
   parameters:
@@ -148,7 +174,7 @@ blocks:
     bus_structure: null
     coordinate: [304, 244.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_signal_processing_0_2
   id: plasma_signal_processing
   parameters:
@@ -255,6 +281,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -271,7 +298,7 @@ blocks:
     bus_structure: null
     coordinate: [1432, 548.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pluto_source_bae_0_0
   id: pluto_source_bae
   parameters:
@@ -290,6 +317,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -306,7 +334,7 @@ blocks:
     bus_structure: null
     coordinate: [56, 156.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pluto_source_bae_0_0_0
   id: pluto_source_bae
   parameters:
@@ -325,6 +353,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -360,6 +389,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -395,6 +425,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -430,6 +461,7 @@ blocks:
     gain2_value: '10.0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    pdu_duration: 100e-6
     quadrature: 'True'
     rf_port_select: '"A_BALANCED"'
     rfdc: 'True'
@@ -786,7 +818,7 @@ blocks:
     bus_structure: null
     coordinate: [1960, 668.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_1_0
   id: qtgui_time_sink_x
   parameters:
@@ -1174,7 +1206,7 @@ blocks:
     bus_structure: null
     coordinate: [512, 276.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_time_sink_x_0_1_3
   id: qtgui_time_sink_x
   parameters:
@@ -1272,11 +1304,73 @@ blocks:
     coordinate: [1208, 276.0]
     rotation: 0
     state: disabled
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: msg_complex
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [792, 12.0]
+    rotation: 0
+    state: disabled
 
 connections:
 - [iio_pluto_source_0, '0', qtgui_freq_sink_x_1, '0']
 - [plasma_signal_processing_0, freq, plasma_pdu_file_sink_0, in]
 - [plasma_signal_processing_0, freq, qtgui_time_sink_x_0_1, in]
+- [plasma_signal_processing_0_0, freq, plasma_bae_sink_0, in]
 - [plasma_signal_processing_0_0, freq, qtgui_time_sink_x_0_1_2, in]
 - [plasma_signal_processing_0_2, freq, qtgui_time_sink_x_0_1_0, in]
 - [plasma_signal_processing_0_4, freq, qtgui_time_sink_x_0_1_0_0, in]

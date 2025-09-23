@@ -34,18 +34,8 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
                                        double center_freq)
     : QWidget(parent), d_samp_rate(samp_rate), d_center_freq(center_freq)
 {
-    // CFAR detection visualization setup
-    d_checkBox = new QCheckBox("Show detections");
-    connect(d_checkBox,
-            SIGNAL(toggled(bool)),
-            this,
-            SLOT(show_detections(bool)),
-            Qt::UniqueConnection);
+    
     d_curve = new QwtPlotCurve();
-    d_curve->setStyle(QwtPlotCurve::Dots);
-    QwtSymbol* symbol = new QwtSymbol(
-        QwtSymbol::Diamond, QBrush(Qt::yellow), QPen(Qt::red, 2), QSize(8, 8));
-    d_curve->setSymbol(symbol);
 
     // Spectrogram
     d_plot = new QwtPlot();
@@ -57,7 +47,7 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
 
     // Colorbar setup
     QwtScaleWidget* rightAxis = d_plot->axisWidget(QwtPlot::yRight);
-    rightAxis->setTitle("Intensity");
+    rightAxis->setTitle("QWER");
     rightAxis->setColorBarEnabled(true);
     d_plot->enableAxis(QwtPlot::yRight);
 
@@ -76,8 +66,6 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
 
     // GUI layout
     v_layout = new QVBoxLayout();
-    // v_layout->addWidget(d_debug_plot);
-    v_layout->addWidget(d_checkBox);
     v_layout->addWidget(d_plot);
     setLayout(v_layout);
 
@@ -85,6 +73,7 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
     d_busy = false;
     d_prf = 0;
     d_pulsewidth = 0;
+    d_mode = 1;
 }
 
 RangeDopplerWindow::~RangeDopplerWindow() { d_closed = true; }
@@ -129,102 +118,115 @@ void RangeDopplerWindow::set_metadata_keys(std::string prf_key,
 void RangeDopplerWindow::customEvent(QEvent* e)
 {
     d_busy = true;
+    
     if (e->type() == RangeDopplerUpdateEvent::Type()) {
 
-        RangeDopplerUpdateEvent* event = (RangeDopplerUpdateEvent*)e;
+        RangeDopplerUpdateEvent* event = static_cast<RangeDopplerUpdateEvent*>(e);
         double* data = event->data();
-        auto rows = event->rows();
-        auto cols = event->cols();
+        const size_t rows = event->rows();
+        const size_t cols = event->cols();
+        const size_t N = 1024; // need to change into fft_size meta data
 
+        if (N == 0) {
+            d_busy = false;
+            return;
+        }
 
-        // Create a new vector
-        QVector<double> vec(rows * cols);
-        std::copy(data, data + vec.size(), vec.data());
-        // Also map the vector to an array to easily compute the minimum
-        // and maximum values
-        af::array tmp(vec.size(), f64);
-        tmp.write(vec.data(), sizeof(double) * vec.size());
-        d_data->setInterval(Qt::ZAxis,
-                            QwtInterval(af::min<double>(tmp), af::max<double>(tmp)));
-        d_data->setValueMatrix(vec, cols);
-        d_spectro->setData(d_data);
-
-
-        const QwtInterval zInterval = d_spectro->data()->interval(Qt::ZAxis);
-        QwtScaleWidget* rightAxis = d_plot->axisWidget(QwtPlot::yRight);
-        rightAxis->setColorMap(zInterval, new ColorMap());
-        d_plot->setAxisScale(QwtPlot::yRight, zInterval.minValue(), zInterval.maxValue());
-
-
-        // Parse the input metadata
         pmt::pmt_t meta = event->meta();
-        d_prf = pmt::to_double(pmt::dict_ref(meta, d_prf_key, pmt::from_double(d_prf)));
-        d_pulsewidth = pmt::to_double(
-            pmt::dict_ref(meta, d_pulsewidth_key, pmt::from_double(d_pulsewidth)));
-        d_samp_rate = pmt::to_double(
-            pmt::dict_ref(meta, d_samp_rate_key, pmt::from_double(d_samp_rate)));
-        d_center_freq = pmt::to_double(
-            pmt::dict_ref(meta, d_center_freq_key, pmt::from_double(d_center_freq)));
+        d_samp_rate = pmt::to_double(pmt::dict_ref(meta, d_samp_rate_key, pmt::from_double(d_samp_rate)));
+        d_center_freq = pmt::to_double(pmt::dict_ref(meta, d_center_freq_key, pmt::from_double(d_center_freq)));
 
-        // If the metadata exists,
+        QVector<double> x(N);
+        const double fs = d_samp_rate > 0 ? d_samp_rate : 1.0;
+        const double df = fs / static_cast<double>(N);
+
+        const double start = -fs / 2.0;
+        for (size_t i = 0; i < N; ++i) {
+            x[static_cast<int>(i)] = start + i * df;
+        }
+
+        QVector<double> y(N);
+        std::copy(data, data + N, y.data());
+
         set_range_axis();
         set_velocity_axis();
 
-
-        // CFAR plotting
-        pmt::pmt_t indices = pmt::dict_ref(meta, d_detection_indices_key, pmt::PMT_NIL);
-        if (not pmt::is_null(indices)) {
-          plot_detections(indices, rows, cols);
+        if(d_mode == 0) {
+            if (d_curve->plot() == nullptr) {
+            d_curve->attach(d_plot);
         }
+            d_curve->setSamples(x.constData(),
+                                y.constData(),
+                                static_cast<int>(N));
+        } else if (d_mode == 1) {
+            if (d_max_hold.size() != N)
+            {
+                d_max_hold.resize(N);
+                for (int i = 0; i < N; ++i)
+                    d_max_hold[i] = y[i];
+                
+                if (!d_max_hold_curve) {
+                    d_max_hold_curve = new QwtPlotCurve();
+                    d_max_hold_curve->attach(d_plot);
+                }
+            }
+            else
+            {
+               for (int i = 0; i < N; ++i)
+                    if (y[i] > d_max_hold[i])
+                        d_max_hold[i] = y[i];
+            }
+            d_max_hold_curve->setSamples(x.constData(), d_max_hold.constData(), static_cast<int>(N));
+        }
+        else if (d_mode == 2)
+        {
+            if (d_avg.size() != N)
+            {
+                d_avg.resize(N);
+                for (int i = 0; i < N; ++i)
+                    d_avg[i] = y[i];
 
-        d_zoomer->setZoomBase(d_spectro->boundingRect());
+                if (!d_avg_curve)
+                {
+                    d_avg_curve = new QwtPlotCurve();
+                    d_avg_curve->attach(d_plot);
+                }
+            } else
+            {
+                for (int i = 0; i < N; ++i)
+                    d_avg[i] = d_avg_alpha * y[i] + (1.0 - d_avg_alpha) * d_avg[i];
+            }
+            d_avg_curve->setSamples(x.constData(), d_avg.constData(), static_cast<int>(N));
+        }
         d_plot->replot();
     }
     d_busy = false;
 }
 
+
 void RangeDopplerWindow::set_range_axis()
 {
-    if (d_prf == 0 or d_pulsewidth == 0 or d_samp_rate == 0) {
-        return;
-    } else {
-        const double c = ::plasma::physconst::c;
-        double rmin = -(c / 2) * d_pulsewidth;
-        double rmax = (c / 2) * (1 / d_prf);
-        ylim(rmin, rmax);
-        // Update the axes if we're plotting range and doppler
-        QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-        y->setTitle("Range (m)");
-        y = d_plot->axisWidget(QwtPlot::xBottom);
-    }
+    const double c = ::plasma::physconst::c;
+    double rmin = -140;
+    double rmax = 10;
+    ylim(rmin, rmax);
+    // Update the axes if we're plotting range and doppler
+    QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
+    y->setTitle("ABDC");
+    y = d_plot->axisWidget(QwtPlot::xBottom);
 }
 
 void RangeDopplerWindow::set_velocity_axis()
 {
     const double c = ::plasma::physconst::c;
-    if (d_prf == 0) {
-        // PRF not specified...not enough info to set up the doppler or velocity axis
-        return;
-    } else if (d_center_freq == 0) {
-        // Center frequency not specified...Can set up the doppler axis but not velocity
-        double dmax = (d_prf / 2);
-        double dmin = -dmax;
-        xlim(dmin, dmax);
-        // Update the axes if we're plotting range and doppler
-        QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-        y = d_plot->axisWidget(QwtPlot::xBottom);
-        y->setTitle("Doppler Shift (Hz)");
-
-    } else {
-        double lam = c / d_center_freq;
-        double vmax = (lam / 2) * (d_prf / 2);
-        double vmin = -vmax;
-        xlim(vmin, vmax);
-        // Update the axes if we're plotting range and doppler
-        QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-        y = d_plot->axisWidget(QwtPlot::xBottom);
-        y->setTitle("Velocity (m/s)");
-    }
+    // Center frequency not specified...Can set up the doppler axis but not velocity
+    double dmin = -512;
+    double dmax = 512;
+    xlim(dmin, dmax);
+    // Update the axes if we're plotting range and doppler
+    QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
+    y = d_plot->axisWidget(QwtPlot::xBottom);
+    y->setTitle("EFGH");
 }
 
 void RangeDopplerWindow::plot_detections(pmt::pmt_t indices, int nrow, int ncol)

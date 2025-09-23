@@ -21,9 +21,10 @@ if __name__ == '__main__':
             print("Warning: failed to XInitThreads()")
 
 from PyQt5 import Qt
+from gnuradio import plasma
+import sip
 from gnuradio import qtgui
 from gnuradio.filter import firdes
-import sip
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
@@ -31,7 +32,6 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import plasma
 
 
 
@@ -79,25 +79,25 @@ class bae_flow(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.qtgui_time_sink_x_0_1 = qtgui.time_sink_f(
+        self.qtgui_time_sink_x_0_1_2 = qtgui.time_sink_f(
             1024, #size
             samp_rate, #samp_rate
             "", #name
             0, #number of inputs
             None # parent
         )
-        self.qtgui_time_sink_x_0_1.set_update_time(0.0001)
-        self.qtgui_time_sink_x_0_1.set_y_axis(-140, 10)
+        self.qtgui_time_sink_x_0_1_2.set_update_time(0.0001)
+        self.qtgui_time_sink_x_0_1_2.set_y_axis(-140, 10)
 
-        self.qtgui_time_sink_x_0_1.set_y_label('Amplitude', "")
+        self.qtgui_time_sink_x_0_1_2.set_y_label('Amplitude', "")
 
-        self.qtgui_time_sink_x_0_1.enable_tags(True)
-        self.qtgui_time_sink_x_0_1.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_1.enable_autoscale(False)
-        self.qtgui_time_sink_x_0_1.enable_grid(True)
-        self.qtgui_time_sink_x_0_1.enable_axis_labels(True)
-        self.qtgui_time_sink_x_0_1.enable_control_panel(False)
-        self.qtgui_time_sink_x_0_1.enable_stem_plot(False)
+        self.qtgui_time_sink_x_0_1_2.enable_tags(True)
+        self.qtgui_time_sink_x_0_1_2.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_0_1_2.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_1_2.enable_grid(True)
+        self.qtgui_time_sink_x_0_1_2.enable_axis_labels(True)
+        self.qtgui_time_sink_x_0_1_2.enable_control_panel(False)
+        self.qtgui_time_sink_x_0_1_2.enable_stem_plot(False)
 
 
         labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
@@ -116,25 +116,25 @@ class bae_flow(gr.top_block, Qt.QWidget):
 
         for i in range(1):
             if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_1.set_line_label(i, "Data {0}".format(i))
+                self.qtgui_time_sink_x_0_1_2.set_line_label(i, "Data {0}".format(i))
             else:
-                self.qtgui_time_sink_x_0_1.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0_1.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0_1.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0_1.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0_1.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0_1.set_line_alpha(i, alphas[i])
+                self.qtgui_time_sink_x_0_1_2.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_0_1_2.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_0_1_2.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_0_1_2.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_0_1_2.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_0_1_2.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.qwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_1_win)
-        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
+        self._qtgui_time_sink_x_0_1_2_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1_2.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_1_2_win)
+        self.pluto_source_bae_0_0 = plasma.pluto_radar_bae(
           "ip:192.168.2.1",
           fc,
           samp_rate,
           20000000,
           True,
           True,
-          65536,
+          32768,
           True,
           True,
           True,
@@ -144,18 +144,24 @@ class bae_flow(gr.top_block, Qt.QWidget):
           10.0,
           "A_BALANCED",
           "",
-          True)
-        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.plasma_signal_processing_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
-        self.plasma_pdu_file_sink_0 = plasma.pdu_file_sink(gr.sizeof_gr_complex,'/home/bae/Desktop/pdu_meta_test.bin', '/home/bae/Desktop/pdu_meta_test_real.json')
+          True,
+          100e-6)
+        self.pluto_source_bae_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,2)
+        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, 1e9)
+        self.plasma_bae_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
+        self.plasma_bae_sink_0.set_dynamic_range(60)
+        self.plasma_bae_sink_0.set_msg_queue_depth(1)
+        self._plasma_bae_sink_0_win = sip.wrapinstance(self.plasma_bae_sink_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_bae_sink_0_win)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.plasma_signal_processing_0, 'freq'), (self.plasma_pdu_file_sink_0, 'in'))
-        self.msg_connect((self.plasma_signal_processing_0, 'freq'), (self.qtgui_time_sink_x_0_1, 'in'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
+        self.msg_connect((self.plasma_signal_processing_0_0, 'freq'), (self.plasma_bae_sink_0, 'in'))
+        self.msg_connect((self.plasma_signal_processing_0_0, 'freq'), (self.qtgui_time_sink_x_0_1_2, 'in'))
+        self.msg_connect((self.pluto_source_bae_0_0, 'out'), (self.plasma_signal_processing_0_0, 'rx'))
 
 
     def closeEvent(self, event):
@@ -171,7 +177,7 @@ class bae_flow(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_time_sink_x_0_1.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_1_2.set_samp_rate(self.samp_rate)
 
     def get_fc(self):
         return self.fc

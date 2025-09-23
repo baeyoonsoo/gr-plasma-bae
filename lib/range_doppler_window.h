@@ -145,6 +145,13 @@ private:
     // Status variables
     std::atomic<bool> d_busy;
     bool d_closed;
+    
+    QVector<double> d_max_hold;           // save Max Hold temp
+    QwtPlotCurve* d_max_hold_curve = nullptr;  // Max Hold curve
+    int d_mode = 0;
+    QVector<double> d_avg;
+    QwtPlotCurve* d_avg_curve = nullptr;
+    double d_avg_alpha = 0.5;
 
     // Metadata keys
     pmt::pmt_t d_prf_key;

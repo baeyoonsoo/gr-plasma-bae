@@ -13,7 +13,6 @@
 namespace gr {
 namespace plasma {
 
-
 bae_sink::sptr bae_sink::make(double samp_rate,
                                                   size_t ncol,
                                                   double center_freq,
@@ -23,14 +22,13 @@ bae_sink::sptr bae_sink::make(double samp_rate,
         samp_rate, ncol, center_freq, parent);
 }
 
-
 /*
  * The private constructor
  */
 bae_sink_impl::bae_sink_impl(double samp_rate,
-                                                 size_t ncol,
-                                                 double center_freq,
-                                                 QWidget* parent)
+                             size_t ncol,
+                             double center_freq,
+                             QWidget* parent)
     : gr::block("bae_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
@@ -68,7 +66,6 @@ bool bae_sink_impl::start()
 
 bool bae_sink_impl::stop()
 {
-
     d_finished = true;
     if (not d_main_gui->is_closed())
         d_main_gui->close();
@@ -99,22 +96,37 @@ void bae_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     if (pmt::is_pdu(msg)) {
         samples = pmt::cdr(msg);
         d_meta = pmt::car(msg);
+    } else if (pmt::is_uniform_vector(msg)) {
+        samples = msg;
     }
+
     size_t n = pmt::length(samples);
     size_t nrow = n / d_ncol;
-    const gr_complex* in = pmt::c32vector_elements(samples, n);
 
-    // convert the input data to dB, normalize, and set the dynamic range
-    af::array plot_data(af::dim4(nrow, d_ncol), reinterpret_cast<const af::cfloat*>(in));
-    plot_data = 20 * log10(abs(plot_data));
-    plot_data -= af::tile(af::max(af::flat(plot_data)), nrow, d_ncol);
-    plot_data = af::clamp(plot_data, -d_dynamic_range_db, 0);
-    plot_data = plot_data.T();
-    double* out = plot_data.as(f64).host<double>();
-    d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
-    delete[] out;
+    if (pmt::is_f32vector(samples)) {
+        const float* in = pmt::f32vector_elements(samples, n);
+        double* out = new double[n];
+
+        for (size_t i = 0; i < n; ++i) {
+            out[i] = static_cast<double>(in[i]);
+        }
+
+        d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
+        delete[] out;
+
+    } else if (pmt::is_c32vector(samples)) {
+        const gr_complex* in = pmt::c32vector_elements(samples, n);
+        double* out = new double[n];
+
+        for (size_t i = 0; i < n; ++i) {
+            
+            out[i] = static_cast<double>(std::abs(in[i])); 
+        }
+
+        d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
+        delete[] out;
+    }
 }
-
 
 void bae_sink_impl::set_dynamic_range(const double r)
 {

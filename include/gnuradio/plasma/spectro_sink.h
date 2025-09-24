@@ -1,0 +1,69 @@
+/* -*- c++ -*- */
+/*
+ * Copyright 2022 gr-plasma author.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+#ifndef INCLUDED_PLASMA_SPECTRO_SINK_H
+#define INCLUDED_PLASMA_SPECTRO_SINK_H
+
+#include <gnuradio/block.h>
+#include <gnuradio/plasma/api.h>
+#ifdef ENABLE_PYTHON
+#pragma push_macro("slots")
+#undef slots
+#include "Python.h"
+#pragma pop_macro("slots")
+#endif
+// #include <QApplication>
+#include <QApplication>
+#include <QWidget>
+
+namespace gr {
+namespace plasma {
+
+/*!
+ * \brief <+description of block+>
+ * \ingroup plasma
+ *
+ */
+class PLASMA_API spectro_sink : virtual public gr::block
+{
+public:
+    typedef std::shared_ptr<spectro_sink> sptr;
+
+    /*!
+     * \brief Return a shared_ptr to a new instance of plasma::bae_sink.
+     *
+     * To avoid accidental use of raw pointers, plasma::bae_sink's
+     * constructor is in a private implementation
+     * class. plasma::bae_sink::make is the public interface for
+     * creating new instances.
+     */
+    static sptr
+    make(double samp_rate, size_t ncol, double center_freq, QWidget* parent, int mode);
+    virtual void exec_() = 0;
+    virtual QWidget* qwidget() = 0;
+#ifdef ENABLE_PYTHON
+    virtual PyObject* pyqwidget() = 0;
+#else
+    virtual void* pyqwidget() = 0;
+#endif
+
+    virtual void set_dynamic_range(const double) = 0;
+    virtual void set_msg_queue_depth(size_t depth) = 0;
+
+    virtual void set_metadata_keys(std::string samp_rate_key,
+                                   std::string n_matrix_col_key,
+                                   std::string center_freq_key,
+                                   std::string dynamic_range_key,
+                                   std::string prf_key,
+                                   std::string pulsewidth_key,
+                                   std::string detection_indices_key) = 0;
+};
+
+} // namespace plasma
+} // namespace gr
+
+#endif /* INCLUDED_PLASMA_SPECTRO_SINK_H */

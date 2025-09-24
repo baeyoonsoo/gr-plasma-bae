@@ -14,6 +14,9 @@ list(APPEND plasma_sources
     pluto_radar_bae_impl.cc         # add by bae
     signal_processing_impl.cc       # add by bae
     bae_sink_impl.cc                # add by bae
+    spectro_sink_impl.cc            # add by bae
+    spectro_window.cc               # add by bae
+    spectro_window.h                # add by bae
     pdu_file_sink_impl.cc
     pdu_head_impl.cc
     qt_update_events.cc

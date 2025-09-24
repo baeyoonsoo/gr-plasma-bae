@@ -42,7 +42,9 @@ add_custom_target(
 GR_ADD_TEST(qa_pluto_radar_bae ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pluto_radar_bae.py)      # add by bae
 GR_ADD_TEST(qa_signal_processing ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_signal_processing.py)  # add by bae
 GR_ADD_TEST(qa_bae_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bae_sink.py)                    # add by bae
+GR_ADD_TEST(qa_spectro_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_spectro_sink.py)            # add by bae
 GR_ADD_TEST(qa_pdu_file_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_file_sink.py)
 GR_ADD_TEST(qa_pdu_head ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head.py)
 GR_ADD_TEST(qa_pdu_file_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_file_source.py)
+GR_ADD_TEST(qa_spectro_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_spectro_sink.py)
 

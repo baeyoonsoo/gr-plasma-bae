@@ -29,7 +29,11 @@ public:
     enum WindowType {
         WINDOW_NONE = 0,
         WINDOW_HANN = 1,
-        WINDOW_HAMMING = 2
+        WINDOW_HAMMING = 2,
+        WINDOW_BLACKMAN = 3,
+        WINDOW_BLACKMAN_HARRIS = 4,
+        WINDOW_FLAT_TOP = 5,
+        WINDOW_KAISER = 6
     };
 
     /*!

@@ -189,8 +189,8 @@ class bae_flow(gr.top_block, Qt.QWidget):
           True,
           100e-6)
         self.pluto_source_bae_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,2)
-        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, 1e9, None, 1)
+        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,6)
+        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, 1e9, None, 0)
         self.plasma_bae_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_bae_sink_0.set_dynamic_range(60)
         self.plasma_bae_sink_0.set_msg_queue_depth(1)

@@ -101,7 +101,7 @@ blocks:
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
     gui_hint: ''
-    mode: '1'
+    mode: '0'
     n_matrix_col_key: n_matrix_col
     nrow: '128'
     parent: None
@@ -169,7 +169,7 @@ blocks:
     n_pulse_cpi_key: n_pulse_cpi
     output_magnitude: '1'
     sample_rate: samp_rate
-    window_type: '2'
+    window_type: '6'
   states:
     bus_sink: false
     bus_source: false

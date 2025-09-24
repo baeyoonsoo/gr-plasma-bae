@@ -28,8 +28,8 @@ parameters:
 - id: window_type
   label: Window
   dtype: int
-  options: [0, 1, 2]
-  option_labels: ["NONE", "Hanning", "Hamming"]
+  options: [0, 1, 2, 3, 4, 5, 6]
+  option_labels: ["NONE", "Hanning", "Hamming", "Blackman", "Blackman-Harris", "Flat-Top", "Kaiser"]
   default: 0
 
 # Metadata keys

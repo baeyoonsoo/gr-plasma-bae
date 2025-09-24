@@ -62,7 +62,7 @@ signal_processing_impl::signal_processing_impl(size_t fft_size,
         this->n_samples = fft_size;
         if (this->n_samples == 0) this->n_samples = 1;
     }
-
+    d_win = window_type; 
     // compute overlap_samples based on overlap_frac
     this->overlap_samples = static_cast<size_t>(std::floor(this->overlap_frac * this->n_samples));
     if (this->overlap_samples >= this->n_samples)
@@ -92,20 +92,69 @@ signal_processing_impl::~signal_processing_impl() {}
 
 static std::vector<float> make_window(size_t N, int wtype)
 {
+    
     std::vector<float> w(N, 1.0f);
-    if (wtype == 0 || N == 0) {
+    float beta = 5.0f;
+    if (N == 0) {
         return w;
     }
-    if (wtype == 1) {
-        // Hann: 0.5 * (1 - cos(2*pi*n/(N-1)))
-        for (size_t n = 0; n < N; ++n) {
-            w[n] = 0.5f * (1.0f - std::cos(2.0f * M_PI * static_cast<float>(n) / static_cast<float>(N - 1)));
-        }
-    } else if (wtype == 2) {
-        // Hamming: 0.54 - 0.46 cos(2*pi*n/(N-1))
-        for (size_t n = 0; n < N; ++n) {
-            w[n] = 0.54f - 0.46f * std::cos(2.0f * M_PI * static_cast<float>(n) / static_cast<float>(N - 1));
-        }
+    switch (wtype) {
+        case 0: // Rectangular
+            break;
+        case 1: // Hann
+            for (size_t n = 0; n < N; ++n) {
+                w[n] = 0.5f * (1.0f - std::cos(2.0f * M_PI * n / (N - 1)));
+            }
+            break;
+        case 2: // Hamming
+            for (size_t n = 0; n < N; ++n) {
+                w[n] = 0.54f - 0.46f * std::cos(2.0f * M_PI * n / (N - 1));
+            }
+            break;
+        case 3: // Blackman
+            for (size_t n = 0; n < N; ++n) {
+                w[n] = 0.42f - 0.5f * std::cos(2.0f * M_PI * n / (N - 1))
+                             + 0.08f * std::cos(4.0f * M_PI * n / (N - 1));
+            }
+            break;
+        case 4: // Blackman-Harris (4-term)
+            for (size_t n = 0; n < N; ++n) {
+                w[n] = 0.35875f 
+                     - 0.48829f * std::cos(2.0f * M_PI * n / (N - 1))
+                     + 0.14128f * std::cos(4.0f * M_PI * n / (N - 1))
+                     - 0.01168f * std::cos(6.0f * M_PI * n / (N - 1));
+            }
+            break;
+        case 5: // Flat-top
+            for (size_t n = 0; n < N; ++n) {
+                w[n] = 1.0f 
+                     - 1.93f * std::cos(2.0f * M_PI * n / (N - 1))
+                     + 1.29f * std::cos(4.0f * M_PI * n / (N - 1))
+                     - 0.388f * std::cos(6.0f * M_PI * n / (N - 1))
+                     + 0.0322f * std::cos(8.0f * M_PI * n / (N - 1));
+            }
+            break;
+        case 6: // Kaiser
+            {
+                auto I0 = [](float x) {
+                    float sum = 1.0f;
+                    float u = 1.0f;
+                    for (int k = 1; k < 20; ++k) {
+                        float t = std::pow(x / 2.0f, k) / std::tgamma(k + 1);
+                        u *= t;
+                        sum += u * u;
+                    }
+                    return sum;
+                };
+                float denom = I0(beta);
+                for (size_t n = 0; n < N; ++n) {
+                    float r = (2.0f * n) / (N - 1) - 1.0f; // -1 ~ 1
+                    w[n] = I0(beta * std::sqrt(1.0f - r * r)) / denom;
+                }
+            }
+            break;
+        default:
+            break;
     }
     return w;
 }
@@ -132,7 +181,6 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
     if (this->nmsgs(d_rx_port) > d_msg_queue_depth) {
         return;
     }
-
     pmt::pmt_t samples, meta;
     if (pmt::is_pdu(msg)) {
         meta = pmt::car(msg);
@@ -167,9 +215,9 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
 
     // prepare window if needed
     af::array win_af; // empty by default
-    bool use_window = (window_type != WINDOW_NONE);
+    bool use_window = (d_win != WINDOW_NONE);
     if (use_window) {
-        std::vector<float> w = make_window(n_samples, window_type);
+        std::vector<float> w = make_window(n_samples, d_win);
         // create af::array from host floats
         win_af = af::array(af::dim4(n_samples), w.data());
     }

@@ -37,6 +37,7 @@ private:
     size_t fft_plan_cache_size; // plan cache 크기 (정수)
 
     /* 윈도우 & 오버랩 */
+    int d_win;
     int window_type;            // WINDOW_NONE / WINDOW_HANN / WINDOW_HAMMING (정수)
     double overlap_frac;        // 오버랩 비율 (0.0 .. <1.0)
     size_t overlap_samples;     // 오버랩 샘플 수 (internal)

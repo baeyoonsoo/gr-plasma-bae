@@ -15,7 +15,6 @@
 #include <gnuradio/blocks/float_to_complex.h>
 #include <gnuradio/plasma/pluto_radar_bae.h>
 #include <gnuradio/plasma/pmt_constants.h>
-#include <arrayfire.h>
 
 namespace gr {
 namespace plasma {
@@ -39,7 +38,7 @@ public:
     //                  const char *filter = "",
     //                  bool auto_filter = true);
     pluto_radar_bae_impl(const std::string &uri,
-                         double frequency,
+                         unsigned long long frequency,
                          unsigned long samplerate,
                          unsigned long bandwidth,
                          bool rx1_en, bool rx2_en,
@@ -49,8 +48,7 @@ public:
                          const char *gain2, double gain2_value,
                          const char *rf_port_select,
                          const char *filter,
-                         bool auto_filter,
-                         double pdu_duration);
+                         bool auto_filter);
 
     // Destructor
     ~pluto_radar_bae_impl() override;
@@ -77,7 +75,6 @@ private:
     std::condition_variable  refill_cv;
     bool                     please_refill{false};
     bool                     thread_stopped{false};
-    std::atomic<bool>        finished{false};
     
     void set_params(struct iio_device *phy,
 		    const std::vector<std::string> &params);
@@ -86,11 +83,9 @@ private:
     // void handle_message(const pmt::pmt_t &msg);
     // Main RX loop
     void run();
-    void receive();
 
     // Calibration file loader if needed
     void read_calibration_file(const std::string &filename);
-    af::array af_fftshift1d(const af::array &x);
 
     // IIO / Pluto members
     size_t sample_bytes;
@@ -100,7 +95,6 @@ private:
     struct iio_buffer        *buf{nullptr};
     bool                      destroy_ctx{false};
     size_t                    buffer_size{0x8000};
-    size_t                    samples_per_pdu;
     //std::vector<std::string>  channels;
     std::vector<struct iio_channel*> channel_list;
 
@@ -110,7 +104,7 @@ private:
     typedef std::vector<ctxInfo>::iterator ctx_it;
 
     // Runtime configuration parameters
-    double                    frequency{0};
+    unsigned long long        frequency{0};
     unsigned long             samplerate{0};
     unsigned long             bandwidth{0};
     bool                      rx1_en{true};     // I channel
@@ -125,7 +119,6 @@ private:
     std::string               rf_port_select{"A_BALANCED"};
     std::string               filter{""};
     bool                      auto_filter{true};
-    double                    pdu_duration{0.0};
 
     // Conversion blocks
     gr::blocks::short_to_float::sptr s2f_i, s2f_q;
@@ -133,11 +126,12 @@ private:
     std::vector<float>                temp_i, temp_q;
 
     // Threading
-    std::thread                       rx_thread;
     std::thread                       refill_thread;
+    std::thread                       rx_thread;
     std::mutex                        mtx;
     std::condition_variable           cv;
     bool                              data_ready{false};
+    bool                              finished{false};
 
     // PDU metadata / TX state
     pmt::pmt_t                        next_meta;

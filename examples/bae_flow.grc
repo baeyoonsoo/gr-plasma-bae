@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '20000000'
+    value: '1000000'
   states:
     bus_sink: false
     bus_source: false
@@ -80,12 +80,12 @@ blocks:
     rfdc: 'True'
     samplerate: samp_rate
     type: fc32
-    uri: '"ip:192.168.2.1"'
+    uri: '"ip:192.168.4.4"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2192, 604.0]
+    coordinate: [312, 84.0]
     rotation: 0
     state: disabled
 - name: plasma_bae_sink_0
@@ -113,7 +113,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [512, 364.0]
+    coordinate: [512, 340.0]
     rotation: 0
     state: enabled
 - name: plasma_pdu_file_sink_0
@@ -130,7 +130,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1912, 756.0]
+    coordinate: [528, 476.0]
     rotation: 0
     state: disabled
 - name: plasma_signal_processing_0
@@ -174,7 +174,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 244.0]
+    coordinate: [312, 244.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_2
@@ -198,7 +198,7 @@ blocks:
     bus_structure: null
     coordinate: [304, 564.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_signal_processing_0_4
   id: plasma_signal_processing
   parameters:
@@ -306,8 +306,8 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    auto_filter: 'True'
-    bandwidth: '20000000'
+    auto_filter: 'False'
+    bandwidth: samp_rate
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
@@ -329,12 +329,12 @@ blocks:
     sample_start_key: core:sample_start
     samplerate: samp_rate
     tx_freq_key: core:tx_freq
-    uri: '"ip:192.168.2.1"'
+    uri: '"ip:192.168.4.4"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 156.0]
+    coordinate: [48, 156.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_0_0
@@ -342,10 +342,10 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    auto_filter: 'True'
-    bandwidth: '20000000'
+    auto_filter: 'False'
+    bandwidth: samp_rate
     bbdc: 'True'
-    buffer_size: '4096'
+    buffer_size: '32768'
     comment: ''
     filter: '""'
     frequency: fc
@@ -365,14 +365,14 @@ blocks:
     sample_start_key: core:sample_start
     samplerate: samp_rate
     tx_freq_key: core:tx_freq
-    uri: ip:192.168.3.3
+    uri: '"ip:192.168.5.5"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 476.0]
+    coordinate: [64, 476.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pluto_source_bae_0_1
   id: pluto_source_bae
   parameters:
@@ -562,87 +562,6 @@ blocks:
     coordinate: [1712, 812.0]
     rotation: 0
     state: disabled
-- name: qtgui_freq_sink_x_0_0
-  id: qtgui_freq_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    average: '1.0'
-    axislabels: 'True'
-    bw: samp_rate
-    color1: '"blue"'
-    color10: '"dark blue"'
-    color2: '"red"'
-    color3: '"green"'
-    color4: '"black"'
-    color5: '"cyan"'
-    color6: '"magenta"'
-    color7: '"yellow"'
-    color8: '"dark red"'
-    color9: '"dark green"'
-    comment: ''
-    ctrlpanel: 'False'
-    fc: 1e9
-    fftsize: '1024'
-    freqhalf: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label: Relative Gain
-    label1: ''
-    label10: ''''''
-    label2: ''''''
-    label3: ''''''
-    label4: ''''''
-    label5: ''''''
-    label6: ''''''
-    label7: ''''''
-    label8: ''''''
-    label9: ''''''
-    legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
-    nconnections: '1'
-    norm_window: 'False'
-    showports: 'False'
-    tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_tag: '""'
-    type: msg_complex
-    units: dB
-    update_time: '0.0001'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    wintype: window.WIN_HAMMING
-    ymax: '10'
-    ymin: '-140'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [296, 484.0]
-    rotation: 0
-    state: disabled
 - name: qtgui_freq_sink_x_1
   id: qtgui_freq_sink_x
   parameters:
@@ -721,7 +640,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2488, 660.0]
+    coordinate: [528, 124.0]
     rotation: 0
     state: disabled
 - name: qtgui_freq_sink_x_2
@@ -802,9 +721,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 396.0]
+    coordinate: [296, 396.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_time_sink_x_0_1
   id: qtgui_time_sink_x
   parameters:
@@ -998,7 +917,7 @@ blocks:
     bus_structure: null
     coordinate: [504, 596.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_time_sink_x_0_1_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1289,7 +1208,7 @@ blocks:
     bus_structure: null
     coordinate: [512, 276.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_1_3
   id: qtgui_time_sink_x
   parameters:
@@ -1452,9 +1371,12 @@ blocks:
 connections:
 - [iio_pluto_source_0, '0', qtgui_freq_sink_x_1, '0']
 - [plasma_signal_processing_0_0, out, plasma_bae_sink_0, in]
+- [plasma_signal_processing_0_0, out, plasma_pdu_file_sink_0, in]
 - [plasma_signal_processing_0_0, out, qtgui_time_sink_x_0_1_2, in]
+- [plasma_signal_processing_0_2, out, qtgui_time_sink_x_0_1_0, in]
 - [pluto_source_bae_0_0, out, plasma_signal_processing_0_0, rx]
 - [pluto_source_bae_0_0, out, qtgui_freq_sink_x_2, in]
+- [pluto_source_bae_0_0_0, out, plasma_signal_processing_0_2, rx]
 
 metadata:
   file_format: 1

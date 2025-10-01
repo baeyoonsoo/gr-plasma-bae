@@ -146,7 +146,6 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 
         if (d_samp_rate <= 0.0) {
             set_time_per_fft(0.0);
-            set_time_title("Time");
         } else {
             if (d_samp_rate > 0.0) {
                 int stride = std::max(0, static_cast<int>(len - static_cast<size_t>(d_fft_size)));

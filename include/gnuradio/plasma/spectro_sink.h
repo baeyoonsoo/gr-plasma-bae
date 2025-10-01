@@ -10,57 +10,51 @@
 
 #include <gnuradio/block.h>
 #include <gnuradio/plasma/api.h>
+#include <string>
+
+class QWidget;
+
 #ifdef ENABLE_PYTHON
-#pragma push_macro("slots")
-#undef slots
-#include "Python.h"
-#pragma pop_macro("slots")
+struct _object;
+using PyObject = _object;
 #endif
-// #include <QApplication>
-#include <QApplication>
-#include <QWidget>
 
 namespace gr {
 namespace plasma {
 
 /*!
- * \brief <+description of block+>
+ * \brief Spectrogram sink (PDU -> time-frequency waterfall)
  * \ingroup plasma
- *
  */
 class PLASMA_API spectro_sink : virtual public gr::block
 {
 public:
-    typedef std::shared_ptr<spectro_sink> sptr;
+    using sptr = std::shared_ptr<spectro_sink>;
 
-    /*!
-     * \brief Return a shared_ptr to a new instance of plasma::bae_sink.
-     *
-     * To avoid accidental use of raw pointers, plasma::bae_sink's
-     * constructor is in a private implementation
-     * class. plasma::bae_sink::make is the public interface for
-     * creating new instances.
-     */
-    static sptr
-    make(double samp_rate, size_t ncol, double center_freq, QWidget* parent, int mode);
+    static sptr make(double   samp_rate,
+                     int      fft_size,
+                     size_t   ncol,
+                     double   center_freq,
+                     QWidget* parent = nullptr);
+
+    virtual ~spectro_sink() = default;
+
     virtual void exec_() = 0;
+
     virtual QWidget* qwidget() = 0;
+
 #ifdef ENABLE_PYTHON
     virtual PyObject* pyqwidget() = 0;
 #else
     virtual void* pyqwidget() = 0;
 #endif
 
-    virtual void set_dynamic_range(const double) = 0;
+    virtual void set_update_time(double seconds) = 0;
     virtual void set_msg_queue_depth(size_t depth) = 0;
 
-    virtual void set_metadata_keys(std::string samp_rate_key,
-                                   std::string n_matrix_col_key,
-                                   std::string center_freq_key,
-                                   std::string dynamic_range_key,
-                                   std::string prf_key,
-                                   std::string pulsewidth_key,
-                                   std::string detection_indices_key) = 0;
+    virtual void set_metadata_keys(const std::string& samp_rate_key,
+                                   const std::string& n_matrix_col_key,
+                                   const std::string& center_freq_key) = 0;
 };
 
 } // namespace plasma

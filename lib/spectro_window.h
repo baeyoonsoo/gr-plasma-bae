@@ -2,6 +2,9 @@
 #define INCLUDED_PLASMA_SPECTRO_WINDOW_H
 #include <gnuradio/plasma/pmt_constants.h>
 #include <gnuradio/plasma/qt_spec_update_events.h>
+// #include <plasma_dsp/file.h>
+// #include <plasma_dsp/lfm.h>
+
 #include <pmt/pmt.h>
 
 #include <qwt/qwt_plot.h>

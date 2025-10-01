@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
 /* BINDTOOL_HEADER_FILE(spectro_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(6d65600fc123c0295340eb061cefb5da)                     */
+/* BINDTOOL_HEADER_FILE_HASH(2b082602b12e6f10d1c26902875d1cbb)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -64,7 +64,7 @@ void bind_spectro_sink(py::module& m)
                 return PyLong_AsLongLong(p->pyqwidget());
             },
             D(spectro_sink, pyqwidget))
-            
+
         .def("set_msg_queue_depth",
              &spectro_sink::set_msg_queue_depth,
              py::arg("depth"),

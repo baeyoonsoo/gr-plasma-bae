@@ -10,8 +10,9 @@
 
 #include "spectro_window.h"
 #include <gnuradio/plasma/spectro_sink.h>
-#include <arrayfire.h>
-
+#include <gnuradio/high_res_timer.h>
+#include <pmt/pmt.h>
+#include <atomic>
 
 namespace gr {
 namespace plasma {
@@ -20,14 +21,12 @@ class spectro_sink_impl : public spectro_sink
 {
 private:
     // Block parameters
+    int d_fft_size;
     double d_samp_rate;
     size_t d_ncol;
     double d_center_freq;
-    double d_dynamic_range_db;
+
     // GUI parameters
-    int d_argc;
-    char* d_argv;
-    int mode;
     SpectroWindow* d_main_gui;
 
     std::atomic<bool> d_finished;
@@ -39,15 +38,18 @@ private:
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_center_freq_key;
     pmt::pmt_t d_n_matrix_col_key;
-    pmt::pmt_t d_dynamic_range_key;
+
+    // time
+    gr::high_res_timer_type d_update_time;
+    gr::high_res_timer_type d_last_time;
 
 
 public:
     spectro_sink_impl(double samp_rate,
-                  size_t ncol,
-                  double center_freq,
-                  QWidget* parent,
-                  int mode);
+                      int fft_size,
+                      size_t ncol,
+                      double center_freq,
+                      QWidget* parent);
     ~spectro_sink_impl();
 
     bool start() override;
@@ -62,16 +64,12 @@ public:
     void* pyqwidget();
 #endif
     void handle_rx_msg(pmt::pmt_t msg);
-
-    void set_dynamic_range(const double) override;
+    void set_update_time(double t) override;
+    void set_time_per_fft(double t);
     void set_msg_queue_depth(size_t) override;
     void set_metadata_keys(std::string samp_rate_key,
                            std::string n_matrix_col_key,
-                           std::string center_freq_key,
-                           std::string dynamic_range_key,
-                           std::string prf_key,
-                           std::string pulsewidth_key,
-                           std::string detection_indices_key) override;
+                           std::string center_freq_key) override;
 };
 
 } // namespace plasma

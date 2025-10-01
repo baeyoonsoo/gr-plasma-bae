@@ -14,41 +14,45 @@ namespace gr {
 namespace plasma {
 
 spectro_sink::sptr spectro_sink::make(double samp_rate,
+                              int fft_size,
                               size_t ncol,
                               double center_freq,
-                              QWidget* parent,
-                              int mode)
+                              QWidget* parent)
 {
     return gnuradio::make_block_sptr<spectro_sink_impl>(
-        samp_rate, ncol, center_freq, parent, mode);
+        samp_rate, fft_size, ncol, center_freq, parent);
 }
 
 /*
  * The private constructor
  */
 spectro_sink_impl::spectro_sink_impl(double samp_rate,
+                             int fft_size,
                              size_t ncol,
                              double center_freq,
-                             QWidget* parent,
-                             int mode)
+                             QWidget* parent)
     : gr::block("spectro_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_samp_rate(samp_rate),
       d_ncol(ncol),
-      d_center_freq(center_freq),
-      mode(mode)
+      d_fft_size(fft_size),
+      d_center_freq(center_freq)
 {
-    parent = nullptr;
     // Initialize the QApplication
-    d_argc = 1;
-    d_argv = new char;
-    d_argv[0] = '\0';
-    if (qApp != NULL)
-        d_qapp = qApp;
+    static int argc = 1;
+    static char app[] = "spectro";
+    static char* argv[] = { app, nullptr };
+
+    if (qApp)
+    d_qapp = qApp;
     else
-        d_qapp = new QApplication(d_argc, &d_argv);
-    d_main_gui = new SpectroWindow(parent, samp_rate, center_freq, mode);
+    d_qapp = new QApplication(argc, argv);
+        
+    d_main_gui = new SpectroWindow(parent, samp_rate, center_freq);
+
+    // time set
+    set_update_time(0.1);
 
     // Initialize message ports
     d_in_port = PMT_IN;
@@ -59,7 +63,7 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
 /*
  * Our virtual destructor.
  */
-spectro_sink_impl::~spectro_sink_impl() { delete d_argv; }
+spectro_sink_impl::~spectro_sink_impl() { }
 
 bool spectro_sink_impl::start()
 {
@@ -101,39 +105,74 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         d_meta = pmt::car(msg);
     } else if (pmt::is_uniform_vector(msg)) {
         samples = msg;
+    } else {
+        return;
     }
 
-    size_t n = pmt::length(samples);
-    size_t nrow = n / d_ncol;
+    size_t len = pmt::length(samples);
+    if (len==0) return;
+
+    size_t nrow = 1;
+    size_t ncol = len;
+    double* out = new double[len];
 
     if (pmt::is_f32vector(samples)) {
-        const float* in = pmt::f32vector_elements(samples, n);
-        double* out = new double[n];
-
-        for (size_t i = 0; i < n; ++i) {
+        const float* in = pmt::f32vector_elements(samples, len);
+        for (size_t i = 0; i < len; ++i) {
             out[i] = static_cast<double>(in[i]);
         }
-
-        d_qapp->postEvent(d_main_gui, new SpectroUpdateEvent(out, nrow, d_ncol, d_meta));
-        delete[] out;
-
-    } else if (pmt::is_c32vector(samples)) {
-        const gr_complex* in = pmt::c32vector_elements(samples, n);
-        double* out = new double[n];
-
-        for (size_t i = 0; i < n; ++i) {
-            
-            out[i] = static_cast<double>(std::abs(in[i])); 
+    } else if (pmt::is_c32vector(samples)){
+        const gr_complex* in = pmt::c32vector_elements(samples, len);
+        for (size_t i = 0; i < len; ++i) {
+            out[i] = static_cast<double>(std::abs(in[i]));
         }
-
-        d_qapp->postEvent(d_main_gui, new SpectroUpdateEvent(out, nrow, d_ncol, d_meta));
+    } else {
         delete[] out;
+        return;
     }
+
+    // meta
+    size_t N = 1024;
+    d_fft_size = pmt::to_long(pmt::dict_ref(d_meta, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(N))));
+    d_samp_rate = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
+    d_center_freq = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
+
+    // time
+    uint64_t now_us = 0;   
+    double frame_period_s = 0.0;
+
+    if (gr::high_res_timer_now() - d_last_time > d_update_time) {
+        d_last_time = gr::high_res_timer_now();
+
+        if (d_samp_rate <= 0.0) {
+            set_time_per_fft(0.0);
+            set_time_title("Time");
+        } else {
+            if (d_samp_rate > 0.0) {
+                int stride = std::max(0, static_cast<int>(len - static_cast<size_t>(d_fft_size)));
+                frame_period_s = (stride > 0) ? (static_cast<double>(stride) / d_samp_rate)
+                                            : (static_cast<double>(d_fft_size) / d_samp_rate);
+            }
+            set_time_per_fft(frame_period_s);
+
+            const auto now_ticks = gr::high_res_timer_now();
+            const auto tps       = gr::high_res_timer_tps();
+            now_us = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
+        }
+                                        
+    }
+
+    d_qapp->postEvent(d_main_gui, new SpectroUpdateEvent(out, nrow, ncol, d_meta, now_us, frame_period_s));
+    delete[] out;
 }
 
-void spectro_sink_impl::set_dynamic_range(const double r)
+void spectro_sink_impl::set_update_time(double t)
 {
-    d_dynamic_range_db = r;
+    // convert update time to ticks
+    gr::high_res_timer_type tps = gr::high_res_timer_tps();
+    d_update_time = t * tps;
+    d_main_gui->setUpdateTime(t);
+    d_last_time = 0;
 }
 
 void spectro_sink_impl::set_msg_queue_depth(size_t depth)
@@ -143,18 +182,17 @@ void spectro_sink_impl::set_msg_queue_depth(size_t depth)
 
 void spectro_sink_impl::set_metadata_keys(std::string samp_rate_key,
                                                 std::string n_matrix_col_key,
-                                                std::string center_freq_key,
-                                                std::string dynamic_range_key,
-                                                std::string prf_key,
-                                                std::string pulsewidth_key,
-                                                std::string detection_indices_key)
+                                                std::string center_freq_key)
 {
     d_samp_rate_key     = pmt::intern(samp_rate_key);
     d_n_matrix_col_key  = pmt::intern(n_matrix_col_key);
     d_center_freq_key   = pmt::intern(center_freq_key);
-    d_dynamic_range_key = pmt::intern(dynamic_range_key);
-    // TODO: Pass the last 4 keys to the window object
-    d_main_gui->set_metadata_keys(prf_key, pulsewidth_key, samp_rate_key, center_freq_key, detection_indices_key);
+    d_main_gui->set_metadata_keys(samp_rate_key, n_matrix_col_key, center_freq_key);
+    // throw std::runtime_error("1\n");
+}
+
+void spectro_sink_impl::set_time_per_fft(double t) { 
+    d_main_gui->setUpdateTime(t); 
 }
 
 } /* namespace plasma */

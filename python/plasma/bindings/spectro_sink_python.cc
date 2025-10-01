@@ -36,15 +36,14 @@ void bind_spectro_sink(py::module& m)
     py::class_<spectro_sink,
                gr::block,
                gr::basic_block,
-               std::shared_ptr<spectro_sink>>(
-        m, "spectro_sink", D(spectro_sink))
+               std::shared_ptr<spectro_sink>>(m, "spectro_sink", D(spectro_sink))
 
         .def(py::init(&spectro_sink::make),
              py::arg("samp_rate"),
+             py::arg("fft_size"),
              py::arg("ncol"),
              py::arg("center_freq"),
              py::arg("parent"),
-             py::arg("mode"),
              D(spectro_sink, make))
 
 
@@ -65,30 +64,23 @@ void bind_spectro_sink(py::module& m)
                 return PyLong_AsLongLong(p->pyqwidget());
             },
             D(spectro_sink, pyqwidget))
-
-
-        .def("set_dynamic_range",
-             &spectro_sink::set_dynamic_range,
-             py::arg("arg0"),
-             D(spectro_sink, set_dynamic_range))
-
-
+            
         .def("set_msg_queue_depth",
              &spectro_sink::set_msg_queue_depth,
              py::arg("depth"),
              D(spectro_sink, set_msg_queue_depth))
 
+        .def("set_update_time",
+             &spectro_sink::set_update_time,
+             py::arg("t"),
+             D(spectro_sink, set_update_time))
 
         .def("set_metadata_keys",
              &spectro_sink::set_metadata_keys,
              py::arg("samp_rate_key"),
              py::arg("n_matrix_col_key"),
              py::arg("center_freq_key"),
-             py::arg("dynamic_range_key"),
-             py::arg("prf_key"),
-             py::arg("pulsewidth_key"),
-             py::arg("detection_indices_key"),
-             D(spectro_sink, set_metadata_keys))
+             D(spectro_sink, set_metadata_keys));
 
         ;
 }

@@ -36,10 +36,10 @@ static const char* __doc_gr_plasma_spectro_sink_qwidget = R"doc()doc";
 static const char* __doc_gr_plasma_spectro_sink_pyqwidget = R"doc()doc";
 
 
-static const char* __doc_gr_plasma_spectro_sink_set_dynamic_range = R"doc()doc";
-
-
 static const char* __doc_gr_plasma_spectro_sink_set_msg_queue_depth = R"doc()doc";
+
+
+static const char* __doc_gr_plasma_spectro_sink_set_update_time = R"doc()doc";
 
 
 static const char* __doc_gr_plasma_spectro_sink_set_metadata_keys = R"doc()doc";

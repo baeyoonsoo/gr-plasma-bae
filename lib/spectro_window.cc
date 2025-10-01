@@ -33,17 +33,19 @@ public:
 
 SpectroWindow::SpectroWindow(QWidget* parent,
                                        double samp_rate,
-                                       double center_freq,
-                                       int mode)
+                                       double center_freq)
     : QWidget(parent), d_samp_rate(samp_rate), d_center_freq(center_freq)
 {
-    
-    d_curve = new QwtPlotCurve();
-    // d_curve->setPen(QPen(Qt::red));
-
     d_plot = new QwtPlot();
-
     d_plot->setCanvasBackground(Qt::white);
+
+    // for spectro
+    d_spectro = new QwtPlotSpectrogram();
+    d_data = new SpectroData();
+    d_spectro->setData(d_data);
+    d_spectro->setColorMap(new ColorMap());
+    d_spectro->attach(d_plot);
+
     QwtPlotGrid* grid = new QwtPlotGrid();
     grid->setMajorPen(QPen(Qt::gray, 0, Qt::DotLine));
     grid->attach(d_plot);
@@ -68,9 +70,6 @@ SpectroWindow::SpectroWindow(QWidget* parent,
 
     d_closed = false;
     d_busy = false;
-    d_prf = 0;
-    d_pulsewidth = 0;
-    d_mode = mode;
 }
 
 SpectroWindow::~SpectroWindow() { d_closed = true; }
@@ -89,27 +88,13 @@ void SpectroWindow::ylim(double y1, double y2)
     d_data->setInterval(Qt::YAxis, QwtInterval(y1, y2));
 }
 
-
-void SpectroWindow::show_detections(bool checked)
+void SpectroWindow::set_metadata_keys(std::string samp_rate_key,
+                                    std::string n_matrix_col_key,
+                                    std::string center_freq_key)
 {
-    if (checked)
-        d_curve->attach(d_plot);
-
-    else
-        d_curve->detach();
-}
-
-void SpectroWindow::set_metadata_keys(std::string prf_key,
-                                           std::string pulsewidth_key,
-                                           std::string samp_rate_key,
-                                           std::string center_freq_key,
-                                           std::string detection_indices_key)
-{
-    d_prf_key = pmt::intern(prf_key);
-    d_pulsewidth_key = pmt::intern(pulsewidth_key);
-    d_samp_rate_key = pmt::intern(samp_rate_key);
-    d_center_freq_key = pmt::intern(center_freq_key);
-    d_detection_indices_key = pmt::intern(detection_indices_key);
+    d_samp_rate_key     = pmt::intern(samp_rate_key);
+    d_n_matrix_col_key  = pmt::intern(n_matrix_col_key);
+    d_center_freq_key   = pmt::intern(center_freq_key);
 }
 
 void SpectroWindow::customEvent(QEvent* e)
@@ -119,119 +104,68 @@ void SpectroWindow::customEvent(QEvent* e)
     if (e->type() == SpectroUpdateEvent::Type()) {
 
         SpectroUpdateEvent* event = static_cast<SpectroUpdateEvent*>(e);
-        double* data = event->data();
-        size_t N = 1024;
-
         pmt::pmt_t meta = event->meta();
-        d_fft_size = pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(N))));
-        d_samp_rate = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
-        d_center_freq = pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
-        size_t fft_size = static_cast<size_t>(d_fft_size);
-        N = fft_size;
+        double* data = event->data();
 
-        QVector<double> x(N);
-        const double fs = d_samp_rate > 0 ? d_samp_rate : 1.0;
-        const double df = fs / static_cast<double>(N);
+        const size_t N = static_cast<size_t>(pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(1024))));
+        d_samp_rate  = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
+        d_center_freq= pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
+        d_cols = static_cast<int>(N);
 
-        const double start = d_center_freq - fs / 2.0;
-        for (size_t i = 0; i < N; ++i) {
-            x[static_cast<int>(i)] = start + i * df;
-        }
+        set_freq_axis(d_center_freq, d_samp_rate);
+        set_time_axis();
 
-        QVector<double> y(N);
-        std::copy(data, data + N, y.data());
+        d_water_values.reserve(d_water_values.size() + static_cast<int>(N));
+        for (size_t i = 0; i < N; ++i) d_water_values.push_back(data[i]);
 
-        set_mag_axis();
-        set_freq_axis(d_center_freq, fs);
-
-        if(d_mode == 0) {
-            if (d_curve->plot() == nullptr) {
-            d_curve->attach(d_plot);
-        }
-            d_curve->setSamples(x.constData(),
-                                y.constData(),
-                                static_cast<int>(N));
-        } else if (d_mode == 1) {
-            if (d_max_hold.size() != N)
-            {
-                d_max_hold.resize(N);
-                for (int i = 0; i < N; ++i)
-                    d_max_hold[i] = y[i];
-                
-                if (!d_max_hold_curve) {
-                    d_max_hold_curve = new QwtPlotCurve();
-                    d_max_hold_curve->attach(d_plot);
-                }
+        int rows = d_water_values.size() / d_cols;
+        if (rows > d_max_rows) {
+            const int drop_rows = rows - d_max_rows;
+            const int drop_elems = drop_rows * d_cols;
+            if (drop_elems > 0 && drop_elems <= d_water_values.size()) { 
+                d_water_values.erase(d_water_values.begin(),
+                                    d_water_values.begin() + drop_elems);
             }
-            else
-            {
-               for (int i = 0; i < N; ++i)
-                    if (y[i] > d_max_hold[i])
-                        d_max_hold[i] = y[i];
-            }
-            d_max_hold_curve->setSamples(x.constData(), d_max_hold.constData(), static_cast<int>(N));
+            rows = d_max_rows;
         }
-        else if (d_mode == 2)
-        {
-            if (d_avg.size() != N)
-            {
-                d_avg.resize(N);
-                for (int i = 0; i < N; ++i)
-                    d_avg[i] = y[i];
+        const uint64_t now_us = event->timestamp_us();   
+        const double   fp_s   = event->frame_period_s();   
+        const double step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
+        if (d_last_row_end_s == 0.0) d_last_row_end_s = (now_us > 0 ? now_us / 1e6 : 0.0);
+        d_last_row_end_s += step_s;
 
-                if (!d_avg_curve)
-                {
-                    d_avg_curve = new QwtPlotCurve();
-                    d_avg_curve->attach(d_plot);
-                }
-            } else
-            {
-                for (int i = 0; i < N; ++i)
-                    d_avg[i] = d_avg_alpha * y[i] + (1.0 - d_avg_alpha) * d_avg[i];
-            }
-            d_avg_curve->setSamples(x.constData(), d_avg.constData(), static_cast<int>(N));
-        }
+        d_data->setValueMatrix(d_water_values, d_cols);
         d_plot->replot();
     }
     d_busy = false;
 }
 
-void SpectroWindow::set_mag_axis()
+void SpectroWindow::set_time_axis()
 {
-    double mmin = -140;
-    double mmax = 10;
-    d_plot->setAxisScale(QwtPlot::yLeft, mmin, mmax);
-    QwtScaleWidget* y = d_plot->axisWidget(QwtPlot::yLeft);
-    y->setTitle("Magnitude (dBm)");
+
+    const double tmax = d_last_row_end_s;
+    const double tmin = tmax - d_time_window_s;
+
+    d_plot->setAxisTitle(QwtPlot::yLeft, QString("Time (s)"));
+    d_plot->setAxisScale(QwtPlot::yLeft, tmin, tmax);
+
+    d_data->setInterval(Qt::YAxis, QwtInterval(tmin, tmax));
 }
 
 
 void SpectroWindow::set_freq_axis(double center_freq, double samp_rate)
 {
-    double fmin = center_freq - samp_rate / 2.0;
-    double fmax = center_freq + samp_rate / 2.0;
+    const double fmin = center_freq - samp_rate / 2.0;
+    const double fmax = center_freq + samp_rate / 2.0;
+
     d_plot->setAxisScale(QwtPlot::xBottom, fmin, fmax);
     d_plot->setAxisTitle(QwtPlot::xBottom, QString("Frequency (Hz)"));
+
+    d_data->setInterval(Qt::XAxis, QwtInterval(fmin, fmax));
 }
 
-void SpectroWindow::plot_detections(pmt::pmt_t indices, int nrow, int ncol)
+// Override displayform SetUpdateTime() to set FFT time
+void SpectroWindow::setUpdateTime(double t)
 {
-
-    if (not pmt::is_null(indices)) {
-        std::vector<int> idx = pmt::s32vector_elements(indices);
-
-        QVector<double> xData(idx.size());
-        QVector<double> yData(idx.size());
-        for (size_t i = 0; i < idx.size(); i++) {
-            int detection_col = idx[i] / nrow;
-            int detection_row = idx[i] % nrow;
-            // Compute the x and y values
-            xData[i] = detection_col / (float)ncol * d_data->interval(Qt::XAxis).width() +
-                       d_data->interval(Qt::XAxis).minValue();
-            yData[i] = detection_row / (float)nrow * d_data->interval(Qt::YAxis).width() +
-                       d_data->interval(Qt::YAxis).minValue();
-        }
-
-        d_curve->setSamples(xData, yData);
-    }
+    d_time_per_fft = t;
 }

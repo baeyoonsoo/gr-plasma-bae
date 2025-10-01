@@ -4,11 +4,13 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
+#include <Python.h>
 #include "spectro_sink_impl.h"
 #include <gnuradio/io_signature.h>
+#include <QApplication>
 #include <chrono>
 #include <thread>
+
 
 namespace gr {
 namespace plasma {
@@ -179,9 +181,9 @@ void spectro_sink_impl::set_msg_queue_depth(size_t depth)
     d_msg_queue_depth = depth;
 }
 
-void spectro_sink_impl::set_metadata_keys(std::string samp_rate_key,
-                                                std::string n_matrix_col_key,
-                                                std::string center_freq_key)
+void spectro_sink_impl::set_metadata_keys(const std::string& samp_rate_key,
+                                            const std::string& n_matrix_col_key,
+                                            const std::string& center_freq_key)
 {
     d_samp_rate_key     = pmt::intern(samp_rate_key);
     d_n_matrix_col_key  = pmt::intern(n_matrix_col_key);

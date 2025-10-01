@@ -105,7 +105,7 @@ void SpectroWindow::customEvent(QEvent* e)
 
         SpectroUpdateEvent* event = static_cast<SpectroUpdateEvent*>(e);
         pmt::pmt_t meta = event->meta();
-        double* data = event->data();
+        const double* data = event->data();
 
         const size_t N = static_cast<size_t>(pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(1024))));
         d_samp_rate  = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));

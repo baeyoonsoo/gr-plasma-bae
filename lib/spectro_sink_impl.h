@@ -67,9 +67,9 @@ public:
     void set_update_time(double t) override;
     void set_time_per_fft(double t);
     void set_msg_queue_depth(size_t) override;
-    void set_metadata_keys(std::string samp_rate_key,
-                           std::string n_matrix_col_key,
-                           std::string center_freq_key) override;
+    void set_metadata_keys(const std::string& samp_rate_key,
+                           const std::string& n_matrix_col_key,
+                           const std::string& center_freq_key) override;
 };
 
 } // namespace plasma

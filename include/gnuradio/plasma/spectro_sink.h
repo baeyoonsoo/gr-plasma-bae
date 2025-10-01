@@ -11,8 +11,7 @@
 #include <gnuradio/block.h>
 #include <gnuradio/plasma/api.h>
 #include <string>
-
-class QWidget;
+#include <QWidget>
 
 #ifdef ENABLE_PYTHON
 struct _object;

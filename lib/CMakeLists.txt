@@ -20,6 +20,7 @@ list(APPEND plasma_sources
     pdu_file_sink_impl.cc
     pdu_head_impl.cc
     qt_update_events.cc
+    qt_spec_update_events.cc        # add by hajung
     range_doppler_window.cc
     range_doppler_window.h
     device.cc

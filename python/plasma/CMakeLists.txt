@@ -22,7 +22,7 @@ add_subdirectory(bindings)
 # GR_PYTHON_INSTALL(
 #     FILES
 #     __init__.py
-#     signal_processing.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
+#     DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
 # )
 
 ########################################################################
@@ -46,5 +46,4 @@ GR_ADD_TEST(qa_spectro_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_
 GR_ADD_TEST(qa_pdu_file_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_file_sink.py)
 GR_ADD_TEST(qa_pdu_head ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_head.py)
 GR_ADD_TEST(qa_pdu_file_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_file_source.py)
-GR_ADD_TEST(qa_spectro_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_spectro_sink.py)
 

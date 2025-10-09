@@ -138,6 +138,10 @@ private:
     // Status variables
     std::atomic<bool> d_busy;
     bool d_closed;
+
+    // time
+    bool   have_t0_ = false;
+    double t0_sec_  = 0.0;
     
     // Waterfall state
     QVector<double> d_water_values; // (rows × d_cols) flattened row-major

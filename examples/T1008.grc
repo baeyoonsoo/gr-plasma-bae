@@ -82,9 +82,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [984, 400.0]
+    coordinate: [992, 416.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_signal_processing_0
   id: plasma_signal_processing
   parameters:
@@ -115,7 +115,7 @@ blocks:
     center_freq: center_freq
     center_freq_key: center_freq
     comment: ''
-    depth: '1'
+    depth: '10000'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size

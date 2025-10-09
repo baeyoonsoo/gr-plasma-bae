@@ -19,11 +19,11 @@ add_subdirectory(bindings)
 ########################################################################
 # Install python sources
 ########################################################################
-# GR_PYTHON_INSTALL(
-#     FILES
-#     __init__.py
-#     DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
-# )
+GR_PYTHON_INSTALL(
+    FILES
+    __init__.py
+    DESTINATION ${GR_PYTHON_DIR}/gnuradio/plasma
+)
 
 ########################################################################
 # Handle the unit tests

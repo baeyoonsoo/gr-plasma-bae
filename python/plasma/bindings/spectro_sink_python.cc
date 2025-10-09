@@ -38,6 +38,15 @@ void bind_spectro_sink(py::module& m)
                gr::basic_block,
                std::shared_ptr<spectro_sink>>(m, "spectro_sink", D(spectro_sink))
 
+        .def_static("make",
+                    &spectro_sink::make,
+                    py::arg("samp_rate"),
+                    py::arg("fft_size"),
+                    py::arg("ncol"),
+                    py::arg("center_freq"),
+                    py::arg("parent") = nullptr,
+                    D(spectro_sink, make))
+
         .def(py::init(&spectro_sink::make),
              py::arg("samp_rate"),
              py::arg("fft_size"),

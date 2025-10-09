@@ -112,8 +112,6 @@ void SpectroWindow::customEvent(QEvent* e)
         d_center_freq= pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
         d_cols = static_cast<int>(N);
 
-        set_freq_axis(d_center_freq, d_samp_rate);
-
         d_water_values.reserve(d_water_values.size() + static_cast<int>(N));
         for (size_t i = 0; i < N; ++i) d_water_values.push_back(data[i]);
 
@@ -133,12 +131,22 @@ void SpectroWindow::customEvent(QEvent* e)
         const double now_sec   = (now_us > 0) ? (now_us / 1e6) : 0.0;
         if (!have_t0_) { t0_sec_ = now_sec; have_t0_ = true; }
         const double now_rel_s = now_sec - t0_sec_;   
-        if (d_last_row_end_s == 0.0)
-        d_last_row_end_s = now_rel_s;           
-        d_last_row_end_s += step_s;
+        if (d_last_row_end_s <= 0.0) {
+            d_last_row_end_s = now_rel_s;
+        } else {
+            const double expected = d_last_row_end_s + std::max(step_s, 0.0);
+            d_last_row_end_s = std::max(expected, now_rel_s);
+        }
 
-        d_data->setValueMatrix(d_water_values, d_cols);
         set_time_axis();
+        set_freq_axis(d_center_freq, d_samp_rate);
+
+        const double Z_MIN_DB = -80.0;
+        const double Z_MAX_DB = -20.0;
+
+        d_data->setInterval(Qt::ZAxis, QwtInterval(Z_MIN_DB, Z_MAX_DB));
+        
+        d_data->setValueMatrix(d_water_values, d_cols);
         d_plot->replot();
     }
     d_busy = false;
@@ -150,9 +158,9 @@ void SpectroWindow::set_time_axis()
     const double tmin = tmax - d_time_window_s;
 
     d_plot->setAxisTitle(QwtPlot::yLeft, QString("Time (s)"));
-    d_plot->setAxisScale(QwtPlot::yLeft, tmin, tmax);
+    d_plot->setAxisScale(QwtPlot::yLeft, tmax, tmin);
 
-    // d_data->setInterval(Qt::YAxis, QwtInterval(tmin, tmax));
+    d_data->setInterval(Qt::YAxis, QwtInterval(tmin, tmax));
 }
 
 

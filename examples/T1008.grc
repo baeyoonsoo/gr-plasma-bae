@@ -115,7 +115,7 @@ blocks:
     center_freq: center_freq
     center_freq_key: center_freq
     comment: ''
-    depth: '10000'
+    depth: '1'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -166,9 +166,9 @@ blocks:
     buffer_size: '4096'
     comment: ''
     filter: '""'
-    frequency: '2400000000'
+    frequency: center_freq
     gain1: '"manual"'
-    gain1_value: '10.0'
+    gain1_value: '10'
     gain2: '"manual"'
     gain2_value: '10.0'
     maxoutbuf: '0'
@@ -181,7 +181,7 @@ blocks:
     rx2_en: 'True'
     rx_freq_key: core:rx_freq
     sample_start_key: core:sample_start
-    samplerate: '2000000'
+    samplerate: samp_rate
     tx_freq_key: core:tx_freq
     uri: ip:192.168.3.3
   states:

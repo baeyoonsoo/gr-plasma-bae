@@ -69,8 +69,8 @@ class T1008(gr.top_block, Qt.QWidget):
 
         self.pluto_source_bae_0 = plasma.pluto_radar_bae(
           'ip:192.168.3.3',
-          2400000000,
-          2000000,
+          center_freq,
+          samp_rate,
           1500000,
           True,
           True,
@@ -79,7 +79,7 @@ class T1008(gr.top_block, Qt.QWidget):
           True,
           True,
           "manual",
-          10.0,
+          10,
           "manual",
           10.0,
           "A_BALANCED",
@@ -94,11 +94,18 @@ class T1008(gr.top_block, Qt.QWidget):
         self._plasma_spectro_sink_0_win = sip.wrapinstance(self.plasma_spectro_sink_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_win)
         self.plasma_signal_processing_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, center_freq, None, 0)
+        self.plasma_bae_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
+        self.plasma_bae_sink_0.set_dynamic_range(60)
+        self.plasma_bae_sink_0.set_msg_queue_depth(1)
+        self._plasma_bae_sink_0_win = sip.wrapinstance(self.plasma_bae_sink_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_bae_sink_0_win)
 
 
         ##################################################
         # Connections
         ##################################################
+        self.msg_connect((self.plasma_signal_processing_0, 'out'), (self.plasma_bae_sink_0, 'in'))
         self.msg_connect((self.plasma_signal_processing_0, 'out'), (self.plasma_spectro_sink_0, 'in'))
         self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
 

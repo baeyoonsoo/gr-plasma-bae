@@ -149,7 +149,7 @@ private:
     int    d_cols            = 0;   // FFT size (num columns)
     int    d_max_rows        = 512; // 화면에 유지할 최대 행 수
     double d_time_per_fft    = 0.0; // 프레임 간격(초) – sink에서 세팅 or 이벤트 fp_s
-    double d_time_window_s   = 5.0; // 최근 몇 초를 표시할지
+    double d_time_window_s   = 10.0; // 최근 몇 초를 표시할지
     double d_last_row_end_s  = 0.0; // y축 최대(현재 끝 시각)
 
     pmt::pmt_t d_samp_rate_key;

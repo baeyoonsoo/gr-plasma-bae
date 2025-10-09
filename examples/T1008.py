@@ -81,7 +81,7 @@ class T1008(gr.top_block, Qt.QWidget):
           "manual",
           10,
           "manual",
-          10.0,
+          10,
           "A_BALANCED",
           "",
           True,

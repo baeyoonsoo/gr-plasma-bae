@@ -131,30 +131,6 @@ blocks:
     coordinate: [984, 288.0]
     rotation: 0
     state: enabled
-- name: plasma_spectro_sink_0_0
-  id: plasma_spectro_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    center_freq: center_freq
-    center_freq_key: center_freq
-    comment: ''
-    depth: '1'
-    fft_size: '1024'
-    gui_hint: ''
-    n_matrix_col_key: fft_size
-    ncol: '128'
-    parent: None
-    samp_rate: samp_rate
-    samp_rate_key: samp_rate
-    update_time: '0.1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [752, 512.0]
-    rotation: 0
-    state: disabled
 - name: pluto_source_bae_0
   id: pluto_source_bae
   parameters:
@@ -170,7 +146,7 @@ blocks:
     gain1: '"manual"'
     gain1_value: '10'
     gain2: '"manual"'
-    gain2_value: '10.0'
+    gain2_value: '10'
     maxoutbuf: '0'
     minoutbuf: '0'
     pdu_duration: 100e-6
@@ -188,51 +164,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 176.0]
+    coordinate: [528, 176.0]
     rotation: 0
     state: enabled
-- name: pluto_source_bae_0_0
-  id: pluto_source_bae
-  parameters:
-    affinity: ''
-    alias: ''
-    auto_filter: 'True'
-    bandwidth: '1500000'
-    bbdc: 'True'
-    buffer_size: '4096'
-    comment: ''
-    filter: '""'
-    frequency: '2400000000'
-    gain1: '"manual"'
-    gain1_value: '10.0'
-    gain2: '"manual"'
-    gain2_value: '10.0'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    pdu_duration: 100e-6
-    quadrature: 'True'
-    rf_port_select: '"A_BALANCED"'
-    rfdc: 'True'
-    rx1_en: 'True'
-    rx2_en: 'True'
-    rx_freq_key: core:rx_freq
-    sample_start_key: core:sample_start
-    samplerate: '2000000'
-    tx_freq_key: core:tx_freq
-    uri: IP:192.168.3.3
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [520, 400.0]
-    rotation: 0
-    state: disabled
 
 connections:
 - [plasma_signal_processing_0, out, plasma_bae_sink_0, in]
 - [plasma_signal_processing_0, out, plasma_spectro_sink_0, in]
 - [pluto_source_bae_0, out, plasma_signal_processing_0, rx]
-- [pluto_source_bae_0_0, out, plasma_spectro_sink_0_0, in]
 
 metadata:
   file_format: 1

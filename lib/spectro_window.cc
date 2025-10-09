@@ -128,9 +128,11 @@ void SpectroWindow::customEvent(QEvent* e)
         const uint64_t now_us = event->timestamp_us();
         const double   fp_s   = event->frame_period_s();
         const double   step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
+
         const double now_sec   = (now_us > 0) ? (now_us / 1e6) : 0.0;
         if (!have_t0_) { t0_sec_ = now_sec; have_t0_ = true; }
         const double now_rel_s = now_sec - t0_sec_;   
+        
         if (d_last_row_end_s <= 0.0) {
             d_last_row_end_s = now_rel_s;
         } else {
@@ -156,7 +158,7 @@ void SpectroWindow::set_time_axis()
     d_plot->setAxisTitle(QwtPlot::yLeft, QString("Time (s)"));
     d_plot->setAxisScale(QwtPlot::yLeft, tmax, tmin);
 
-    d_data->setInterval(Qt::YAxis, QwtInterval(tmin, tmax));
+    d_data->setInterval(Qt::YAxis, QwtInterval(0.0, tmax));
 }
 
 

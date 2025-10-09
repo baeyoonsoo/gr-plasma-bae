@@ -120,6 +120,7 @@ public:
 private:
     void set_time_axis(); 
     void set_freq_axis(double center_freq, double samp_rate);
+    void set_color_axis();
 
     // Qwt plot objects
     QwtPlotSpectrogram* d_spectro;

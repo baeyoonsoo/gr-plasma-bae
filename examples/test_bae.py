@@ -61,7 +61,7 @@ class test_bae(gr.top_block, Qt.QWidget):
         ##################################################
         self.samp_rate = samp_rate = 40000000
         self.n_pulse_cpi = n_pulse_cpi = 128
-        self.fc = fc = 2490000000
+        self.fc = fc = 2400000000
 
         ##################################################
         # Blocks
@@ -102,7 +102,7 @@ class test_bae(gr.top_block, Qt.QWidget):
         self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.qwidget(), Qt.QWidget)
 
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
-        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('' if '' else iio.get_pluto_uri(), [True, True], 32768)
+        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32('ip:192.168.3.3' if 'ip:192.168.3.3' else iio.get_pluto_uri(), [True, True], 32768)
         self.iio_pluto_source_0.set_len_tag_key('packet_len')
         self.iio_pluto_source_0.set_frequency(fc)
         self.iio_pluto_source_0.set_samplerate(samp_rate)

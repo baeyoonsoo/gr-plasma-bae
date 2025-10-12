@@ -12,5 +12,6 @@ install(FILES
     plasma_pluto_radar_bae.block.yml        # add by bae
     plasma_signal_processing.block.yml      # add by bae
     plasma_bae_sink.block.yml               # add by bae
+    plasma_spectro_sink.block.yml           # add by bae
     DESTINATION share/gnuradio/grc/blocks
 )

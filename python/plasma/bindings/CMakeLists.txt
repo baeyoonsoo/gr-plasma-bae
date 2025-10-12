@@ -45,6 +45,7 @@ list(APPEND plasma_python_files
     pluto_radar_bae_python.cc         # add by bae
     signal_processing_python.cc       # add by bae
     bae_sink_python.cc                # add by bae
+    spectro_sink_python.cc            # add by bae
     device_python.cc
 )
 

@@ -1,0 +1,92 @@
+id: plasma_spectro_sink
+label: Spectro Sink
+category: "[plasma]"
+flags: [python]
+
+parameters:
+  - id: samp_rate
+    label: Sample Rate
+    dtype: float
+    default: samp_rate
+
+  - id: fft_size
+    label: FFT Size (cols)
+    dtype: int
+    default: 1024
+
+  - id: ncol
+    label: Num. Matrix Cols (history)
+    dtype: int
+    default: 128
+
+  - id: center_freq
+    label: Center Frequency
+    dtype: float
+    default: center_freq
+
+  - id: parent
+    label: Parent
+    dtype: raw
+    default: None
+
+  - id: update_time
+    label: GUI Update Interval (s)
+    dtype: float
+    default: 0.1
+    hide: part
+
+  - id: depth
+    label: Message Queue Depth
+    dtype: int
+    default: 1
+    hide: part
+
+  - id: gui_hint
+    label: GUI Hint
+    dtype: gui_hint
+    hide: part
+
+  # Metadata fields (현재 구현은 하드코딩된 키를 사용)
+  - id: samp_rate_key
+    label: Sample Rate Key
+    dtype: string
+    default: samp_rate
+    hide: part
+    category: Metadata
+
+  - id: n_matrix_col_key
+    label: Num. Matrix Cols Key
+    dtype: string
+    default: fft_size
+    hide: part
+    category: Metadata
+
+  - id: center_freq_key
+    label: Center Frequency Key
+    dtype: string
+    default: center_freq
+    hide: part
+    category: Metadata
+
+inputs:
+  - domain: message
+    id: in
+
+templates:
+  imports: |-
+    from PyQt5 import Qt
+    from gnuradio import plasma
+    import sip
+  make: |-
+    <%
+      win = 'self._%s_win'%id
+    %>\
+    self.${id} = plasma.spectro_sink.make(${samp_rate}, ${fft_size}, ${ncol}, ${center_freq}, ${parent})
+    self.${id}.set_metadata_keys(${samp_rate_key}, ${n_matrix_col_key}, ${center_freq_key})
+    self.${id}.set_update_time(${update_time})
+    self.${id}.set_msg_queue_depth(${depth})
+    ${win} = sip.wrapinstance(self.${id}.qwidget(), Qt.QWidget)
+    ${gui_hint() % win}
+
+
+file_format: 1

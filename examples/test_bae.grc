@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2490000000'
+    value: '2400000000'
   states:
     bus_sink: false
     bus_source: false
@@ -92,7 +92,7 @@ blocks:
     rfdc: 'True'
     samplerate: samp_rate
     type: fc32
-    uri: ''
+    uri: ip:192.168.3.3
   states:
     bus_sink: false
     bus_source: false
@@ -158,7 +158,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [928, 284.0]
+    coordinate: [848, 280.0]
     rotation: 0
     state: enabled
 
@@ -167,3 +167,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.9.2

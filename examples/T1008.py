@@ -71,7 +71,7 @@ class T1008(gr.top_block, Qt.QWidget):
           'ip:192.168.3.3',
           center_freq,
           samp_rate,
-          1500000,
+          samp_rate,
           True,
           True,
           4096,

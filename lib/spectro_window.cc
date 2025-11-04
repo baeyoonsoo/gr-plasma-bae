@@ -125,20 +125,24 @@ void SpectroWindow::customEvent(QEvent* e)
             }
             rows = d_max_rows;
         }
-        const uint64_t now_us = event->timestamp_us();
-        const double   fp_s   = event->frame_period_s();
-        const double   step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
+        // const uint64_t now_us = event->timestamp_us();
+        // const double   fp_s   = event->frame_period_s();
+        // const double   step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
 
-        const double now_sec   = (now_us > 0) ? (now_us / 1e6) : 0.0;
-        if (!have_t0_) { t0_sec_ = now_sec; have_t0_ = true; }
-        const double now_rel_s = now_sec - t0_sec_;   
+        // const double now_sec   = (now_us > 0) ? (now_us / 1e6) : 0.0;
+        // if (!have_t0_) { t0_sec_ = now_sec; have_t0_ = true; }
+        // const double now_rel_s = now_sec - t0_sec_;   
         
-        if (d_last_row_end_s <= 0.0) {
-            d_last_row_end_s = now_rel_s;
-        } else {
-            const double expected = d_last_row_end_s + std::max(step_s, 0.0);
-            d_last_row_end_s = std::max(expected, now_rel_s);
-        }
+        // if (d_last_row_end_s <= 0.0) {
+        //     d_last_row_end_s = now_rel_s;
+        // } else {
+        //     const double expected = d_last_row_end_s + std::max(step_s, 0.0);
+        //     d_last_row_end_s = std::max(expected, now_rel_s);
+        // }
+        const double fp_s   = event->frame_period_s();
+        const double step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
+        if (d_last_row_end_s <= 0.0) d_last_row_end_s = step_s;
+        else                         d_last_row_end_s += std::max(step_s, 0.0);
 
         set_time_axis();
         set_freq_axis(d_center_freq, d_samp_rate);
@@ -152,14 +156,24 @@ void SpectroWindow::customEvent(QEvent* e)
 
 void SpectroWindow::set_time_axis()
 {
-    const double tmax = d_last_row_end_s;
-    const double tmin = tmax - d_time_window_s;
+    const double step = std::max(d_time_per_fft, 1e-12);
+    const int rows = (d_cols > 0) ? (int)(d_water_values.size() / d_cols) : 0;
+
+    const double tmax       = d_last_row_end_s;              // 화면 상단 시각
+    const double data_span  = rows * step;                   // 버퍼가 실제로 덮는 시간
+    const double data_min   = std::max(0.0, tmax - data_span);
+    const double data_max   = tmax;
+
+    // 축(보이는 창)은 d_time_window_s 만큼만 뒤로 보여줌 (반전 스케일 유지)
+    const double tmin_axis  = tmax - d_time_window_s;
 
     d_plot->setAxisTitle(QwtPlot::yLeft, QString("Time (s)"));
-    d_plot->setAxisScale(QwtPlot::yLeft, tmax, tmin);
+    d_plot->setAxisScale(QwtPlot::yLeft, tmax, tmin_axis);
 
-    d_data->setInterval(Qt::YAxis, QwtInterval(0.0, tmax));
+    // ★ 핵심: 데이터 Y-interval을 [data_min, data_max]로!
+    d_data->setInterval(Qt::YAxis, QwtInterval(data_min, data_max));
 }
+
 
 
 void SpectroWindow::set_freq_axis(double center_freq, double samp_rate)

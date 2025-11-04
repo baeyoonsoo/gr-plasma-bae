@@ -13,6 +13,7 @@
 #include <gnuradio/high_res_timer.h>
 #include <pmt/pmt.h>
 #include <atomic>
+#include <vector>
 
 namespace gr {
 namespace plasma {
@@ -42,7 +43,12 @@ private:
     // time
     gr::high_res_timer_type d_update_time;
     gr::high_res_timer_type d_last_time;
+    double                  d_update_sec {0.1}; // 초 단위 갱신 주기
 
+    // averaging accumulator
+    std::vector<double> d_accum_buf; // 누산(합계) 버퍼
+    size_t              d_accum_cols {0}; // FFT 크기(열 수)
+    size_t              d_accum_count {0}; // 주기 내 PDU 개수
 
 public:
     spectro_sink_impl(double samp_rate,

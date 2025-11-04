@@ -114,22 +114,16 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     size_t len = pmt::length(samples);
     if (len==0) return;
 
-    size_t nrow = 1;
-    size_t ncol = len;
-    double* out = new double[len];
+    const size_t ncol = len;
+    std::vector<double> cur(len);
 
     if (pmt::is_f32vector(samples)) {
         const float* in = pmt::f32vector_elements(samples, len);
-        for (size_t i = 0; i < len; ++i) {
-            out[i] = static_cast<double>(in[i]);
-        }
+        for (size_t i = 0; i < len; ++i) cur[i] = static_cast<double>(in[i]);
     } else if (pmt::is_c32vector(samples)){
         const gr_complex* in = pmt::c32vector_elements(samples, len);
-        for (size_t i = 0; i < len; ++i) {
-            out[i] = static_cast<double>(std::abs(in[i]));
-        }
+        for (size_t i = 0; i < len; ++i) cur[i] = static_cast<double>(std::abs(in[i]));
     } else {
-        delete[] out;
         return;
     }
 
@@ -139,32 +133,43 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     d_samp_rate = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
     d_center_freq = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
 
-    // time
-    uint64_t now_us = 0;   
-    double frame_period_s = 0.0;
-
-    if (gr::high_res_timer_now() - d_last_time > d_update_time) {
-        d_last_time = gr::high_res_timer_now();
-
-        if (d_samp_rate <= 0.0) {
-            set_time_per_fft(0.0);
-        } else {
-            if (d_samp_rate > 0.0) {
-                int stride = std::max(0, static_cast<int>(len - static_cast<size_t>(d_fft_size)));
-                frame_period_s = (stride > 0) ? (static_cast<double>(stride) / d_samp_rate)
-                                            : (static_cast<double>(d_fft_size) / d_samp_rate);
-            }
-            set_time_per_fft(frame_period_s);
-
-            const auto now_ticks = gr::high_res_timer_now();
-            const auto tps       = gr::high_res_timer_tps();
-            now_us = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
-        }
-                                        
+    // ===== 평균 누산 =====
+    // FFT 크기가 바뀌면 누산기 리셋
+    if (d_accum_cols != ncol || d_accum_buf.size() != ncol) {
+        d_accum_cols  = ncol;
+        d_accum_buf.assign(ncol, 0.0);
+        d_accum_count = 0;
     }
+    // 합계 누산
+    for (size_t i = 0; i < ncol; ++i) d_accum_buf[i] += cur[i];
+    d_accum_count += 1;
 
-    d_qapp->postEvent(d_main_gui, new SpectroUpdateEvent(out, nrow, ncol, d_meta, now_us, frame_period_s));
-    delete[] out;
+    // ===== 타이머 체크 & 주기 갱신 =====
+    const auto now_ticks = gr::high_res_timer_now();
+    if (now_ticks - d_last_time >= d_update_time && d_accum_count > 0) {
+        d_last_time = now_ticks;
+
+        // 평균 계산
+        std::vector<double> avg(d_accum_cols);
+        const double inv = 1.0 / static_cast<double>(d_accum_count);
+        for (size_t i = 0; i < d_accum_cols; ++i) avg[i] = d_accum_buf[i] * inv;
+
+        // 시간 정보
+        const auto tps = gr::high_res_timer_tps();
+        const uint64_t now_us = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
+
+        // 주기 고정으로 전달해 시간축 속도와 동기화
+        const double frame_period_s = d_update_sec;
+        set_time_per_fft(frame_period_s);
+
+        // 한 번만 이벤트 발송
+        d_qapp->postEvent(d_main_gui,
+            new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
+
+        // 누산기 리셋
+        std::fill(d_accum_buf.begin(), d_accum_buf.end(), 0.0);
+        d_accum_count = 0;
+    }
 }
 
 void spectro_sink_impl::set_update_time(double t)
@@ -173,6 +178,7 @@ void spectro_sink_impl::set_update_time(double t)
     gr::high_res_timer_type tps = gr::high_res_timer_tps();
     d_update_time = t * tps;
     d_main_gui->setUpdateTime(t);
+    d_update_sec  = t;
     d_last_time = 0;
 }
 

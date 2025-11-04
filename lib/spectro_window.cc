@@ -125,24 +125,11 @@ void SpectroWindow::customEvent(QEvent* e)
             }
             rows = d_max_rows;
         }
-        // const uint64_t now_us = event->timestamp_us();
-        // const double   fp_s   = event->frame_period_s();
-        // const double   step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
 
-        // const double now_sec   = (now_us > 0) ? (now_us / 1e6) : 0.0;
-        // if (!have_t0_) { t0_sec_ = now_sec; have_t0_ = true; }
-        // const double now_rel_s = now_sec - t0_sec_;   
-        
-        // if (d_last_row_end_s <= 0.0) {
-        //     d_last_row_end_s = now_rel_s;
-        // } else {
-        //     const double expected = d_last_row_end_s + std::max(step_s, 0.0);
-        //     d_last_row_end_s = std::max(expected, now_rel_s);
-        // }
         const double fp_s   = event->frame_period_s();
         const double step_s = (fp_s > 0.0) ? fp_s : d_time_per_fft;
         if (d_last_row_end_s <= 0.0) d_last_row_end_s = step_s;
-        else                         d_last_row_end_s += std::max(step_s, 0.0);
+        else                         d_last_row_end_s += step_s;
 
         set_time_axis();
         set_freq_axis(d_center_freq, d_samp_rate);

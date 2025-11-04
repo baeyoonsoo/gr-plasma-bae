@@ -21,6 +21,10 @@ namespace plasma {
 class spectro_sink_impl : public spectro_sink
 {
 private:
+    // private:
+    uint64_t d_last_emit_ticks = 0;
+    bool     d_have_emit_tick  = false;
+
     // Block parameters
     int d_fft_size;
     double d_samp_rate;

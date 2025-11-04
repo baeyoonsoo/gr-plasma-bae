@@ -156,15 +156,26 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 
         // 시간 정보
         const auto tps = gr::high_res_timer_tps();
-        const uint64_t now_us = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
+        const uint64_t now_us    = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
 
-        // 주기 고정으로 전달해 시간축 속도와 동기화
-        const double frame_period_s = d_update_sec;
+        // 실제 이벤트 간 간격(측정치)
+        double frame_period_s;
+        if (d_have_emit_tick) {
+            const uint64_t dt_ticks = now_ticks - d_last_emit_ticks;
+            frame_period_s = static_cast<double>(dt_ticks) / static_cast<double>(tps);
+        } else {
+            // 첫 이벤트는 설정값으로 초기화
+            frame_period_s = d_update_sec;
+            d_have_emit_tick = true;
+        }
+        d_last_emit_ticks = now_ticks;
+
         set_time_per_fft(frame_period_s);
 
-        // 한 번만 이벤트 발송
+        // 이벤트 발송
         d_qapp->postEvent(d_main_gui,
             new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
+
 
         // 누산기 리셋
         std::fill(d_accum_buf.begin(), d_accum_buf.end(), 0.0);

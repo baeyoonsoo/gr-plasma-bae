@@ -44,7 +44,8 @@ target_link_libraries(gnuradio-plasma
     nlohmann_json::nlohmann_json
     plasma_dsp
     ArrayFire::af
-    ${IIO_LIBRARIES})
+    ${IIO_LIBRARIES}
+    SQLite::SQLite3)
 
 target_include_directories(gnuradio-plasma
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>

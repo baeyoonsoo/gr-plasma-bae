@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '31000000'
+    value: '20000000'
   states:
     bus_sink: false
     bus_source: false
@@ -85,63 +85,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 436.0]
-    rotation: 0
-    state: disabled
-- name: plasma_bae_sink_0
-  id: plasma_bae_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    center_freq: center_freq
-    center_freq_key: core:frequency
-    comment: ''
-    depth: '1'
-    detection_indices_key: detection_indices
-    dynamic_range: '60'
-    dynamic_range_key: dynamic_range
-    gui_hint: ''
-    mode: '0'
-    n_matrix_col_key: n_matrix_col
-    nrow: '128'
-    parent: None
-    prf_key: radar:prf
-    pulsewidth_key: radar:duration
-    samp_rate: samp_rate
-    samp_rate_key: core:sample_rate
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [912, 296.0]
-    rotation: 0
-    state: disabled
-- name: plasma_bae_sink_0_0
-  id: plasma_bae_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    center_freq: center_freq
-    center_freq_key: core:frequency
-    comment: ''
-    depth: '1'
-    detection_indices_key: detection_indices
-    dynamic_range: '60'
-    dynamic_range_key: dynamic_range
-    gui_hint: ''
-    mode: '0'
-    n_matrix_col_key: n_matrix_col
-    nrow: '128'
-    parent: None
-    prf_key: radar:prf
-    pulsewidth_key: radar:duration
-    samp_rate: samp_rate
-    samp_rate_key: core:sample_rate
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1640, 304.0]
+    coordinate: [456, 788.0]
     rotation: 0
     state: disabled
 - name: plasma_signal_processing_0
@@ -185,7 +129,73 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1424, 168.0]
+    coordinate: [704, 512.0]
+    rotation: 0
+    state: enabled
+- name: plasma_signal_processing_0_0_0
+  id: plasma_signal_processing
+  parameters:
+    affinity: ''
+    alias: ''
+    backend: plasma.Device.DEFAULT
+    comment: ''
+    fft_on: '1'
+    fft_size: '1024'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_pulse_cpi_key: n_pulse_cpi
+    output_magnitude: '1'
+    sample_rate: samp_rate
+    window_type: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 520.0]
+    rotation: 0
+    state: enabled
+- name: plasma_signal_processing_0_0_0_0
+  id: plasma_signal_processing
+  parameters:
+    affinity: ''
+    alias: ''
+    backend: plasma.Device.DEFAULT
+    comment: ''
+    fft_on: '1'
+    fft_size: '1024'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_pulse_cpi_key: n_pulse_cpi
+    output_magnitude: '1'
+    sample_rate: samp_rate
+    window_type: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 872.0]
+    rotation: 0
+    state: enabled
+- name: plasma_signal_processing_0_1
+  id: plasma_signal_processing
+  parameters:
+    affinity: ''
+    alias: ''
+    backend: plasma.Device.DEFAULT
+    comment: ''
+    fft_on: '1'
+    fft_size: '1024'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_pulse_cpi_key: n_pulse_cpi
+    output_magnitude: '1'
+    sample_rate: samp_rate
+    window_type: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1392, 168.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0
@@ -209,7 +219,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 168.0]
+    coordinate: [920, 168.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_0
@@ -233,7 +243,79 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1632, 176.0]
+    coordinate: [920, 520.0]
+    rotation: 0
+    state: enabled
+- name: plasma_spectro_sink_0_0_0
+  id: plasma_spectro_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center_freq
+    center_freq_key: center_freq
+    comment: ''
+    depth: '1'
+    fft_size: '1024'
+    gui_hint: ''
+    n_matrix_col_key: fft_size
+    ncol: '128'
+    parent: None
+    samp_rate: samp_rate
+    samp_rate_key: samp_rate
+    update_time: '0.1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1616, 528.0]
+    rotation: 0
+    state: enabled
+- name: plasma_spectro_sink_0_0_0_0
+  id: plasma_spectro_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center_freq
+    center_freq_key: center_freq
+    comment: ''
+    depth: '1'
+    fft_size: '1024'
+    gui_hint: ''
+    n_matrix_col_key: fft_size
+    ncol: '128'
+    parent: None
+    samp_rate: samp_rate
+    samp_rate_key: samp_rate
+    update_time: '0.1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1616, 880.0]
+    rotation: 0
+    state: enabled
+- name: plasma_spectro_sink_0_1
+  id: plasma_spectro_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center_freq
+    center_freq_key: center_freq
+    comment: ''
+    depth: '1'
+    fft_size: '1024'
+    gui_hint: ''
+    n_matrix_col_key: fft_size
+    ncol: '128'
+    parent: None
+    samp_rate: samp_rate
+    samp_rate_key: samp_rate
+    update_time: '0.1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1616, 176.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0
@@ -264,7 +346,7 @@ blocks:
     sample_start_key: core:sample_start
     samplerate: samp_rate
     tx_freq_key: core:tx_freq
-    uri: ip:192.168.3.3
+    uri: ip:192.168.4.1
   states:
     bus_sink: false
     bus_source: false
@@ -300,12 +382,120 @@ blocks:
     sample_start_key: core:sample_start
     samplerate: samp_rate
     tx_freq_key: core:tx_freq
-    uri: ip:192.168.2.1
+    uri: ip:192.168.5.1
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1176, 64.0]
+    coordinate: [448, 408.0]
+    rotation: 0
+    state: enabled
+- name: pluto_source_bae_0_0_0
+  id: pluto_source_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    auto_filter: 'True'
+    bandwidth: samp_rate
+    bbdc: 'True'
+    buffer_size: '4096'
+    comment: ''
+    filter: '""'
+    frequency: '2440000000'
+    gain1: '"manual"'
+    gain1_value: '10'
+    gain2: '"manual"'
+    gain2_value: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pdu_duration: 100e-6
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
+    rx_freq_key: core:rx_freq
+    sample_start_key: core:sample_start
+    samplerate: samp_rate
+    tx_freq_key: core:tx_freq
+    uri: ip:192.168.7.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 416.0]
+    rotation: 0
+    state: enabled
+- name: pluto_source_bae_0_0_0_0
+  id: pluto_source_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    auto_filter: 'True'
+    bandwidth: samp_rate
+    bbdc: 'True'
+    buffer_size: '4096'
+    comment: ''
+    filter: '""'
+    frequency: '2460000000'
+    gain1: '"manual"'
+    gain1_value: '10'
+    gain2: '"manual"'
+    gain2_value: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pdu_duration: 100e-6
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
+    rx_freq_key: core:rx_freq
+    sample_start_key: core:sample_start
+    samplerate: samp_rate
+    tx_freq_key: core:tx_freq
+    uri: ip:192.168.8.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 768.0]
+    rotation: 0
+    state: enabled
+- name: pluto_source_bae_0_1
+  id: pluto_source_bae
+  parameters:
+    affinity: ''
+    alias: ''
+    auto_filter: 'True'
+    bandwidth: samp_rate
+    bbdc: 'True'
+    buffer_size: '4096'
+    comment: ''
+    filter: '""'
+    frequency: '2420000000'
+    gain1: '"manual"'
+    gain1_value: '10'
+    gain2: '"manual"'
+    gain2_value: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pdu_duration: 100e-6
+    quadrature: 'True'
+    rf_port_select: '"A_BALANCED"'
+    rfdc: 'True'
+    rx1_en: 'True'
+    rx2_en: 'True'
+    rx_freq_key: core:rx_freq
+    sample_start_key: core:sample_start
+    samplerate: samp_rate
+    tx_freq_key: core:tx_freq
+    uri: ip:192.168.6.1
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 64.0]
     rotation: 0
     state: enabled
 - name: qtgui_waterfall_sink_x_0
@@ -366,18 +556,22 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [720, 504.0]
+    coordinate: [728, 856.0]
     rotation: 0
     state: disabled
 
 connections:
 - [iio_pluto_source_0, '0', qtgui_waterfall_sink_x_0, '0']
-- [plasma_signal_processing_0, out, plasma_bae_sink_0, in]
 - [plasma_signal_processing_0, out, plasma_spectro_sink_0, in]
-- [plasma_signal_processing_0_0, out, plasma_bae_sink_0_0, in]
 - [plasma_signal_processing_0_0, out, plasma_spectro_sink_0_0, in]
+- [plasma_signal_processing_0_0_0, out, plasma_spectro_sink_0_0_0, in]
+- [plasma_signal_processing_0_0_0_0, out, plasma_spectro_sink_0_0_0_0, in]
+- [plasma_signal_processing_0_1, out, plasma_spectro_sink_0_1, in]
 - [pluto_source_bae_0, out, plasma_signal_processing_0, rx]
 - [pluto_source_bae_0_0, out, plasma_signal_processing_0_0, rx]
+- [pluto_source_bae_0_0_0, out, plasma_signal_processing_0_0_0, rx]
+- [pluto_source_bae_0_0_0_0, out, plasma_signal_processing_0_0_0_0, rx]
+- [pluto_source_bae_0_1, out, plasma_signal_processing_0_1, rx]
 
 metadata:
   file_format: 1

@@ -10,7 +10,7 @@
 #include <QApplication>
 #include <chrono>
 #include <thread>
-
+#include <sqlite3.h>
 
 namespace gr {
 namespace plasma {

@@ -108,6 +108,7 @@ find_package(pybind11 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qwt REQUIRED)
 find_package(UHD REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 # libiio via pkg-config (instead of CMake package)
 # find_package(PkgConfig REQUIRED)

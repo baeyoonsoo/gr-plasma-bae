@@ -10,7 +10,6 @@
 #include <QApplication>
 #include <chrono>
 #include <thread>
-#include <sqlite3.h>
 
 namespace gr {
 namespace plasma {
@@ -34,13 +33,30 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
                              double center_freq,
                              QWidget* parent)
     : gr::block("spectro_sink",
-                gr::io_signature::make(0, 0, 0),
-                gr::io_signature::make(0, 0, 0)),
-      d_samp_rate(samp_rate),
-      d_ncol(ncol),
-      d_fft_size(fft_size),
-      d_center_freq(center_freq)
+              gr::io_signature::make(0,0,0),
+              gr::io_signature::make(0,0,0)),
+    d_samp_rate(samp_rate),
+    d_fft_size(fft_size),   // 선언 순서와 맞춤
+    d_ncol(ncol),
+    d_center_freq(center_freq)
 {
+    if (const char* en = std::getenv("PLASMA_DB_ENABLE")) {
+        d_db_enable = (std::string(en) == "1" || std::string(en) == "true");
+    }
+    if (const char* p = std::getenv("PLASMA_DB_PATH"))   d_db_path   = p;
+    if (const char* d = std::getenv("PLASMA_DEVICE_ID")) d_device_id = d;
+
+    if (d_db_enable) {
+        try {
+            db_open_and_prepare();
+            d_db_thread = std::thread(&spectro_sink_impl::db_thread_loop, this);
+        } catch (const std::exception& e) {
+            std::cerr << "[spectro_sink] SQLite init failed: " << e.what()
+                    << " (DB disabled)\n";
+            d_db_enable = false; // 플롯은 계속
+        }
+    }
+
     // Initialize the QApplication
     static int argc = 1;
     static char app[] = "spectro";
@@ -65,7 +81,14 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
 /*
  * Our virtual destructor.
  */
-spectro_sink_impl::~spectro_sink_impl() { }
+spectro_sink_impl::~spectro_sink_impl() {
+    if (d_db_enable) {
+        { std::lock_guard<std::mutex> lk(d_m); d_stop = true; }
+        d_cv.notify_all();
+        if (d_db_thread.joinable()) d_db_thread.join();
+        db_close();
+    }
+}
 
 bool spectro_sink_impl::start()
 {
@@ -175,7 +198,24 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         // 이벤트 발송
         d_qapp->postEvent(d_main_gui,
             new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
+        
+        // DB로도 동일 프레임 전송
+        if (d_db_enable) {
+            frame_row r;
+            r.ts_us        = now_us;
+            r.device_id    = d_device_id;              // "pluto-01" 같은 값
+            r.center_hz    = d_center_freq;
+            r.samp_rate_hz = d_samp_rate;
+            r.fft_size     = static_cast<int>(d_accum_cols);
+            r.bin0_hz      = r.center_hz - r.samp_rate_hz/2.0;
+            r.df_hz        = r.samp_rate_hz / r.fft_size;
 
+            r.power_db.resize(d_accum_cols);
+            for (size_t i = 0; i < d_accum_cols; ++i)
+                r.power_db[i] = static_cast<float>(avg[i]); // float32로 저장
+
+            enqueue_frame(std::move(r));
+        }
 
         // 누산기 리셋
         std::fill(d_accum_buf.begin(), d_accum_buf.end(), 0.0);
@@ -211,6 +251,86 @@ void spectro_sink_impl::set_metadata_keys(const std::string& samp_rate_key,
 
 void spectro_sink_impl::set_time_per_fft(double t) { 
     d_main_gui->setUpdateTime(t); 
+}
+
+long long spectro_sink_impl::now_us() const {
+  using namespace std::chrono;
+  return duration_cast<microseconds>(
+           std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+void spectro_sink_impl::db_open_and_prepare() {
+  if (sqlite3_open_v2(d_db_path.c_str(), &d_db,
+        SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nullptr) != SQLITE_OK)
+    throw std::runtime_error("sqlite open failed");
+
+  sqlite3_exec(d_db, "PRAGMA journal_mode=WAL;", nullptr, nullptr, nullptr);
+  sqlite3_exec(d_db, "PRAGMA synchronous=NORMAL;", nullptr, nullptr, nullptr);
+
+  const char* ddl =
+    "CREATE TABLE IF NOT EXISTS spectrum_frames("
+    " ts_us INTEGER NOT NULL, device_id TEXT NOT NULL,"
+    " center_hz REAL NOT NULL, samp_rate_hz REAL NOT NULL,"
+    " fft_size INTEGER NOT NULL, bin0_hz REAL NOT NULL, df_hz REAL NOT NULL,"
+    " power_db BLOB NOT NULL );"
+    "CREATE INDEX IF NOT EXISTS idx_frames_ts ON spectrum_frames(ts_us DESC);"
+    "CREATE INDEX IF NOT EXISTS idx_frames_dev_ts ON spectrum_frames(device_id, ts_us DESC);";
+  sqlite3_exec(d_db, "BEGIN;", nullptr, nullptr, nullptr);
+  sqlite3_exec(d_db, ddl,       nullptr, nullptr, nullptr);
+  sqlite3_exec(d_db, "COMMIT;", nullptr, nullptr, nullptr);
+
+  const char* SQL =
+    "INSERT INTO spectrum_frames"
+    " (ts_us, device_id, center_hz, samp_rate_hz, fft_size, bin0_hz, df_hz, power_db)"
+    " VALUES (?,?,?,?,?,?,?,?);";
+  if (sqlite3_prepare_v2(d_db, SQL, -1, &d_stmt, nullptr) != SQLITE_OK)
+    throw std::runtime_error("sqlite prepare failed");
+}
+
+void spectro_sink_impl::db_thread_loop() {
+  const int BATCH = 20;
+  std::vector<frame_row> batch; batch.reserve(BATCH);
+
+  for (;;) {
+    {
+      std::unique_lock<std::mutex> lk(d_m);
+      d_cv.wait(lk, [&]{ return d_stop || !d_q.empty(); });
+      if (d_stop && d_q.empty()) break;
+      while (!d_q.empty() && (int)batch.size() < BATCH) {
+        batch.emplace_back(std::move(d_q.front()));
+        d_q.pop();
+      }
+    }
+    if (batch.empty()) continue;
+
+    sqlite3_exec(d_db, "BEGIN;", nullptr, nullptr, nullptr);
+    for (auto& r : batch) {
+      sqlite3_reset(d_stmt); sqlite3_clear_bindings(d_stmt);
+      sqlite3_bind_int64 (d_stmt, 1, r.ts_us);
+      sqlite3_bind_text  (d_stmt, 2, r.device_id.c_str(), -1, SQLITE_TRANSIENT);
+      sqlite3_bind_double(d_stmt, 3, r.center_hz);
+      sqlite3_bind_double(d_stmt, 4, r.samp_rate_hz);
+      sqlite3_bind_int   (d_stmt, 5, r.fft_size);
+      sqlite3_bind_double(d_stmt, 6, r.bin0_hz);
+      sqlite3_bind_double(d_stmt, 7, r.df_hz);
+      sqlite3_bind_blob  (d_stmt, 8, r.power_db.data(),
+                          (int)(r.power_db.size()*sizeof(float)), SQLITE_TRANSIENT);
+      (void)sqlite3_step(d_stmt);
+    }
+    sqlite3_exec(d_db, "COMMIT;", nullptr, nullptr, nullptr);
+    batch.clear();
+  }
+}
+
+void spectro_sink_impl::db_close() {
+  if (d_stmt) { sqlite3_finalize(d_stmt); d_stmt = nullptr; }
+  if (d_db)   { sqlite3_close(d_db);      d_db   = nullptr; }
+}
+
+void spectro_sink_impl::enqueue_frame(frame_row&& r) {
+  std::lock_guard<std::mutex> lk(d_m);
+  d_q.emplace(std::move(r));
+  d_cv.notify_one();
 }
 
 } /* namespace plasma */

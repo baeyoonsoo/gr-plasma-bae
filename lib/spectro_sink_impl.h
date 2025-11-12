@@ -14,6 +14,10 @@
 #include <pmt/pmt.h>
 #include <atomic>
 #include <vector>
+#include <queue> 
+#include <cstdlib>
+#include <stdexcept>
+#include <sqlite3.h>
 
 namespace gr {
 namespace plasma {
@@ -53,6 +57,38 @@ private:
     std::vector<double> d_accum_buf; // 누산(합계) 버퍼
     size_t              d_accum_cols {0}; // FFT 크기(열 수)
     size_t              d_accum_count {0}; // 주기 내 PDU 개수
+
+    struct frame_row {
+        long long ts_us;
+        std::string device_id;
+        double center_hz;
+        double samp_rate_hz;
+        double bin0_hz;
+        double df_hz;
+        int    fft_size;
+        std::vector<float> power_db; // length = fft_size
+    };
+    // --- DB 옵션 (초기값; 환경변수/GRC로 교체 가능) ---
+    bool        d_db_enable = false;
+    std::string d_db_path   = "/var/tmp/spectrum.db";
+    std::string d_device_id = "pluto-xx";
+
+    // --- SQLite 비동기 writer 자원 ---
+    sqlite3* d_db = nullptr;
+    sqlite3_stmt* d_stmt = nullptr;
+
+    std::thread              d_db_thread;
+    std::mutex               d_m;
+    std::condition_variable  d_cv;
+    std::queue<frame_row>    d_q;
+    bool                     d_stop = false;
+
+    // --- DB 관련 메서드 선언 ---
+    void db_open_and_prepare();
+    void db_thread_loop();
+    void db_close();
+    void enqueue_frame(frame_row&& r);
+    inline long long now_us() const;
 
 public:
     spectro_sink_impl(double samp_rate,

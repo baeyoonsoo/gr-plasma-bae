@@ -46,10 +46,12 @@ public:
 
         const QwtInterval xInterval = interval(Qt::XAxis);
         const QwtInterval yInterval = interval(Qt::YAxis);
-        if (xInterval.isValid())
-            dx = xInterval.width() / numColumns;
-        if (yInterval.isValid())
-            dy = yInterval.width() / numRows;
+        if (xInterval.isValid()) {
+            dx = (numColumns > 1) ? (xInterval.width() / (numColumns - 1)) : xInterval.width();
+        }
+        if (yInterval.isValid()) {
+            dy = (numRows    > 1) ? (yInterval.width() / (numRows    - 1)) : yInterval.width();
+        }
     }
 
     virtual void setInterval(Qt::Axis axis, const QwtInterval& interval)
@@ -72,8 +74,8 @@ public:
 
         double value;
 
-        int row = round((y - yInterval.minValue()) / dy);
-        int col = round((x - xInterval.minValue()) / dx);
+        int col = static_cast<int>(std::floor((x - xInterval.minValue()) / dx + 1e-9));
+        int row = static_cast<int>(std::floor((y - yInterval.minValue()) / dy + 1e-9));
 
         if (row < 0) row = 0;
         if (col < 0) col = 0;

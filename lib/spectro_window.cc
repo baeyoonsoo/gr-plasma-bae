@@ -107,13 +107,15 @@ void SpectroWindow::customEvent(QEvent* e)
         pmt::pmt_t meta = event->meta();
         const double* data = event->data();
 
-        const size_t N = static_cast<size_t>(pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(1024))));
-        d_samp_rate  = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
-        d_center_freq= pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
-        d_cols = static_cast<int>(N);
+        d_samp_rate   = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"),
+                                                    pmt::from_double(d_samp_rate)));
+        d_center_freq = pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"),
+                                                    pmt::from_double(d_center_freq)));
+        const size_t Ncols = event->cols();
+        d_cols = static_cast<int>(Ncols);
 
-        d_water_values.reserve(d_water_values.size() + static_cast<int>(N));
-        for (size_t i = 0; i < N; ++i) d_water_values.push_back(data[i]);
+        d_water_values.reserve(d_water_values.size() + d_cols);
+        for (size_t i = 0; i < Ncols; ++i) d_water_values.push_back(data[i]);
 
         int rows = d_water_values.size() / d_cols;
         if (rows > d_max_rows) {
@@ -183,7 +185,7 @@ void SpectroWindow::set_color_axis()
     d_data->setInterval(Qt::ZAxis, QwtInterval(Z_MIN_DB, Z_MAX_DB));
 }
 
-// Override displayform SetUpdateTime() to set FFT time
+// Override displayform UpdateTime() to set FFT time
 void SpectroWindow::setUpdateTime(double t)
 {
     d_time_per_fft = t;

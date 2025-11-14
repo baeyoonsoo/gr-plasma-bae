@@ -333,5 +333,64 @@ void spectro_sink_impl::enqueue_frame(frame_row&& r) {
   d_cv.notify_one();
 }
 
+void spectro_sink_impl::set_db_enable(bool enable)
+{
+    if (enable == d_db_enable) return;
+
+    if (enable) {
+        try {
+            // 이미 켜져있지 않다면 초기화 + 쓰레드 기동
+            db_open_and_prepare();
+            d_stop = false;
+            d_db_thread = std::thread(&spectro_sink_impl::db_thread_loop, this);
+            d_db_enable = true;
+        } catch (const std::exception& e) {
+            std::cerr << "[spectro_sink] SQLite init failed: " << e.what()
+                      << " (DB disabled)\n";
+            d_db_enable = false;
+        }
+    } else {
+        // 끄기: 안전 종료
+        if (d_db_enable) {
+            { std::lock_guard<std::mutex> lk(d_m); d_stop = true; }
+            d_cv.notify_all();
+            if (d_db_thread.joinable()) d_db_thread.join();
+            db_close();
+            // 큐/상태 정리
+            { std::lock_guard<std::mutex> lk(d_m);
+              std::queue<frame_row> empty; std::swap(d_q, empty);
+            }
+            d_db_enable = false;
+        }
+    }
+}
+void spectro_sink_impl::set_db_path(const std::string& path)
+{
+    if (path.empty() || path == d_db_path) return;
+    d_db_path = path;
+
+    // 켜진 상태에서 경로 변경 시 안전하게 재오픈
+    if (d_db_enable) {
+        { std::lock_guard<std::mutex> lk(d_m); d_stop = true; }
+        d_cv.notify_all();
+        if (d_db_thread.joinable()) d_db_thread.join();
+        db_close();
+        try {
+            db_open_and_prepare();
+            d_stop = false;
+            d_db_thread = std::thread(&spectro_sink_impl::db_thread_loop, this);
+        } catch (const std::exception& e) {
+            std::cerr << "[spectro_sink] Reopen failed: " << e.what()
+                      << " (DB disabled)\n";
+            d_db_enable = false;
+        }
+    }
+}
+
+void spectro_sink_impl::set_device_id(const std::string& id)
+{
+    if (!id.empty()) d_device_id = id;
+}
+
 } /* namespace plasma */
 } /* namespace gr */

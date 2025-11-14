@@ -175,7 +175,10 @@ blocks:
     center_freq: '2460000000'
     center_freq_key: center_freq
     comment: ''
+    db_enable: '1'
+    db_path: /home/hajung/spectrum.db
     depth: '1'
+    device_id: ''
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -188,7 +191,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1600, 264.0]
+    coordinate: [1600, 236.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_0
@@ -199,7 +202,10 @@ blocks:
     center_freq: '2440000000'
     center_freq_key: center_freq
     comment: ''
+    db_enable: '1'
+    db_path: /home/hajung/spectrum.db
     depth: '1'
+    device_id: ''
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -212,7 +218,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1600, 464.0]
+    coordinate: [1600, 436.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_1
@@ -223,7 +229,10 @@ blocks:
     center_freq: '2420000000'
     center_freq_key: center_freq
     comment: ''
+    db_enable: 'True'
+    db_path: /home/hajung/spectrum.db
     depth: '1'
+    device_id: ''
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -236,7 +245,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 144.0]
+    coordinate: [880, 116.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_2
@@ -247,7 +256,10 @@ blocks:
     center_freq: '2400000000'
     center_freq_key: center_freq
     comment: ''
+    db_enable: '1'
+    db_path: /home/hajung/spectrum.db
     depth: '1'
+    device_id: ''
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -260,7 +272,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 352.0]
+    coordinate: [888, 324.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_3
@@ -271,7 +283,10 @@ blocks:
     center_freq: '2380000000'
     center_freq_key: center_freq
     comment: ''
+    db_enable: '1'
+    db_path: /home/hajung/spectrum.db
     depth: '1'
+    device_id: ''
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -284,7 +299,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 568.0]
+    coordinate: [880, 540.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0

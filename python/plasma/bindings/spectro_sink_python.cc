@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
 /* BINDTOOL_HEADER_FILE(spectro_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(706d43cbf5bfc4422f9dd9d0e6c012cb)                     */
+/* BINDTOOL_HEADER_FILE_HASH(30f6e2f7c984b4000c1a8ba38f7eef50)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -57,6 +57,15 @@ void bind_spectro_sink(py::module& m)
 
 
         .def("exec_", &spectro_sink::exec_, D(spectro_sink, exec_))
+
+        .def("set_db_enable", &spectro_sink::set_db_enable,
+             py::arg("enable"))
+
+        .def("set_db_path", &spectro_sink::set_db_path,
+             py::arg("path"))
+
+        .def("set_device_id", &spectro_sink::set_device_id,
+             py::arg("id"))
 
 
         .def(

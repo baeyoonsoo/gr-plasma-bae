@@ -68,6 +68,21 @@ parameters:
     hide: part
     category: Metadata
 
+  - id: db_enable
+    label: Write to SQLite
+    dtype: bool
+    default: true
+
+  - id: db_path
+    label: DB Path
+    dtype: string
+    default: /var/tmp/spectrum.db
+
+  - id: device_id
+    label: Device ID
+    dtype: string
+    default: 
+
 inputs:
   - domain: message
     id: in
@@ -88,5 +103,9 @@ templates:
     ${win} = sip.wrapinstance(self.${id}.qwidget(), Qt.QWidget)
     ${gui_hint() % win}
 
+callbacks:
+  - set_db_enable(${db_enable})
+  - set_db_path(${db_path})
+  - set_device_id(${device_id})
 
 file_format: 1

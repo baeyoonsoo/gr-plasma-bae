@@ -116,6 +116,10 @@ public:
     void set_metadata_keys(const std::string& samp_rate_key,
                            const std::string& n_matrix_col_key,
                            const std::string& center_freq_key) override;
+
+    void set_db_enable(bool enable) override;
+    void set_db_path(const std::string& path) override;
+    void set_device_id(const std::string& id) override;
 };
 
 } // namespace plasma

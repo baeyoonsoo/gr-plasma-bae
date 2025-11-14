@@ -54,6 +54,10 @@ public:
     virtual void set_metadata_keys(const std::string& samp_rate_key,
                                    const std::string& n_matrix_col_key,
                                    const std::string& center_freq_key) = 0;
+                                   
+    virtual void set_db_enable(bool enable) = 0;
+    virtual void set_db_path(const std::string& path) = 0;
+    virtual void set_device_id(const std::string& id) = 0;
 };
 
 } // namespace plasma

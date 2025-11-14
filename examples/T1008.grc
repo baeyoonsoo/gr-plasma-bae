@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '30000000'
+    value: '20000000'
   states:
     bus_sink: false
     bus_source: false
@@ -78,7 +78,7 @@ blocks:
     bus_structure: null
     coordinate: [1408, 256.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_signal_processing_0_0
   id: plasma_signal_processing
   parameters:
@@ -100,7 +100,7 @@ blocks:
     bus_structure: null
     coordinate: [1408, 456.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_signal_processing_0_1
   id: plasma_signal_processing
   parameters:
@@ -190,7 +190,7 @@ blocks:
     bus_structure: null
     coordinate: [1600, 264.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_spectro_sink_0_0
   id: plasma_spectro_sink
   parameters:
@@ -214,7 +214,7 @@ blocks:
     bus_structure: null
     coordinate: [1600, 464.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: plasma_spectro_sink_0_1
   id: plasma_spectro_sink
   parameters:
@@ -322,7 +322,7 @@ blocks:
     bus_structure: null
     coordinate: [1160, 152.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pluto_source_bae_0_0
   id: pluto_source_bae
   parameters:
@@ -358,7 +358,7 @@ blocks:
     bus_structure: null
     coordinate: [1160, 352.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pluto_source_bae_0_1
   id: pluto_source_bae
   parameters:

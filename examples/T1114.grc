@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2410000000'
+    value: '2400000000'
   states:
     bus_sink: false
     bus_source: false
@@ -49,12 +49,40 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '20000000'
+    value: '30000000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [176, 24.0]
+    rotation: 0
+    state: enabled
+- name: plasma_bae_sink_0
+  id: plasma_bae_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: center_freq
+    center_freq_key: core:frequency
+    comment: ''
+    depth: '1'
+    detection_indices_key: detection_indices
+    dynamic_range: '60'
+    dynamic_range_key: dynamic_range
+    gui_hint: ''
+    mode: '0'
+    n_matrix_col_key: n_matrix_col
+    nrow: '128'
+    parent: None
+    prf_key: radar:prf
+    pulsewidth_key: radar:duration
+    samp_rate: samp_rate
+    samp_rate_key: core:sample_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [848, 432.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_3
@@ -76,7 +104,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [656, 288.0]
+    coordinate: [648, 288.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_3
@@ -136,11 +164,12 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 192.0]
+    coordinate: [400, 184.0]
     rotation: 0
     state: enabled
 
 connections:
+- [plasma_signal_processing_0_3, out, plasma_bae_sink_0, in]
 - [plasma_signal_processing_0_3, out, plasma_spectro_sink_0_3, in]
 - [pluto_source_bae_0_3, out, plasma_signal_processing_0_3, rx]
 

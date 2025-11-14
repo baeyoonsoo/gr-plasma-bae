@@ -60,7 +60,7 @@ class T1008(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 30000000
+        self.samp_rate = samp_rate = 20000000
         self.center_freq = center_freq = 2400000000
 
         ##################################################
@@ -127,6 +127,46 @@ class T1008(gr.top_block, Qt.QWidget):
           True,
           100e-6)
         self.pluto_source_bae_0_1.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_bae_0_0 = plasma.pluto_radar_bae(
+          'ip:192.168.7.1',
+          2440000000,
+          samp_rate,
+          samp_rate,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10,
+          "manual",
+          10,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_bae_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
+          'ip:192.168.8.1',
+          2460000000,
+          samp_rate,
+          samp_rate,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10,
+          "manual",
+          10,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
         self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, 2380000000, None)
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
@@ -145,17 +185,35 @@ class T1008(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_1.set_msg_queue_depth(1)
         self._plasma_spectro_sink_0_1_win = sip.wrapinstance(self.plasma_spectro_sink_0_1.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_1_win)
+        self.plasma_spectro_sink_0_0 = self.plasma_spectro_sink_0_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, 2440000000, None)
+        self.plasma_spectro_sink_0_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
+        self.plasma_spectro_sink_0_0.set_update_time(0.1)
+        self.plasma_spectro_sink_0_0.set_msg_queue_depth(1)
+        self._plasma_spectro_sink_0_0_win = sip.wrapinstance(self.plasma_spectro_sink_0_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_spectro_sink_0_0_win)
+        self.plasma_spectro_sink_0 = self.plasma_spectro_sink_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, 2460000000, None)
+        self.plasma_spectro_sink_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
+        self.plasma_spectro_sink_0.set_update_time(0.1)
+        self.plasma_spectro_sink_0.set_msg_queue_depth(1)
+        self._plasma_spectro_sink_0_win = sip.wrapinstance(self.plasma_spectro_sink_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_spectro_sink_0_win)
         self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,0)
         self.plasma_signal_processing_0_2 = plasma.signal_processing(1024,samp_rate,1,1,0)
         self.plasma_signal_processing_0_1 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
 
 
         ##################################################
         # Connections
         ##################################################
+        self.msg_connect((self.plasma_signal_processing_0, 'out'), (self.plasma_spectro_sink_0, 'in'))
+        self.msg_connect((self.plasma_signal_processing_0_0, 'out'), (self.plasma_spectro_sink_0_0, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_1, 'out'), (self.plasma_spectro_sink_0_1, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_2, 'out'), (self.plasma_spectro_sink_0_2, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectro_sink_0_3, 'in'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
+        self.msg_connect((self.pluto_source_bae_0_0, 'out'), (self.plasma_signal_processing_0_0, 'rx'))
         self.msg_connect((self.pluto_source_bae_0_1, 'out'), (self.plasma_signal_processing_0_1, 'rx'))
         self.msg_connect((self.pluto_source_bae_0_2, 'out'), (self.plasma_signal_processing_0_2, 'rx'))
         self.msg_connect((self.pluto_source_bae_0_3, 'out'), (self.plasma_signal_processing_0_3, 'rx'))

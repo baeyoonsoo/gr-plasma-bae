@@ -226,10 +226,8 @@ bool pluto_radar_bae_impl::start()
 
     params.push_back("out_altvoltage0_RX_LO_frequency=" +
             std::to_string(static_cast<unsigned long long>(frequency)));
-    if (!auto_filter) {
-        params.push_back("in_voltage_sampling_frequency=" +
-                std::to_string(samplerate));
-    }
+    params.push_back("in_voltage_sampling_frequency=" +
+            std::to_string(samplerate));
     params.push_back("in_voltage_rf_bandwidth=" +
             std::to_string(bandwidth));
     params.push_back("in_voltage_quadrature_tracking_en=" +
@@ -366,6 +364,7 @@ void pluto_radar_bae_impl::receive()
 
                     pmt::pmt_t meta = pmt::make_dict();
                     meta = pmt::dict_add(meta, pmt::intern("center_freq"), pmt::from_double(frequency));
+                    meta = pmt::dict_add(meta, pmt::intern("samp_rate"),   pmt::from_double(samplerate));
                     meta = pmt::dict_add(meta, pmt::intern("seq"), pmt::from_long(seq++));
 
                     auto now = std::chrono::system_clock::now();

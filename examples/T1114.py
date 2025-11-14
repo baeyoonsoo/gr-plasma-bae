@@ -59,8 +59,8 @@ class T1114(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20000000
-        self.center_freq = center_freq = 2410000000
+        self.samp_rate = samp_rate = 30000000
+        self.center_freq = center_freq = 2400000000
 
         ##################################################
         # Blocks
@@ -93,11 +93,18 @@ class T1114(gr.top_block, Qt.QWidget):
         self._plasma_spectro_sink_0_3_win = sip.wrapinstance(self.plasma_spectro_sink_0_3.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_3_win)
         self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, center_freq, None, 0)
+        self.plasma_bae_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
+        self.plasma_bae_sink_0.set_dynamic_range(60)
+        self.plasma_bae_sink_0.set_msg_queue_depth(1)
+        self._plasma_bae_sink_0_win = sip.wrapinstance(self.plasma_bae_sink_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_bae_sink_0_win)
 
 
         ##################################################
         # Connections
         ##################################################
+        self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_bae_sink_0, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectro_sink_0_3, 'in'))
         self.msg_connect((self.pluto_source_bae_0_3, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
 

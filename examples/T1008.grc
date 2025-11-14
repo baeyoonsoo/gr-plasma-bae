@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '20000000'
+    value: '30000000'
   states:
     bus_sink: false
     bus_source: false
@@ -76,9 +76,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 144.0]
+    coordinate: [1408, 256.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_signal_processing_0_0
   id: plasma_signal_processing
   parameters:
@@ -98,9 +98,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 240.0]
+    coordinate: [1408, 456.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_signal_processing_0_1
   id: plasma_signal_processing
   parameters:
@@ -120,7 +120,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 336.0]
+    coordinate: [696, 136.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_2
@@ -142,7 +142,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 432.0]
+    coordinate: [696, 344.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_3
@@ -164,7 +164,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 528.0]
+    coordinate: [696, 560.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0
@@ -188,9 +188,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 152.0]
+    coordinate: [1600, 264.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_spectro_sink_0_0
   id: plasma_spectro_sink
   parameters:
@@ -212,9 +212,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 248.0]
+    coordinate: [1600, 464.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: plasma_spectro_sink_0_1
   id: plasma_spectro_sink
   parameters:
@@ -228,7 +228,7 @@ blocks:
     gui_hint: ''
     n_matrix_col_key: fft_size
     ncol: '128'
-    parent: None
+    parent: ''
     samp_rate: samp_rate
     samp_rate_key: samp_rate
     update_time: '0.1'
@@ -236,7 +236,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 344.0]
+    coordinate: [888, 144.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_2
@@ -260,7 +260,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 440.0]
+    coordinate: [888, 352.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_3
@@ -284,7 +284,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 536.0]
+    coordinate: [888, 568.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0
@@ -320,9 +320,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 40.0]
+    coordinate: [1160, 152.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pluto_source_bae_0_0
   id: pluto_source_bae
   parameters:
@@ -356,9 +356,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 136.0]
+    coordinate: [1160, 352.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pluto_source_bae_0_1
   id: pluto_source_bae
   parameters:
@@ -392,7 +392,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 232.0]
+    coordinate: [448, 32.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_2
@@ -428,7 +428,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 328.0]
+    coordinate: [448, 240.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_3
@@ -464,7 +464,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 424.0]
+    coordinate: [448, 456.0]
     rotation: 0
     state: enabled
 

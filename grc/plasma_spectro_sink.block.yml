@@ -100,6 +100,11 @@ templates:
     self.${id}.set_metadata_keys(${samp_rate_key}, ${n_matrix_col_key}, ${center_freq_key})
     self.${id}.set_update_time(${update_time})
     self.${id}.set_msg_queue_depth(${depth})
+
+    self.${id}.set_db_path(${db_path})
+    self.${id}.set_db_enable(${db_enable})
+    self.${id}.set_device_id(${device_id})
+    
     ${win} = sip.wrapinstance(self.${id}.qwidget(), Qt.QWidget)
     ${gui_hint() % win}
 

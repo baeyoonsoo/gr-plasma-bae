@@ -175,30 +175,55 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_3.set_db_enable(1)
+        self.plasma_spectro_sink_0_3.set_device_id('01')
+
         self._plasma_spectro_sink_0_3_win = sip.wrapinstance(self.plasma_spectro_sink_0_3.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_3_win)
         self.plasma_spectro_sink_0_2 = self.plasma_spectro_sink_0_2 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_2, None)
         self.plasma_spectro_sink_0_2.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_2.set_update_time(0.1)
         self.plasma_spectro_sink_0_2.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0_2.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_2.set_db_enable(1)
+        self.plasma_spectro_sink_0_2.set_device_id('02')
+
         self._plasma_spectro_sink_0_2_win = sip.wrapinstance(self.plasma_spectro_sink_0_2.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_2_win)
         self.plasma_spectro_sink_0_1 = self.plasma_spectro_sink_0_1 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_3, )
         self.plasma_spectro_sink_0_1.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_1.set_update_time(0.1)
         self.plasma_spectro_sink_0_1.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0_1.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_1.set_db_enable(True)
+        self.plasma_spectro_sink_0_1.set_device_id('03')
+
         self._plasma_spectro_sink_0_1_win = sip.wrapinstance(self.plasma_spectro_sink_0_1.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_1_win)
         self.plasma_spectro_sink_0_0 = self.plasma_spectro_sink_0_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_4, None)
         self.plasma_spectro_sink_0_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_0.set_update_time(0.1)
         self.plasma_spectro_sink_0_0.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0_0.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_0.set_db_enable(1)
+        self.plasma_spectro_sink_0_0.set_device_id('04')
+
         self._plasma_spectro_sink_0_0_win = sip.wrapinstance(self.plasma_spectro_sink_0_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_0_win)
         self.plasma_spectro_sink_0 = self.plasma_spectro_sink_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_5, None)
         self.plasma_spectro_sink_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0.set_update_time(0.1)
         self.plasma_spectro_sink_0.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0.set_db_enable(1)
+        self.plasma_spectro_sink_0.set_device_id('05')
+
         self._plasma_spectro_sink_0_win = sip.wrapinstance(self.plasma_spectro_sink_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_win)
         self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,0)

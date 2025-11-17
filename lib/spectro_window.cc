@@ -180,7 +180,7 @@ void SpectroWindow::set_color_axis()
 {
     // need to set dynamic
     const double Z_MIN_DB = -140.0;
-    const double Z_MAX_DB = -30.0;
+    const double Z_MAX_DB = 10.0;
 
     d_data->setInterval(Qt::ZAxis, QwtInterval(Z_MIN_DB, Z_MAX_DB));
 }

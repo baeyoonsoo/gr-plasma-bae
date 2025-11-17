@@ -130,7 +130,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1024, 320.0]
+    coordinate: [984, 288.0]
     rotation: 0
     state: enabled
 - name: plasma_bae_sink_0_0
@@ -158,7 +158,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 664.0]
+    coordinate: [976, 632.0]
     rotation: 0
     state: enabled
 - name: plasma_bae_sink_0_0_0
@@ -186,7 +186,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 1008.0]
+    coordinate: [976, 976.0]
     rotation: 0
     state: enabled
 - name: plasma_bae_sink_0_0_0_0
@@ -214,7 +214,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1776, 312.0]
+    coordinate: [1736, 280.0]
     rotation: 0
     state: enabled
 - name: plasma_bae_sink_0_0_0_0_0
@@ -242,7 +242,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1776, 656.0]
+    coordinate: [1736, 624.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0
@@ -264,7 +264,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1568, 576.0]
+    coordinate: [1528, 544.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_0
@@ -286,7 +286,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1568, 232.0]
+    coordinate: [1528, 200.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_1
@@ -308,7 +308,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [808, 928.0]
+    coordinate: [768, 896.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_2
@@ -330,7 +330,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [808, 584.0]
+    coordinate: [768, 552.0]
     rotation: 0
     state: enabled
 - name: plasma_signal_processing_0_3
@@ -352,7 +352,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 240.0]
+    coordinate: [776, 208.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0
@@ -366,7 +366,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
-    device_id: ''
+    device_id: '05'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -379,7 +379,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1776, 484.0]
+    coordinate: [1736, 452.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_0
@@ -393,7 +393,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
-    device_id: ''
+    device_id: '04'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -406,7 +406,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1776, 140.0]
+    coordinate: [1736, 108.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_1
@@ -420,7 +420,7 @@ blocks:
     db_enable: 'True'
     db_path: /var/tmp/spectrum.db
     depth: '1'
-    device_id: ''
+    device_id: '03'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -433,7 +433,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 836.0]
+    coordinate: [976, 804.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_2
@@ -447,7 +447,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
-    device_id: ''
+    device_id: '02'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -460,7 +460,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 492.0]
+    coordinate: [976, 460.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_3
@@ -474,7 +474,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
-    device_id: ''
+    device_id: '01'
     fft_size: '1024'
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -487,7 +487,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1024, 148.0]
+    coordinate: [984, 116.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0
@@ -523,7 +523,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1320, 472.0]
+    coordinate: [1280, 440.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_0
@@ -559,7 +559,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1320, 128.0]
+    coordinate: [1280, 96.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_1
@@ -595,7 +595,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 824.0]
+    coordinate: [496, 792.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_2
@@ -631,7 +631,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 480.0]
+    coordinate: [496, 448.0]
     rotation: 0
     state: enabled
 - name: pluto_source_bae_0_3
@@ -667,7 +667,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 136.0]
+    coordinate: [496, 104.0]
     rotation: 0
     state: enabled
 

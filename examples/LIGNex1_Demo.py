@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Not titled yet
+# Title: LIGNex1_Demo
 # Author: hajung
 # GNU Radio version: 3.10.9.2
 
@@ -25,12 +25,12 @@ from gnuradio import eng_notation
 
 
 
-class T1008(gr.top_block, Qt.QWidget):
+class LIGNex1_Demo(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
+        gr.top_block.__init__(self, "LIGNex1_Demo", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Not titled yet")
+        self.setWindowTitle("LIGNex1_Demo")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -48,7 +48,7 @@ class T1008(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "T1008")
+        self.settings = Qt.QSettings("GNU Radio", "LIGNex1_Demo")
 
         try:
             geometry = self.settings.value("geometry")
@@ -60,7 +60,7 @@ class T1008(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 30000000
+        self.samp_rate = samp_rate = 20000000
         self.center_freq_5 = center_freq_5 = 2460000000
         self.center_freq_4 = center_freq_4 = 2440000000
         self.center_freq_3 = center_freq_3 = 2420000000
@@ -201,11 +201,11 @@ class T1008(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0.set_msg_queue_depth(1)
         self._plasma_spectro_sink_0_win = sip.wrapinstance(self.plasma_spectro_sink_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_win)
-        self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,2)
-        self.plasma_signal_processing_0_2 = plasma.signal_processing(1024,samp_rate,1,1,2)
-        self.plasma_signal_processing_0_1 = plasma.signal_processing(1024,samp_rate,1,1,2)
-        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,2)
-        self.plasma_signal_processing_0 = plasma.signal_processing(1024,samp_rate,1,1,2)
+        self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0_2 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0_1 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
+        self.plasma_signal_processing_0 = plasma.signal_processing(1024,samp_rate,1,1,0)
         self.plasma_bae_sink_0_0_0_0_0 = plasma.bae_sink(samp_rate, 128, center_freq_5, None, 0)
         self.plasma_bae_sink_0_0_0_0_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_bae_sink_0_0_0_0_0.set_dynamic_range(60)
@@ -259,7 +259,7 @@ class T1008(gr.top_block, Qt.QWidget):
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "T1008")
+        self.settings = Qt.QSettings("GNU Radio", "LIGNex1_Demo")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -305,7 +305,7 @@ class T1008(gr.top_block, Qt.QWidget):
 
 
 
-def main(top_block_cls=T1008, options=None):
+def main(top_block_cls=LIGNex1_Demo, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 

@@ -39,7 +39,7 @@ add_custom_target(
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}
           ${CMAKE_BINARY_DIR}/test_modules/gnuradio/plasma/
 )
-GR_ADD_TEST(qa_pluto_radar_bae ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pluto_radar_bae.py)      
+GR_ADD_TEST(qa_pluto_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pluto_source.py)      
 GR_ADD_TEST(qa_signal_processing ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_signal_processing.py) 
 GR_ADD_TEST(qa_spectrum_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_spectrum_sink.py)                    
 GR_ADD_TEST(qa_spectro_sink ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_spectro_sink.py)            

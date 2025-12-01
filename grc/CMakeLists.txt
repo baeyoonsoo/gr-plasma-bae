@@ -9,7 +9,7 @@ install(FILES
     plasma_pdu_file_sink.block.yml
     plasma_pdu_head.block.yml
     plasma_pdu_file_source.block.yml
-    plasma_pluto_radar_bae.block.yml       
+    plasma_pluto_source.block.yml       
     plasma_signal_processing.block.yml      
     plasma_spectrum_sink.block.yml               
     plasma_spectro_sink.block.yml           

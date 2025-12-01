@@ -13,8 +13,8 @@
 /* If manual edits are made, the following tags should be modified accordingly.    */
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
-/* BINDTOOL_HEADER_FILE(pluto_radar_bae.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(5cd41754d3b81ae948daf6d71e8e6b03)                     */
+/* BINDTOOL_HEADER_FILE(pluto_source.h)                                        */
+/* BINDTOOL_HEADER_FILE_HASH(4a9ef3789fb0ddc4342a67b71c40e3a3)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -23,20 +23,20 @@
 
 namespace py = pybind11;
 
-#include <gnuradio/plasma/pluto_radar_bae.h>
+#include <gnuradio/plasma/pluto_source.h>
 // pydoc.h is automatically generated in the build directory
-#include <pluto_radar_bae_pydoc.h>
+#include <pluto_source_pydoc.h>
 
-void bind_pluto_radar_bae(py::module& m)
+void bind_pluto_source(py::module& m)
 {
 
-    using pluto_radar_bae    = ::gr::plasma::pluto_radar_bae;
+    using pluto_source    = ::gr::plasma::pluto_source;
 
 
-    py::class_<pluto_radar_bae, gr::block, gr::basic_block,
-        std::shared_ptr<pluto_radar_bae>>(m, "pluto_radar_bae", D(pluto_radar_bae))
+    py::class_<pluto_source, gr::block, gr::basic_block,
+        std::shared_ptr<pluto_source>>(m, "pluto_source", D(pluto_source))
 
-        .def(py::init(&pluto_radar_bae::make),
+        .def(py::init(&pluto_source::make),
            py::arg("uri"),
            py::arg("frequency"),
            py::arg("samplerate"),
@@ -55,7 +55,7 @@ void bind_pluto_radar_bae(py::module& m)
            py::arg("filter") = "",
            py::arg("auto_filter") = true,
            py::arg("pdu_duration") = 100e-6,
-           D(pluto_radar_bae,make)
+           D(pluto_source,make)
         )
         
 
@@ -63,11 +63,11 @@ void bind_pluto_radar_bae(py::module& m)
 
 
         
-        .def("set_metadata_keys",&pluto_radar_bae::set_metadata_keys,       
+        .def("set_metadata_keys",&pluto_source::set_metadata_keys,       
             py::arg("tx_freq_key"),
             py::arg("rx_freq_key"),
             py::arg("sample_start_key"),
-            D(pluto_radar_bae,set_metadata_keys)
+            D(pluto_source,set_metadata_keys)
         )
 
         ;

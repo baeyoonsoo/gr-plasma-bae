@@ -1,5 +1,5 @@
-id: pluto_source_bae
-label: "Bae: PlutoSDR Source"
+id: pluto_source
+label: "Pluto Source"
 category: "[plasma]"
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
@@ -114,7 +114,7 @@ outputs:
 templates:
   imports: from gnuradio import plasma
   make: |-
-    plasma.pluto_radar_bae(
+    plasma.pluto_source(
       ${uri},
       ${frequency},
       ${samplerate},

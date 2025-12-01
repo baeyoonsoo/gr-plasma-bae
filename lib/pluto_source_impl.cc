@@ -1,6 +1,6 @@
-// pluto_radar_bae_impl.cc
-#include "pluto_radar_bae_impl.h"
-#include <gnuradio/plasma/pluto_radar_bae.h>
+// pluto_source_impl.cc
+#include "pluto_source_impl.h"
+#include <gnuradio/plasma/pluto_source.h>
 #include <gnuradio/io_signature.h>
 
 #include <gnuradio/blocks/short_to_float.h>
@@ -14,7 +14,7 @@
 namespace gr {
 namespace plasma {
 
-pluto_radar_bae::sptr pluto_radar_bae::make(const std::string &uri,
+pluto_source::sptr pluto_source::make(const std::string &uri,
                  double frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
@@ -28,7 +28,7 @@ pluto_radar_bae::sptr pluto_radar_bae::make(const std::string &uri,
                  bool auto_filter,
                  double pdu_duration)
 {
-    return gnuradio::make_block_sptr<pluto_radar_bae_impl>(uri,
+    return gnuradio::make_block_sptr<pluto_source_impl>(uri,
         frequency,
         samplerate,
         bandwidth,
@@ -49,7 +49,7 @@ pluto_radar_bae::sptr pluto_radar_bae::make(const std::string &uri,
     );
 }
 
-void pluto_radar_bae_impl::set_params(struct iio_device *phy,
+void pluto_source_impl::set_params(struct iio_device *phy,
 		    const std::vector<std::string> &params)
 {
     for (std::vector<std::string>::const_iterator it = params.begin();
@@ -90,7 +90,7 @@ void pluto_radar_bae_impl::set_params(struct iio_device *phy,
         }
     }
 }
-pluto_radar_bae_impl::pluto_radar_bae_impl(const std::string &uri,
+pluto_source_impl::pluto_source_impl(const std::string &uri,
                  double frequency,
                  unsigned long samplerate,
                  unsigned long bandwidth,
@@ -103,7 +103,7 @@ pluto_radar_bae_impl::pluto_radar_bae_impl(const std::string &uri,
                  const char *filter = "",
                  bool auto_filter = true,
                  double pdu_duration = 100e-6)
-    : gr::block("pluto_radar_bae", gr::io_signature::make(0, 0, 0), gr::io_signature::make(0, 0, 0)),
+    : gr::block("pluto_source", gr::io_signature::make(0, 0, 0), gr::io_signature::make(0, 0, 0)),
       uri(uri),
       frequency(frequency), 
       samplerate(samplerate),
@@ -128,9 +128,9 @@ pluto_radar_bae_impl::pluto_radar_bae_impl(const std::string &uri,
     // set_msg_handler(PMT_IN, [this](const pmt::pmt_t& msg) { handle_message(msg); });
 }
 
-pluto_radar_bae_impl::~pluto_radar_bae_impl() {}
+pluto_source_impl::~pluto_source_impl() {}
 
-std::vector<std::string> pluto_radar_bae_impl::get_channels_vector(
+std::vector<std::string> pluto_source_impl::get_channels_vector(
         bool ch1_en, bool ch2_en/*, bool ch3_en, bool ch4_en*/)
 {
     std::vector<std::string> channels;
@@ -145,7 +145,7 @@ std::vector<std::string> pluto_radar_bae_impl::get_channels_vector(
     return channels;
 }
 
-bool pluto_radar_bae_impl::start()
+bool pluto_source_impl::start()
 {
     unsigned int nb_channels, i;
 	unsigned short vid, pid;
@@ -256,7 +256,7 @@ bool pluto_radar_bae_impl::start()
     params.push_back("in_voltage0_rf_port_select=" +
             rf_port_select);
 
-    pluto_radar_bae_impl::set_params(phy, params);
+    pluto_source_impl::set_params(phy, params);
     
     // you can use filter with this code but you need to change ad9361_set_bb_rate.
     // or you can connect FIR block provided by GNURadio.
@@ -279,11 +279,11 @@ bool pluto_radar_bae_impl::start()
     // temp_q.resize(buffer_size);
 
     finished.store(false);
-    rx_thread = std::thread(&pluto_radar_bae_impl::receive, this);
+    rx_thread = std::thread(&pluto_source_impl::receive, this);
     return true;
 }
 
-bool pluto_radar_bae_impl::stop()
+bool pluto_source_impl::stop()
 {
     finished.store(true);
 
@@ -298,7 +298,7 @@ bool pluto_radar_bae_impl::stop()
     return gr::block::stop();
 }
 
-void pluto_radar_bae_impl::receive() 
+void pluto_source_impl::receive() 
 {
     int cnt = 0;
     long seq = 0;
@@ -389,12 +389,12 @@ void pluto_radar_bae_impl::receive()
     }
 }
 
-void pluto_radar_bae_impl::run()
+void pluto_source_impl::run()
 {
     
 }
 
-void pluto_radar_bae_impl::set_metadata_keys(const std::string& txk,
+void pluto_source_impl::set_metadata_keys(const std::string& txk,
                                              const std::string& rxk,
                                              const std::string& sk)
 {

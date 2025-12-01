@@ -15,7 +15,7 @@ install(FILES
     pdu_head.h
     pmt_constants.h
     qt_update_events.h
-    pluto_radar_bae.h       
+    pluto_source.h       
     signal_processing.h    
     spectrum_sink.h              
     spectro_sink.h          

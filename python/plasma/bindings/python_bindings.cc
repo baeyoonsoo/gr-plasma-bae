@@ -25,7 +25,7 @@ namespace py = pybind11;
     void bind_pdu_head(py::module& m);
     void bind_device(py::module& m);
     void bind_pdu_file_source(py::module& m);
-    void bind_pluto_radar_bae(py::module& m);       
+    void bind_pluto_source(py::module& m);       
     void bind_signal_processing(py::module& m);     
     void bind_spectrum_sink(py::module& m);              
     void bind_spectro_sink(py::module& m);          
@@ -61,7 +61,7 @@ PYBIND11_MODULE(plasma_python, m)
     bind_pdu_head(m);
     bind_device(m);
     bind_pdu_file_source(m);
-    bind_pluto_radar_bae(m);        
+    bind_pluto_source(m);        
     bind_signal_processing(m);      
     bind_spectrum_sink(m);              
     bind_spectro_sink(m);           

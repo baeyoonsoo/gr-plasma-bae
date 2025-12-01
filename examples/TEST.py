@@ -66,10 +66,10 @@ class TEST(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
+        self.pluto_source_0_0_0_0 = plasma.pluto_source(
           "ip:192.168.3.3",
-          2400000000,
-          2000000,
+          center_freq,
+          samp_rate,
           1500000,
           True,
           True,
@@ -85,7 +85,7 @@ class TEST(gr.top_block, Qt.QWidget):
           "",
           True,
           100e-6)
-        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0_0_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
         self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq, None, 0)
         self.plasma_spectrum_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0.set_dynamic_range(60)
@@ -111,7 +111,7 @@ class TEST(gr.top_block, Qt.QWidget):
         ##################################################
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectro_sink_0_3, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectrum_sink_0, 'in'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
+        self.msg_connect((self.pluto_source_0_0_0_0, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
 
 
     def closeEvent(self, event):

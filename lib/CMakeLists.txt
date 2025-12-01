@@ -11,7 +11,7 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND plasma_sources
-    pluto_radar_bae_impl.cc         
+    pluto_source_impl.cc         
     signal_processing_impl.cc       
     spectrum_sink_impl.cc                
     spectro_sink_impl.cc            

@@ -5,8 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef INCLUDED_PLASMA_PLUTO_RADAR_BAE_H
-#define INCLUDED_PLASMA_PLUTO_RADAR_BAE_H
+#ifndef INCLUDED_PLASMA_PLUTO_SOURCE_H
+#define INCLUDED_PLASMA_PLUTO_SOURCE_H
 
 #include <gnuradio/block.h>
 #include <gnuradio/plasma/api.h>
@@ -19,10 +19,10 @@ namespace plasma {
  * \ingroup plasma
  *
  */
-class PLASMA_API pluto_radar_bae : virtual public gr::block
+class PLASMA_API pluto_source : virtual public gr::block
 {
 public:
-    typedef std::shared_ptr<pluto_radar_bae> sptr;
+    typedef std::shared_ptr<pluto_source> sptr;
     
     /*!
      * \brief Return a shared_ptr to a new instance of plasma::usrp_radar.
@@ -53,4 +53,4 @@ public:
 } // namespace plasma
 } // namespace gr
 
-#endif /* INCLUDED_PLASMA_PLUTO_RADAR_BAE_H */
+#endif /* INCLUDED_PLASMA_PLUTO_SOURCE_H */

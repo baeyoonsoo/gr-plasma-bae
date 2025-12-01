@@ -1,5 +1,5 @@
-#ifndef INCLUDED_PLUTO_RADAR_BAE_IMPL_H
-#define INCLUDED_PLUTO_RADAR_BAE_IMPL_H
+#ifndef INCLUDED_PLUTO_SOURCE_IMPL_H
+#define INCLUDED_PLUTO_SOURCE_IMPL_H
 
 #include <string>
 #include <vector>
@@ -13,17 +13,17 @@
 #include <gnuradio/io_signature.h>
 #include <gnuradio/blocks/short_to_float.h>
 #include <gnuradio/blocks/float_to_complex.h>
-#include <gnuradio/plasma/pluto_radar_bae.h>
+#include <gnuradio/plasma/pluto_source.h>
 #include <gnuradio/plasma/pmt_constants.h>
 #include <arrayfire.h>
 
 namespace gr {
 namespace plasma {
 
-class pluto_radar_bae_impl : public pluto_radar_bae
+class pluto_source_impl : public pluto_source
 {
 public:
-    //typedef std::shared_ptr<pluto_radar_bae_impl> sptr;
+    //typedef std::shared_ptr<pluto_source_impl> sptr;
 
     // Factory
     // static sptr make(const std::string &uri,
@@ -38,7 +38,7 @@ public:
     //                  const char *rf_port_select,
     //                  const char *filter = "",
     //                  bool auto_filter = true);
-    pluto_radar_bae_impl(const std::string &uri,
+    pluto_source_impl(const std::string &uri,
                          double frequency,
                          unsigned long samplerate,
                          unsigned long bandwidth,
@@ -53,7 +53,7 @@ public:
                          double pdu_duration);
 
     // Destructor
-    ~pluto_radar_bae_impl() override;
+    ~pluto_source_impl() override;
 
     // Allow runtime metadata key setting
     void set_metadata_keys(const std::string &txk,
@@ -153,4 +153,4 @@ private:
 } // namespace plasma
 } // namespace gr
 
-#endif /* INCLUDED_PLUTO_RADAR_BAE_IMPL_H */
+#endif /* INCLUDED_PLUTO_SOURCE_IMPL_H */

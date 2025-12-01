@@ -9,15 +9,15 @@
 from gnuradio import gr, gr_unittest
 # from gnuradio import blocks
 try:
-  from gnuradio.plasma import pluto_radar_bae
+  from gnuradio.plasma import pluto_source
 except ImportError:
     import os
     import sys
     dirname, filename = os.path.split(os.path.abspath(__file__))
     sys.path.append(os.path.join(dirname, "bindings"))
-    from gnuradio.plasma import pluto_radar_bae
+    from gnuradio.plasma import pluto_source
 
-class qa_pluto_radar_bae(gr_unittest.TestCase):
+class qa_pluto_source(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block()
@@ -27,7 +27,7 @@ class qa_pluto_radar_bae(gr_unittest.TestCase):
 
     def test_instance(self):
         # FIXME: Test will fail until you pass sensible arguments to the constructor
-        instance = pluto_radar_bae()
+        instance = pluto_source()
 
     def test_001_descriptive_test_name(self):
         # set up fg
@@ -36,4 +36,4 @@ class qa_pluto_radar_bae(gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_pluto_radar_bae)
+    gr_unittest.run(qa_pluto_source)

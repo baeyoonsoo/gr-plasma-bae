@@ -71,91 +71,11 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
-        self.pluto_source_bae_0_3 = plasma.pluto_radar_bae(
-          'ip:192.168.4.1',
-          center_freq_1,
-          samp_rate,
-          samp_rate,
-          True,
-          True,
-          4096,
-          True,
-          True,
-          True,
-          "manual",
-          10,
-          "manual",
-          10,
-          "A_BALANCED",
-          "",
-          True,
-          100e-6)
-        self.pluto_source_bae_0_3.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.pluto_source_bae_0_2 = plasma.pluto_radar_bae(
-          'ip:192.168.5.1',
-          center_freq_2,
-          samp_rate,
-          samp_rate,
-          True,
-          True,
-          4096,
-          True,
-          True,
-          True,
-          "manual",
-          10,
-          "manual",
-          10,
-          "A_BALANCED",
-          "",
-          True,
-          100e-6)
-        self.pluto_source_bae_0_2.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.pluto_source_bae_0_1 = plasma.pluto_radar_bae(
-          'ip:192.168.6.1',
-          center_freq_3,
-          samp_rate,
-          samp_rate,
-          True,
-          True,
-          4096,
-          True,
-          True,
-          True,
-          "manual",
-          10,
-          "manual",
-          10,
-          "A_BALANCED",
-          "",
-          True,
-          100e-6)
-        self.pluto_source_bae_0_1.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.pluto_source_bae_0_0 = plasma.pluto_radar_bae(
-          'ip:192.168.7.1',
-          center_freq_4,
-          samp_rate,
-          samp_rate,
-          True,
-          True,
-          4096,
-          True,
-          True,
-          True,
-          "manual",
-          10,
-          "manual",
-          10,
-          "A_BALANCED",
-          "",
-          True,
-          100e-6)
-        self.pluto_source_bae_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
-          'ip:192.168.8.1',
+        self.pluto_source_0_0_0_0_0 = plasma.pluto_source(
+          "ip:192.168.8.1",
           center_freq_5,
           samp_rate,
-          samp_rate,
+          1500000,
           True,
           True,
           4096,
@@ -163,14 +83,94 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           True,
           True,
           "manual",
-          10,
+          10.0,
           "manual",
-          10,
+          10.0,
           "A_BALANCED",
           "",
           True,
           100e-6)
-        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0_0_0_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0_0_0_0 = plasma.pluto_source(
+          "ip:192.168.7.1",
+          center_freq_4,
+          samp_rate,
+          1500000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_0_0_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0_0_0 = plasma.pluto_source(
+          "ip:192.168.6.1",
+          center_freq_3,
+          samp_rate,
+          1500000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_0_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0_0 = plasma.pluto_source(
+          "ip:192.168.5.1",
+          center_freq_2,
+          samp_rate,
+          1500000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_0 = plasma.pluto_source(
+          "ip:192.168.4.1",
+          center_freq_1,
+          samp_rate,
+          1500000,
+          True,
+          True,
+          4096,
+          True,
+          True,
+          True,
+          "manual",
+          10.0,
+          "manual",
+          10.0,
+          "A_BALANCED",
+          "",
+          True,
+          100e-6)
+        self.pluto_source_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
         self.plasma_spectrum_sink_0_3 = plasma.spectrum_sink(samp_rate, 128, center_freq_5, None, 0)
         self.plasma_spectrum_sink_0_3.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0_3.set_dynamic_range(60)
@@ -276,11 +276,11 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.msg_connect((self.plasma_signal_processing_0_2, 'out'), (self.plasma_spectrum_sink_0_0, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectro_sink_0_3, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectrum_sink_0, 'in'))
-        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
-        self.msg_connect((self.pluto_source_bae_0_0, 'out'), (self.plasma_signal_processing_0_0, 'rx'))
-        self.msg_connect((self.pluto_source_bae_0_1, 'out'), (self.plasma_signal_processing_0_1, 'rx'))
-        self.msg_connect((self.pluto_source_bae_0_2, 'out'), (self.plasma_signal_processing_0_2, 'rx'))
-        self.msg_connect((self.pluto_source_bae_0_3, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
+        self.msg_connect((self.pluto_source_0, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
+        self.msg_connect((self.pluto_source_0_0, 'out'), (self.plasma_signal_processing_0_2, 'rx'))
+        self.msg_connect((self.pluto_source_0_0_0, 'out'), (self.plasma_signal_processing_0_1, 'rx'))
+        self.msg_connect((self.pluto_source_0_0_0_0, 'out'), (self.plasma_signal_processing_0_0, 'rx'))
+        self.msg_connect((self.pluto_source_0_0_0_0_0, 'out'), (self.plasma_signal_processing_0, 'rx'))
 
 
     def closeEvent(self, event):

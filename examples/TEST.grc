@@ -134,8 +134,8 @@ blocks:
     coordinate: [904, 384.0]
     rotation: 0
     state: enabled
-- name: pluto_source_bae_0
-  id: pluto_source_bae
+- name: pluto_source_0_0_0_0
+  id: pluto_source
   parameters:
     affinity: ''
     alias: ''
@@ -145,7 +145,7 @@ blocks:
     buffer_size: '4096'
     comment: ''
     filter: '""'
-    frequency: '2400000000'
+    frequency: center_freq
     gain1: '"manual"'
     gain1_value: '10.0'
     gain2: '"manual"'
@@ -160,21 +160,21 @@ blocks:
     rx2_en: 'True'
     rx_freq_key: core:rx_freq
     sample_start_key: core:sample_start
-    samplerate: '2000000'
+    samplerate: samp_rate
     tx_freq_key: core:tx_freq
     uri: '"ip:192.168.3.3"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 192.0]
+    coordinate: [464, 192.0]
     rotation: 0
     state: enabled
 
 connections:
 - [plasma_signal_processing_0_3, out, plasma_spectro_sink_0_3, in]
 - [plasma_signal_processing_0_3, out, plasma_spectrum_sink_0, in]
-- [pluto_source_bae_0, out, plasma_signal_processing_0_3, rx]
+- [pluto_source_0_0_0_0, out, plasma_signal_processing_0_3, rx]
 
 metadata:
   file_format: 1

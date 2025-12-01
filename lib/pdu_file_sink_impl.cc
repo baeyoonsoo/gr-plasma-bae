@@ -167,7 +167,7 @@ void pdu_file_sink_impl::run()
                             }
                         } else if (pmt::is_symbol(detect_pmt)) {
                             std::string s = pmt::symbol_to_string(detect_pmt);
-                            if (s == "1" || s == "true" || s == "True") {
+                            if (s == "1") {
                                 save_meta = true;
                             } else {
                                 try {

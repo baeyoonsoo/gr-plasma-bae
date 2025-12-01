@@ -8,14 +8,14 @@
 
 static constexpr int RadarUpdateEventType = 4096;
 
-class RangeDopplerUpdateEvent : public QEvent
+class SpectrumUpdateEvent : public QEvent
 {
 public:
-    RangeDopplerUpdateEvent(const double* data,
+    SpectrumUpdateEvent(const double* data,
                             size_t rows,
                             size_t cols,
                             pmt::pmt_t meta);
-    ~RangeDopplerUpdateEvent() override;
+    ~SpectrumUpdateEvent() override;
     double* data();
     const size_t cols();
     const size_t rows();

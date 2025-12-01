@@ -11,7 +11,6 @@
 class SpectroUpdateEvent : public QEvent
 {
 public:
-    // 선언만
     static QEvent::Type Type();
 
     SpectroUpdateEvent(const double* data,

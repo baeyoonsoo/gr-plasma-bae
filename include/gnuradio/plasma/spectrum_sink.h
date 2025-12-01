@@ -16,7 +16,6 @@
 #include "Python.h"
 #pragma pop_macro("slots")
 #endif
-// #include <QApplication>
 #include <QApplication>
 #include <QWidget>
 

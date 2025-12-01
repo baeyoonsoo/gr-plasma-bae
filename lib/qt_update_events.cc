@@ -2,7 +2,7 @@
 #include <pmt/pmt.h>
 #include <iostream>
 
-RangeDopplerUpdateEvent::RangeDopplerUpdateEvent(const double* data,
+SpectrumUpdateEvent::SpectrumUpdateEvent(const double* data,
                                                  size_t rows,
                                                  size_t cols,
                                                  pmt::pmt_t meta)
@@ -15,12 +15,12 @@ RangeDopplerUpdateEvent::RangeDopplerUpdateEvent(const double* data,
     d_meta = meta;
 }
 
-RangeDopplerUpdateEvent::~RangeDopplerUpdateEvent() { delete[] d_data; }
+SpectrumUpdateEvent::~SpectrumUpdateEvent() { delete[] d_data; }
 
-const size_t RangeDopplerUpdateEvent::cols() { return d_cols; }
+const size_t SpectrumUpdateEvent::cols() { return d_cols; }
 
-const size_t RangeDopplerUpdateEvent::rows() { return d_rows; }
+const size_t SpectrumUpdateEvent::rows() { return d_rows; }
 
-double* RangeDopplerUpdateEvent::data() { return d_data; }
+double* SpectrumUpdateEvent::data() { return d_data; }
 
-const pmt::pmt_t RangeDopplerUpdateEvent::meta() { return d_meta; }
+const pmt::pmt_t SpectrumUpdateEvent::meta() { return d_meta; }

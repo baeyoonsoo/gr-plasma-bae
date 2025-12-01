@@ -21,8 +21,8 @@ list(APPEND plasma_sources
     pdu_head_impl.cc
     qt_update_events.cc
     qt_spec_update_events.cc        
-    range_doppler_window.cc
-    range_doppler_window.h
+    spectrum_window.cc
+    spectrum_window.h
     device.cc
     pdu_file_source_impl.cc
     )
@@ -76,13 +76,6 @@ message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
 ########################################################################
 include(GrTest)
 
-# If your unit tests require special include paths, add them here
-#include_directories()
-# List all files that contain Boost.UTF unit tests here
-# list(APPEND test_plasma_sources
-# qa_cfar2D.cc
-# qa_phase_code.cc
-# )
 # Anything we need to link to for the unit tests go here
 list(APPEND GR_TEST_TARGET_DEPS gnuradio-plasma)
 

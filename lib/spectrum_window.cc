@@ -1,4 +1,4 @@
-#include "range_doppler_window.h"
+#include "spectrum_window.h"
 #include <iostream>
 #include <qwt_plot_grid.h>
 
@@ -30,7 +30,7 @@ public:
     }
 };
 
-RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
+SpectrumWindow::SpectrumWindow(QWidget* parent,
                                        double samp_rate,
                                        double center_freq,
                                        int mode)
@@ -72,24 +72,24 @@ RangeDopplerWindow::RangeDopplerWindow(QWidget* parent,
     d_mode = mode;
 }
 
-RangeDopplerWindow::~RangeDopplerWindow() { d_closed = true; }
+SpectrumWindow::~SpectrumWindow() { d_closed = true; }
 
-bool RangeDopplerWindow::is_closed() const { return d_closed; }
+bool SpectrumWindow::is_closed() const { return d_closed; }
 
-bool RangeDopplerWindow::busy() const { return d_busy; }
+bool SpectrumWindow::busy() const { return d_busy; }
 
-void RangeDopplerWindow::xlim(double x1, double x2)
+void SpectrumWindow::xlim(double x1, double x2)
 {
     d_data->setInterval(Qt::XAxis, QwtInterval(x1, x2));
 }
 
-void RangeDopplerWindow::ylim(double y1, double y2)
+void SpectrumWindow::ylim(double y1, double y2)
 {
     d_data->setInterval(Qt::YAxis, QwtInterval(y1, y2));
 }
 
 
-void RangeDopplerWindow::show_detections(bool checked)
+void SpectrumWindow::show_detections(bool checked)
 {
     if (checked)
         d_curve->attach(d_plot);
@@ -98,7 +98,7 @@ void RangeDopplerWindow::show_detections(bool checked)
         d_curve->detach();
 }
 
-void RangeDopplerWindow::set_metadata_keys(std::string prf_key,
+void SpectrumWindow::set_metadata_keys(std::string prf_key,
                                            std::string pulsewidth_key,
                                            std::string samp_rate_key,
                                            std::string center_freq_key,
@@ -111,13 +111,13 @@ void RangeDopplerWindow::set_metadata_keys(std::string prf_key,
     d_detection_indices_key = pmt::intern(detection_indices_key);
 }
 
-void RangeDopplerWindow::customEvent(QEvent* e)
+void SpectrumWindow::customEvent(QEvent* e)
 {
     d_busy = true;
     
-    if (e->type() == RangeDopplerUpdateEvent::Type()) {
+    if (e->type() == SpectrumUpdateEvent::Type()) {
 
-        RangeDopplerUpdateEvent* event = static_cast<RangeDopplerUpdateEvent*>(e);
+        SpectrumUpdateEvent* event = static_cast<SpectrumUpdateEvent*>(e);
         double* data = event->data();
         size_t N = 1024;
 
@@ -195,7 +195,7 @@ void RangeDopplerWindow::customEvent(QEvent* e)
     d_busy = false;
 }
 
-void RangeDopplerWindow::set_mag_axis()
+void SpectrumWindow::set_mag_axis()
 {
     double mmin = -140;
     double mmax = 10;
@@ -205,7 +205,7 @@ void RangeDopplerWindow::set_mag_axis()
 }
 
 
-void RangeDopplerWindow::set_freq_axis(double center_freq, double samp_rate)
+void SpectrumWindow::set_freq_axis(double center_freq, double samp_rate)
 {
     double fmin = center_freq - samp_rate / 2.0;
     double fmax = center_freq + samp_rate / 2.0;
@@ -213,7 +213,7 @@ void RangeDopplerWindow::set_freq_axis(double center_freq, double samp_rate)
     d_plot->setAxisTitle(QwtPlot::xBottom, QString("Frequency (Hz)"));
 }
 
-void RangeDopplerWindow::plot_detections(pmt::pmt_t indices, int nrow, int ncol)
+void SpectrumWindow::plot_detections(pmt::pmt_t indices, int nrow, int ncol)
 {
 
     if (not pmt::is_null(indices)) {

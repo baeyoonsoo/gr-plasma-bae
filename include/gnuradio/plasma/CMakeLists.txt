@@ -15,11 +15,11 @@ install(FILES
     pdu_head.h
     pmt_constants.h
     qt_update_events.h
-    pluto_radar_bae.h       # add by bae
-    signal_processing.h     # add by bae
-    bae_sink.h              # add by bae
-    spectro_sink.h          # add by bae
-    qt_spec_update_events.h # add by bae
+    pluto_radar_bae.h       
+    signal_processing.h    
+    spectrum_sink.h              
+    spectro_sink.h          
+    qt_spec_update_events.h 
     device.h
     pdu_file_source.h
     DESTINATION include/gnuradio/plasma

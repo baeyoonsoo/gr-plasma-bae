@@ -11,16 +11,16 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND plasma_sources
-    pluto_radar_bae_impl.cc         # add by bae
-    signal_processing_impl.cc       # add by bae
-    bae_sink_impl.cc                # add by bae
-    spectro_sink_impl.cc            # add by bae
-    spectro_window.cc               # add by bae
-    spectro_window.h                # add by bae
+    pluto_radar_bae_impl.cc         
+    signal_processing_impl.cc       
+    spectrum_sink_impl.cc                
+    spectro_sink_impl.cc            
+    spectro_window.cc               
+    spectro_window.h                
     pdu_file_sink_impl.cc
     pdu_head_impl.cc
     qt_update_events.cc
-    qt_spec_update_events.cc        # add by hajung
+    qt_spec_update_events.cc        
     range_doppler_window.cc
     range_doppler_window.h
     device.cc

@@ -5,18 +5,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef INCLUDED_PLASMA_BAE_SINK_IMPL_H
-#define INCLUDED_PLASMA_BAE_SINK_IMPL_H
+#ifndef INCLUDED_PLASMA_SPECTRUM_SINK_IMPL_H
+#define INCLUDED_PLASMA_SPECTRUM_SINK_IMPL_H
 
 #include "range_doppler_window.h"
-#include <gnuradio/plasma/bae_sink.h>
+#include <gnuradio/plasma/spectrum_sink.h>
 #include <arrayfire.h>
 
 
 namespace gr {
 namespace plasma {
 
-class bae_sink_impl : public bae_sink
+class spectrum_sink_impl : public spectrum_sink
 {
 private:
     // Block parameters
@@ -43,12 +43,12 @@ private:
 
 
 public:
-    bae_sink_impl(double samp_rate,
+    spectrum_sink_impl(double samp_rate,
                   size_t ncol,
                   double center_freq,
                   QWidget* parent,
                   int mode);
-    ~bae_sink_impl();
+    ~spectrum_sink_impl();
 
     bool start() override;
     bool stop() override;
@@ -77,4 +77,4 @@ public:
 } // namespace plasma
 } // namespace gr
 
-#endif /* INCLUDED_PLASMA_BAE_SINK_IMPL_H */
+#endif /* INCLUDED_PLASMA_SPECTRUM_SINK_IMPL_H */

@@ -13,8 +13,8 @@
 /* If manual edits are made, the following tags should be modified accordingly.    */
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
-/* BINDTOOL_HEADER_FILE(bae_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(6d65600fc123c0295340eb061cefb5da)                     */
+/* BINDTOOL_HEADER_FILE(spectrum_sink.h)                                        */
+/* BINDTOOL_HEADER_FILE_HASH(49ab704e11f1b791538ac3e04c3158e7)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -23,64 +23,64 @@
 
 namespace py = pybind11;
 
-#include <gnuradio/plasma/bae_sink.h>
+#include <gnuradio/plasma/spectrum_sink.h>
 // pydoc.h is automatically generated in the build directory
-#include <bae_sink_pydoc.h>
+#include <spectrum_sink_pydoc.h>
 
-void bind_bae_sink(py::module& m)
+void bind_spectrum_sink(py::module& m)
 {
 
-    using bae_sink = ::gr::plasma::bae_sink;
+    using spectrum_sink = ::gr::plasma::spectrum_sink;
 
 
-    py::class_<bae_sink,
+    py::class_<spectrum_sink,
                gr::block,
                gr::basic_block,
-               std::shared_ptr<bae_sink>>(
-        m, "bae_sink", D(bae_sink))
+               std::shared_ptr<spectrum_sink>>(
+        m, "spectrum_sink", D(spectrum_sink))
 
-        .def(py::init(&bae_sink::make),
+        .def(py::init(&spectrum_sink::make),
              py::arg("samp_rate"),
              py::arg("ncol"),
              py::arg("center_freq"),
              py::arg("parent"),
              py::arg("mode"),
-             D(bae_sink, make))
+             D(spectrum_sink, make))
 
 
-        .def("exec_", &bae_sink::exec_, D(bae_sink, exec_))
+        .def("exec_", &spectrum_sink::exec_, D(spectrum_sink, exec_))
 
 
         .def(
             "qwidget",
-            [](bae_sink& self) {
+            [](spectrum_sink& self) {
                 return reinterpret_cast<uintptr_t>(self.qwidget());
             },
-            D(bae_sink, qwidget))
+            D(spectrum_sink, qwidget))
 
 
         .def(
             "pyqwidget",
-            [](std::shared_ptr<bae_sink> p) {
+            [](std::shared_ptr<spectrum_sink> p) {
                 return PyLong_AsLongLong(p->pyqwidget());
             },
-            D(bae_sink, pyqwidget))
+            D(spectrum_sink, pyqwidget))
 
 
         .def("set_dynamic_range",
-             &bae_sink::set_dynamic_range,
+             &spectrum_sink::set_dynamic_range,
              py::arg("arg0"),
-             D(bae_sink, set_dynamic_range))
+             D(spectrum_sink, set_dynamic_range))
 
 
         .def("set_msg_queue_depth",
-             &bae_sink::set_msg_queue_depth,
+             &spectrum_sink::set_msg_queue_depth,
              py::arg("depth"),
-             D(bae_sink, set_msg_queue_depth))
+             D(spectrum_sink, set_msg_queue_depth))
 
 
         .def("set_metadata_keys",
-             &bae_sink::set_metadata_keys,
+             &spectrum_sink::set_metadata_keys,
              py::arg("samp_rate_key"),
              py::arg("n_matrix_col_key"),
              py::arg("center_freq_key"),
@@ -88,7 +88,7 @@ void bind_bae_sink(py::module& m)
              py::arg("prf_key"),
              py::arg("pulsewidth_key"),
              py::arg("detection_indices_key"),
-             D(bae_sink, set_metadata_keys))
+             D(spectrum_sink, set_metadata_keys))
 
         ;
 }

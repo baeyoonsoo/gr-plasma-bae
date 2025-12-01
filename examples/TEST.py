@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Not titled yet
+# Title: TEST
 # GNU Radio version: 3.10.9.2
 
 from PyQt5 import Qt
@@ -24,12 +24,12 @@ from gnuradio import eng_notation
 
 
 
-class T1114(gr.top_block, Qt.QWidget):
+class TEST(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
+        gr.top_block.__init__(self, "TEST", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Not titled yet")
+        self.setWindowTitle("TEST")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -47,7 +47,7 @@ class T1114(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "T1114")
+        self.settings = Qt.QSettings("GNU Radio", "TEST")
 
         try:
             geometry = self.settings.value("geometry")
@@ -59,18 +59,18 @@ class T1114(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 30000000
+        self.samp_rate = samp_rate = 20000000
         self.center_freq = center_freq = 2400000000
 
         ##################################################
         # Blocks
         ##################################################
 
-        self.pluto_source_bae_0_3 = plasma.pluto_radar_bae(
-          'ip:192.168.3.3',
-          center_freq,
-          samp_rate,
-          samp_rate,
+        self.pluto_source_bae_0 = plasma.pluto_radar_bae(
+          "ip:192.168.3.3",
+          2400000000,
+          2000000,
+          1500000,
           True,
           True,
           4096,
@@ -78,39 +78,44 @@ class T1114(gr.top_block, Qt.QWidget):
           True,
           True,
           "manual",
-          10,
+          10.0,
           "manual",
-          10,
+          10.0,
           "A_BALANCED",
           "",
           True,
           100e-6)
-        self.pluto_source_bae_0_3.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.pluto_source_bae_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
+        self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq, None, 0)
+        self.plasma_spectrum_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
+        self.plasma_spectrum_sink_0.set_dynamic_range(60)
+        self.plasma_spectrum_sink_0.set_msg_queue_depth(1)
+        self._plasma_spectrum_sink_0_win = sip.wrapinstance(self.plasma_spectrum_sink_0.pyqwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._plasma_spectrum_sink_0_win)
         self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq, None)
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)
+
+        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_3.set_db_enable(0)
+        self.plasma_spectro_sink_0_3.set_device_id('01')
+
         self._plasma_spectro_sink_0_3_win = sip.wrapinstance(self.plasma_spectro_sink_0_3.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_3_win)
         self.plasma_signal_processing_0_3 = plasma.signal_processing(1024,samp_rate,1,1,0)
-        self.plasma_bae_sink_0 = plasma.bae_sink(samp_rate, 128, center_freq, None, 0)
-        self.plasma_bae_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
-        self.plasma_bae_sink_0.set_dynamic_range(60)
-        self.plasma_bae_sink_0.set_msg_queue_depth(1)
-        self._plasma_bae_sink_0_win = sip.wrapinstance(self.plasma_bae_sink_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._plasma_bae_sink_0_win)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_bae_sink_0, 'in'))
         self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectro_sink_0_3, 'in'))
-        self.msg_connect((self.pluto_source_bae_0_3, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
+        self.msg_connect((self.plasma_signal_processing_0_3, 'out'), (self.plasma_spectrum_sink_0, 'in'))
+        self.msg_connect((self.pluto_source_bae_0, 'out'), (self.plasma_signal_processing_0_3, 'rx'))
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "T1114")
+        self.settings = Qt.QSettings("GNU Radio", "TEST")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -132,7 +137,7 @@ class T1114(gr.top_block, Qt.QWidget):
 
 
 
-def main(top_block_cls=T1114, options=None):
+def main(top_block_cls=TEST, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 

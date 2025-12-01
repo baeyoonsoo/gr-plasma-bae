@@ -42,10 +42,10 @@ list(APPEND plasma_python_files
     pdu_file_sink_python.cc
     pdu_head_python.cc
     python_bindings.cc
-    pluto_radar_bae_python.cc         # add by bae
-    signal_processing_python.cc       # add by bae
-    bae_sink_python.cc                # add by bae
-    spectro_sink_python.cc            # add by bae
+    pluto_radar_bae_python.cc        
+    signal_processing_python.cc      
+    spectrum_sink_python.cc               
+    spectro_sink_python.cc           
     device_python.cc
 )
 

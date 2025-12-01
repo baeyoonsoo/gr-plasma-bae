@@ -5,8 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef INCLUDED_PLASMA_BAE_SINK_H
-#define INCLUDED_PLASMA_BAE_SINK_H
+#ifndef INCLUDED_PLASMA_SPECTRUM_SINK_H
+#define INCLUDED_PLASMA_SPECTRUM_SINK_H
 
 #include <gnuradio/block.h>
 #include <gnuradio/plasma/api.h>
@@ -28,17 +28,17 @@ namespace plasma {
  * \ingroup plasma
  *
  */
-class PLASMA_API bae_sink : virtual public gr::block
+class PLASMA_API spectrum_sink : virtual public gr::block
 {
 public:
-    typedef std::shared_ptr<bae_sink> sptr;
+    typedef std::shared_ptr<spectrum_sink> sptr;
 
     /*!
-     * \brief Return a shared_ptr to a new instance of plasma::bae_sink.
+     * \brief Return a shared_ptr to a new instance of plasma::spectrum_sink.
      *
-     * To avoid accidental use of raw pointers, plasma::bae_sink's
+     * To avoid accidental use of raw pointers, plasma::spectrum_sink's
      * constructor is in a private implementation
-     * class. plasma::bae_sink::make is the public interface for
+     * class. plasma::spectrum_sink::make is the public interface for
      * creating new instances.
      */
     static sptr
@@ -66,4 +66,4 @@ public:
 } // namespace plasma
 } // namespace gr
 
-#endif /* INCLUDED_PLASMA_BAE_SINK_H */
+#endif /* INCLUDED_PLASMA_SPECTRUM_SINK_H */

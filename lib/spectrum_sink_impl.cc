@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "bae_sink_impl.h"
+#include "spectrum_sink_impl.h"
 #include <gnuradio/io_signature.h>
 #include <chrono>
 #include <thread>
@@ -13,25 +13,25 @@
 namespace gr {
 namespace plasma {
 
-bae_sink::sptr bae_sink::make(double samp_rate,
+spectrum_sink::sptr spectrum_sink::make(double samp_rate,
                               size_t ncol,
                               double center_freq,
                               QWidget* parent,
                               int mode)
 {
-    return gnuradio::make_block_sptr<bae_sink_impl>(
+    return gnuradio::make_block_sptr<spectrum_sink_impl>(
         samp_rate, ncol, center_freq, parent, mode);
 }
 
 /*
  * The private constructor
  */
-bae_sink_impl::bae_sink_impl(double samp_rate,
+spectrum_sink_impl::spectrum_sink_impl(double samp_rate,
                              size_t ncol,
                              double center_freq,
                              QWidget* parent,
                              int mode)
-    : gr::block("bae_sink",
+    : gr::block("spectrum_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_samp_rate(samp_rate),
@@ -59,15 +59,15 @@ bae_sink_impl::bae_sink_impl(double samp_rate,
 /*
  * Our virtual destructor.
  */
-bae_sink_impl::~bae_sink_impl() { delete d_argv; }
+spectrum_sink_impl::~spectrum_sink_impl() { delete d_argv; }
 
-bool bae_sink_impl::start()
+bool spectrum_sink_impl::start()
 {
     d_finished = false;
     return block::start();
 }
 
-bool bae_sink_impl::stop()
+bool spectrum_sink_impl::stop()
 {
     d_finished = true;
     if (not d_main_gui->is_closed())
@@ -75,22 +75,22 @@ bool bae_sink_impl::stop()
     return block::stop();
 }
 
-void bae_sink_impl::exec_() { d_qapp->exec(); };
+void spectrum_sink_impl::exec_() { d_qapp->exec(); };
 
-QWidget* bae_sink_impl::qwidget() { return (QWidget*)d_main_gui; }
+QWidget* spectrum_sink_impl::qwidget() { return (QWidget*)d_main_gui; }
 
 #ifdef ENABLE_PYTHON
-PyObject* bae_sink_impl::pyqwidget()
+PyObject* spectrum_sink_impl::pyqwidget()
 {
     PyObject* w = PyLong_FromVoidPtr((void*)d_main_gui);
     PyObject* retarg = Py_BuildValue("N", w);
     return retarg;
 }
 #else
-void* bae_sink_impl::pyqwidget() { return nullptr; }
+void* spectrum_sink_impl::pyqwidget() { return nullptr; }
 #endif
 
-void bae_sink_impl::handle_rx_msg(pmt::pmt_t msg)
+void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 {
     if (d_main_gui->busy() or this->nmsgs(d_in_port) > d_msg_queue_depth) {
         return;
@@ -131,17 +131,17 @@ void bae_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     }
 }
 
-void bae_sink_impl::set_dynamic_range(const double r)
+void spectrum_sink_impl::set_dynamic_range(const double r)
 {
     d_dynamic_range_db = r;
 }
 
-void bae_sink_impl::set_msg_queue_depth(size_t depth)
+void spectrum_sink_impl::set_msg_queue_depth(size_t depth)
 {
     d_msg_queue_depth = depth;
 }
 
-void bae_sink_impl::set_metadata_keys(std::string samp_rate_key,
+void spectrum_sink_impl::set_metadata_keys(std::string samp_rate_key,
                                                 std::string n_matrix_col_key,
                                                 std::string center_freq_key,
                                                 std::string dynamic_range_key,

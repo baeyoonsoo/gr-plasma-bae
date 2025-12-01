@@ -32,10 +32,10 @@
 #include <iostream>
 #include <vector>
 
-class RangeDopplerData : public QwtMatrixRasterData
+class SpectrumData : public QwtMatrixRasterData
 {
 public:
-    RangeDopplerData() : QwtMatrixRasterData() {}
+    SpectrumData() : QwtMatrixRasterData() {}
 
     virtual void setValueMatrix(const QVector<double>& values, int numColumns)
     {
@@ -93,16 +93,16 @@ private:
     double dy;
 };
 
-class RangeDopplerWindow : public QWidget
+class SpectrumWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    RangeDopplerWindow(QWidget* parent = nullptr,
+    SpectrumWindow(QWidget* parent = nullptr,
                        double samp_rate = 0,
                        double center_freq = 0,
                        int mode = 0);
-    ~RangeDopplerWindow();
+    ~SpectrumWindow();
 
     bool is_closed() const;
     bool busy() const;
@@ -127,7 +127,7 @@ private:
     QwtPlot* d_debug_plot;
     QwtPlot* d_plot;
     QwtPlotCurve* d_debug_curve;
-    RangeDopplerData* d_data;
+    SpectrumData* d_data;
     QwtPlotZoomer* d_zoomer;
     QwtPlotPanner* d_panner;
 

@@ -8,7 +8,7 @@
 #ifndef INCLUDED_PLASMA_SPECTRUM_SINK_IMPL_H
 #define INCLUDED_PLASMA_SPECTRUM_SINK_IMPL_H
 
-#include "range_doppler_window.h"
+#include "spectrum_window.h"
 #include <gnuradio/plasma/spectrum_sink.h>
 #include <arrayfire.h>
 
@@ -28,7 +28,7 @@ private:
     int d_argc;
     char* d_argv;
     int mode;
-    RangeDopplerWindow* d_main_gui;
+    SpectrumWindow* d_main_gui;
 
     std::atomic<bool> d_finished;
     pmt::pmt_t d_in_port;

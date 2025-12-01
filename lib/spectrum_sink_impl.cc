@@ -48,7 +48,7 @@ spectrum_sink_impl::spectrum_sink_impl(double samp_rate,
         d_qapp = qApp;
     else
         d_qapp = new QApplication(d_argc, &d_argv);
-    d_main_gui = new RangeDopplerWindow(parent, samp_rate, center_freq, mode);
+    d_main_gui = new SpectrumWindow(parent, samp_rate, center_freq, mode);
 
     // Initialize message ports
     d_in_port = PMT_IN;
@@ -156,7 +156,7 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
             out[i] = static_cast<double>(in[i]);
         }
 
-        d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
+        d_qapp->postEvent(d_main_gui, new SpectrumUpdateEvent(out, nrow, d_ncol, d_meta));
         delete[] out;
 
     } else if (pmt::is_c32vector(samples)) {
@@ -167,7 +167,7 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
             out[i] = static_cast<double>(std::abs(in[i]));
         }
 
-        d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
+        d_qapp->postEvent(d_main_gui, new SpectrumUpdateEvent(out, nrow, d_ncol, d_meta));
         delete[] out;
     }
 }

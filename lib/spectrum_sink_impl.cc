@@ -103,6 +103,48 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         samples = msg;
     }
 
+    // ===== detect gating =====
+    if (d_plot_on_detect_only) {
+        bool allowed_to_plot = false; // 기본 금지
+        pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
+        if (!pmt::is_null(detect_pmt)) {
+            try {
+                if (pmt::is_number(detect_pmt)) {
+                    if (pmt::is_real(detect_pmt)) {
+                        double dv = pmt::to_double(detect_pmt);
+                        allowed_to_plot = (static_cast<long>(std::lround(dv)) == 1);
+                    } else {
+                        long lv = pmt::to_long(detect_pmt);
+                        allowed_to_plot = (lv == 1);
+                    }
+                } else if (pmt::is_symbol(detect_pmt)) {
+                    std::string s = pmt::symbol_to_string(detect_pmt);
+                    if (s == "1" || s == "true" || s == "True") {
+                        allowed_to_plot = true;
+                    } else {
+                        try {
+                            long lv = std::stol(s);
+                            allowed_to_plot = (lv == 1);
+                        } catch (...) {
+                            allowed_to_plot = false;
+                        }
+                    }
+                } else {
+                    allowed_to_plot = false;
+                }
+            } catch (...) {
+                allowed_to_plot = false;
+            }
+        } else {
+            // d_meta에 detect 필드가 없으면 허용하지 않음 (정책)
+            allowed_to_plot = false;
+        }
+
+        if (!allowed_to_plot) {
+            return; // detect != 1 이면 플롯 생략
+        }
+    }
+    // ===== 기존 처리 =====
     size_t n = pmt::length(samples);
     size_t nrow = n / d_ncol;
 
@@ -122,14 +164,15 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         double* out = new double[n];
 
         for (size_t i = 0; i < n; ++i) {
-            
-            out[i] = static_cast<double>(std::abs(in[i])); 
+            out[i] = static_cast<double>(std::abs(in[i]));
         }
 
         d_qapp->postEvent(d_main_gui, new RangeDopplerUpdateEvent(out, nrow, d_ncol, d_meta));
         delete[] out;
     }
 }
+
+
 
 void spectrum_sink_impl::set_dynamic_range(const double r)
 {

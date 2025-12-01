@@ -47,7 +47,8 @@ private:
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_center_freq_key;
     pmt::pmt_t d_n_matrix_col_key;
-
+    bool d_plot_on_detect_only{true};
+    
     // time
     gr::high_res_timer_type d_update_time;
     gr::high_res_timer_type d_last_time;

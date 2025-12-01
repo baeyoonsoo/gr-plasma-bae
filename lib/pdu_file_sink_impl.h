@@ -61,7 +61,7 @@ private:
      *
      */
     std::ofstream d_meta_file;
-
+    bool d_meta_save_on_detect{true};
     /**
      * @brief Worker thread used for run() method
      *

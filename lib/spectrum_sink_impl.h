@@ -35,6 +35,8 @@ private:
     size_t d_msg_queue_depth;
 
     pmt::pmt_t d_meta;
+    bool d_plot_on_detect_only{true}; // true: detect==1 일 때만 plot, false: 항상 plot
+    void set_plot_on_detect_only(bool v) { d_plot_on_detect_only = v; }
     // Metadata keys
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_center_freq_key;

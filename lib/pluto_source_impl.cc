@@ -258,26 +258,6 @@ bool pluto_source_impl::start()
 
     pluto_source_impl::set_params(phy, params);
     
-    // you can use filter with this code but you need to change ad9361_set_bb_rate.
-    // or you can connect FIR block provided by GNURadio.
-    // if (auto_filter) {
-    //     int ret = ad9361_set_bb_rate(phy, samplerate);
-    //     if (ret) {
-    //         throw std::runtime_error("Unable to set BB rate");
-    //     }
-    // } else if (!filter.empty()) {
-    //     std::string filt(filter);
-    //     if (!load_fir_filter(filt, phy))
-    //         throw std::runtime_error("Unable to load filter file");
-    // }
-    // Conversion blocks
-    // you can use later, not now
-    // s2f_i = gr::blocks::short_to_float::make(1, 2048.0f);
-    // s2f_q = gr::blocks::short_to_float::make(1, 2048.0f);
-    // f2c   = gr::blocks::float_to_complex::make(1);
-    // temp_i.resize(buffer_size);
-    // temp_q.resize(buffer_size);
-
     finished.store(false);
     rx_thread = std::thread(&pluto_source_impl::receive, this);
     return true;
@@ -356,29 +336,49 @@ void pluto_source_impl::receive()
                 samples_available -= take;
                 consumed += take;
 
-                // publish
+                // publish (수정된 블록)
                 if (!pbuf.empty()) {
+                    // 1) 평균 전력 계산 (complex<float>의 제곱 크기 평균)
+                    double power = 0.0;
+                    for (size_t i = 0; i < pbuf.size(); ++i) {
+                        power += std::norm(pbuf[i]); // std::norm = re^2 + im^2
+                    }
+                    power /= static_cast<double>(pbuf.size()); // linear-domain mean power
+
+                    // 2) 잡음바닥 초기화/적응 (EMA). 검출 상태일 때는 잡음 추정에 섞이지 않도록 비검출 때만 갱신
+                    if (!d_noise_floor_initialized) {
+                        d_noise_floor = power;
+                        d_noise_floor_initialized = true;
+                    }
+
+                    double thresh_lin = std::pow(10.0, d_detect_threshold_db / 10.0); // dB -> 선형
+                    bool detected = (power > d_noise_floor * thresh_lin);
+
+                    if (!detected) {
+                        // 비검출 구간에서만 잡음바닥 적응 (검출 구간을 포함하면 신호가 잡음추정에 섞일 수 있음)
+                        d_noise_floor = (1.0 - d_noise_alpha) * d_noise_floor + d_noise_alpha * power;
+                    }
+
+                    // 3) 기존처럼 PDU 생성 및 메타에 detect 추가
                     pmt::pmt_t pdu = pmt::init_c32vector(
                         static_cast<int>(pbuf.size()),
                         reinterpret_cast<const gr_complex*>(pbuf.data()));
 
                     pmt::pmt_t meta = pmt::make_dict();
                     meta = pmt::dict_add(meta, pmt::intern("center_freq"), pmt::from_double(frequency));
-                    meta = pmt::dict_add(meta, pmt::intern("samp_rate"),   pmt::from_double(samplerate));
                     meta = pmt::dict_add(meta, pmt::intern("seq"), pmt::from_long(seq++));
 
-                    auto now = std::chrono::system_clock::now();
-                    auto now_sec = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
-                    meta = pmt::dict_add(meta, pmt::intern("timestamp"), pmt::from_double(now_sec));
+                    // elapsed time (us)
+                    auto now = std::chrono::steady_clock::now();
+                    auto elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(now - d_start_time).count();
+                    meta = pmt::dict_add(meta, pmt::intern("timestamp"), pmt::from_double(static_cast<double>(elapsed_us)));
+
+                    // detection metadata
+                    meta = pmt::dict_add(meta, pmt::intern("detect"), pmt::from_long(detected ? 1 : 0));
+                    meta = pmt::dict_add(meta, pmt::intern("power"), pmt::from_double(power));           // linear power
+                    meta = pmt::dict_add(meta, pmt::intern("noise_floor"), pmt::from_double(d_noise_floor)); // linear
 
                     message_port_pub(pmt::mp("out"), pmt::cons(meta, pdu));
-                
-                    // cnt++;
-                    // if(cnt == 10)
-                    // {
-                    //     finished.store(true);
-                    //     break;
-                    // }
                 }
             } // while samples_available
         } // while !finished

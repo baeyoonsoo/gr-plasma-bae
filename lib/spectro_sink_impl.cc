@@ -192,11 +192,55 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 
         set_time_per_fft(frame_period_s);
 
-        // 이벤트 발송
-        d_qapp->postEvent(d_main_gui,
-            new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
-        
-        // DB로도 동일 프레임 전송
+        // --------------------------
+        // detect 체크: d_plot_on_detect_only 가 true 인 경우만 동작
+        bool allowed_to_plot = true; // 기본: 허용
+        if (d_plot_on_detect_only) {
+            allowed_to_plot = false; // 기본은 금지, detect가 1이면 허용
+            pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
+            if (!pmt::is_null(detect_pmt)) {
+                try {
+                    if (pmt::is_number(detect_pmt)) {
+                        // real(실수) 또는 integer 처리
+                        if (pmt::is_real(detect_pmt)) {
+                            double dv = pmt::to_double(detect_pmt);
+                            allowed_to_plot = (static_cast<long>(std::lround(dv)) == 1);
+                        } else {
+                            long lv = pmt::to_long(detect_pmt);
+                            allowed_to_plot = (lv == 1);
+                        }
+                    } else if (pmt::is_symbol(detect_pmt)) {
+                        std::string s = pmt::symbol_to_string(detect_pmt);
+                        if (s == "1" || s == "true" || s == "True") {
+                            allowed_to_plot = true;
+                        } else {
+                            try {
+                                long lv = std::stol(s);
+                                allowed_to_plot = (lv == 1);
+                            } catch(...) {
+                                allowed_to_plot = false;
+                            }
+                        }
+                    } else {
+                        // 그 외 타입은 허용하지 않음
+                        allowed_to_plot = false;
+                    }
+                } catch(...) {
+                    allowed_to_plot = false;
+                }
+            } else {
+                // d_meta에 detect 필드가 없으면 허용하지 않음 (정책)
+                allowed_to_plot = false;
+            }
+        }
+
+        // 이벤트 발송 (GUI/플롯) — detect==1이어야 함 (설정에 따라)
+        if (allowed_to_plot) {
+            d_qapp->postEvent(d_main_gui,
+                new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
+        } // else: plot 생략
+
+        // DB로도 동일 프레임 전송 (기존 동작 유지)
         if (d_db_enable) {
             frame_row r;
             r.ts_us        = now_us;
@@ -214,11 +258,12 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
             enqueue_frame(std::move(r));
         }
 
-        // 누산기 리셋
+        // 누산기 리셋 (항상 리셋)
         std::fill(d_accum_buf.begin(), d_accum_buf.end(), 0.0);
         d_accum_count = 0;
     }
 }
+
 
 void spectro_sink_impl::set_update_time(double t)
 {

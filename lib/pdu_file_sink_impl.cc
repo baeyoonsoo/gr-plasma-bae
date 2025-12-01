@@ -136,26 +136,71 @@ void pdu_file_sink_impl::run()
                 global = pmt::dict_add(global, PMT_VERSION, pmt::intern("1.0.0"));
                 if (not pmt::is_null(input_global_dict))
                     global = pmt::dict_update(global, input_global_dict);
-                // d_meta[pmt::symbol_to_string(PMT_GLOBAL)] =
                 d_meta_dict = pmt::dict_add(d_meta_dict, PMT_GLOBAL, global);
             }
             d_data_queue.pop();
             d_meta_queue.pop();
         }
+
         size_t n = pmt::length(d_data);
         d_data_file.write((char*)pmt::blob_data(d_data), n * d_itemsize);
+
         // If the user wants metadata and we have some, save it
-        if (d_meta_file.is_open() and pmt::length(pmt::dict_keys(d_meta_dict)) > 0) {
-            // over write
-            parse_meta(d_meta_dict, d_meta);
-            d_meta_dict = pmt::make_dict();
-            // append
-            // parse_meta(d_meta_dict, d_meta);
-            // d_meta_array.push_back(d_meta);
-            // d_meta_dict = pmt::make_dict();
+        if (d_meta_file.is_open() && pmt::length(pmt::dict_keys(d_meta_dict)) > 0) {
+            bool save_meta = false;
+
+            if (!d_meta_save_on_detect) {
+                // 모드 OFF: 항상 저장
+                save_meta = true;
+            } else {
+                // 모드 ON: detect 필드가 1일 때만 저장
+                pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta_dict, pmt::intern("detect"), pmt::PMT_NIL);
+                if (!pmt::is_null(detect_pmt)) {
+                    try {
+                        if (pmt::is_number(detect_pmt)) {
+                            if (pmt::is_real(detect_pmt)) {
+                                double dv = pmt::to_double(detect_pmt);
+                                save_meta = (static_cast<long>(std::lround(dv)) == 1);
+                            } else {
+                                long lv = pmt::to_long(detect_pmt);
+                                save_meta = (lv == 1);
+                            }
+                        } else if (pmt::is_symbol(detect_pmt)) {
+                            std::string s = pmt::symbol_to_string(detect_pmt);
+                            if (s == "1" || s == "true" || s == "True") {
+                                save_meta = true;
+                            } else {
+                                try {
+                                    long lv = std::stol(s);
+                                    save_meta = (lv == 1);
+                                } catch (...) {
+                                    save_meta = false;
+                                }
+                            }
+                        } else {
+                            save_meta = false;
+                        }
+                    } catch (...) {
+                        save_meta = false;
+                    }
+                } else {
+                    // detect 필드가 없으면 탐지모드 ON일 때는 저장하지 않음
+                    save_meta = false;
+                }
+            }
+
+            if (save_meta) {
+                parse_meta(d_meta_dict, d_meta);
+                d_meta_dict = pmt::make_dict();
+            } else {
+                // 저장하지 않을 경우에도 메타 초기화(버림)
+                d_meta_dict = pmt::make_dict();
+            }
         }
     }
 }
+
+
 
 void pdu_file_sink_impl::parse_meta(const pmt::pmt_t& dict, nlohmann::json& json)
 {

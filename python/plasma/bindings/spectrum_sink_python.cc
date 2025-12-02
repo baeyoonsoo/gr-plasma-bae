@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
 /* BINDTOOL_HEADER_FILE(spectrum_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(8aaff97037db58325bab4b28ec9a64b4)                     */
+/* BINDTOOL_HEADER_FILE_HASH(8c30709fd8999e3efe2579188ae5a9d2)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -45,6 +45,7 @@ void bind_spectrum_sink(py::module& m)
              py::arg("center_freq"),
              py::arg("parent"),
              py::arg("mode"),
+             py::arg("detected_only"),
              D(spectrum_sink, make))
 
 

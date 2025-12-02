@@ -41,7 +41,7 @@ public:
      * creating new instances.
      */
     static sptr
-    make(double samp_rate, size_t ncol, double center_freq, QWidget* parent, int mode);
+    make(double samp_rate, size_t ncol, double center_freq, QWidget* parent, int mode, bool detected_only);
     virtual void exec_() = 0;
     virtual QWidget* qwidget() = 0;
 #ifdef ENABLE_PYTHON

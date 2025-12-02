@@ -17,10 +17,11 @@ spectrum_sink::sptr spectrum_sink::make(double samp_rate,
                               size_t ncol,
                               double center_freq,
                               QWidget* parent,
-                              int mode)
+                              int mode,
+                              bool detected_only)
 {
     return gnuradio::make_block_sptr<spectrum_sink_impl>(
-        samp_rate, ncol, center_freq, parent, mode);
+        samp_rate, ncol, center_freq, parent, mode, detected_only);
 }
 
 /*
@@ -30,14 +31,16 @@ spectrum_sink_impl::spectrum_sink_impl(double samp_rate,
                              size_t ncol,
                              double center_freq,
                              QWidget* parent,
-                             int mode)
+                             int mode,
+                             bool detected_only)
     : gr::block("spectrum_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_samp_rate(samp_rate),
       d_ncol(ncol),
       d_center_freq(center_freq),
-      mode(mode)
+      mode(mode),
+      detected_only(detected_only)
 {
     parent = nullptr;
     // Initialize the QApplication
@@ -104,7 +107,7 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     }
 
     // ===== detect gating =====
-    if (d_plot_on_detect_only) {
+    if (detected_only) {
         bool allowed_to_plot = false; // 기본 금지
         pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
         if (!pmt::is_null(detect_pmt)) {

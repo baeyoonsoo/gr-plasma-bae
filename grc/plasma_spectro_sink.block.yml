@@ -45,6 +45,12 @@ parameters:
     label: GUI Hint
     dtype: gui_hint
     hide: part
+  
+  - id: detected_only
+    label: Detected only
+    dtype: bool
+    default: False
+    options: [False, True]
 
   # Metadata fields
   - id: samp_rate_key
@@ -96,7 +102,7 @@ templates:
     <%
       win = 'self._%s_win'%id
     %>\
-    self.${id} = plasma.spectro_sink.make(${samp_rate}, ${fft_size}, ${ncol}, ${center_freq}, ${parent})
+    self.${id} = plasma.spectro_sink.make(${samp_rate}, ${fft_size}, ${ncol}, ${center_freq}, ${detected_only}, ${parent})
     self.${id}.set_metadata_keys(${samp_rate_key}, ${n_matrix_col_key}, ${center_freq_key})
     self.${id}.set_update_time(${update_time})
     self.${id}.set_msg_queue_depth(${depth})

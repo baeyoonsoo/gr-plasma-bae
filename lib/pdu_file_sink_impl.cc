@@ -33,10 +33,11 @@ bool is_big_endian(void)
 
 pdu_file_sink::sptr pdu_file_sink::make(size_t itemsize,
                                         std::string& data_filename,
-                                        std::string& meta_filename)
+                                        std::string& meta_filename,
+                                        bool detected_only)
 {
     return gnuradio::make_block_sptr<pdu_file_sink_impl>(
-        itemsize, data_filename, meta_filename);
+        itemsize, data_filename, meta_filename, detected_only);
 }
 
 
@@ -45,15 +46,16 @@ pdu_file_sink::sptr pdu_file_sink::make(size_t itemsize,
  */
 pdu_file_sink_impl::pdu_file_sink_impl(size_t itemsize,
                                        std::string& data_filename,
-                                       std::string& meta_filename)
+                                       std::string& meta_filename,
+                                       bool detected_only)
     : gr::block("pdu_file_sink",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0)),
       d_itemsize(itemsize),
       d_data_filename(data_filename),
-      d_meta_filename(meta_filename)
+      d_meta_filename(meta_filename),
+      detected_only(detected_only)
 {
-
     message_port_register_in(PMT_IN);
     set_msg_handler(PMT_IN, [this](const pmt::pmt_t& msg) { handle_message(msg); });
     d_data_file = std::ofstream(d_data_filename, std::ios::binary | std::ios::out);
@@ -117,27 +119,33 @@ bool pdu_file_sink_impl::stop()
 void pdu_file_sink_impl::run()
 {
     static bool first = true;
+
     while (true) {
         {
             gr::thread::scoped_lock lock(d_mutex);
             d_cond.wait(lock, [this] { return not d_data_queue.empty() || d_finished; });
             if (d_finished)
                 return;
+
             d_data = d_data_queue.front();
             d_meta_dict = pmt::dict_update(d_meta_dict, d_meta_queue.front());
+
             if (first) {
-                // Add global metadata fields for the first output dictionary
                 first = false;
+
                 pmt::pmt_t input_global_dict =
                     pmt::dict_ref(d_meta_dict, PMT_GLOBAL, pmt::PMT_NIL);
+
                 pmt::pmt_t global = pmt::make_dict();
-                global = pmt::dict_add(
-                    global, PMT_DATATYPE, pmt::intern(get_datatype_string()));
+                global = pmt::dict_add(global, PMT_DATATYPE, pmt::intern(get_datatype_string()));
                 global = pmt::dict_add(global, PMT_VERSION, pmt::intern("1.0.0"));
-                if (not pmt::is_null(input_global_dict))
+
+                if (!pmt::is_null(input_global_dict))
                     global = pmt::dict_update(global, input_global_dict);
+
                 d_meta_dict = pmt::dict_add(d_meta_dict, PMT_GLOBAL, global);
             }
+
             d_data_queue.pop();
             d_meta_queue.pop();
         }
@@ -145,16 +153,17 @@ void pdu_file_sink_impl::run()
         size_t n = pmt::length(d_data);
         d_data_file.write((char*)pmt::blob_data(d_data), n * d_itemsize);
 
-        // If the user wants metadata and we have some, save it
         if (d_meta_file.is_open() && pmt::length(pmt::dict_keys(d_meta_dict)) > 0) {
+
             bool save_meta = false;
 
-            if (!d_meta_save_on_detect) {
-                // 모드 OFF: 항상 저장
+            if (!detected_only) {
                 save_meta = true;
             } else {
-                // 모드 ON: detect 필드가 1일 때만 저장
-                pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta_dict, pmt::intern("detect"), pmt::PMT_NIL);
+                // detect == 1 인 경우에만 저장
+                pmt::pmt_t detect_pmt =
+                    pmt::dict_ref(d_meta_dict, pmt::intern("detect"), pmt::PMT_NIL);
+
                 if (!pmt::is_null(detect_pmt)) {
                     try {
                         if (pmt::is_number(detect_pmt)) {
@@ -162,43 +171,43 @@ void pdu_file_sink_impl::run()
                                 double dv = pmt::to_double(detect_pmt);
                                 save_meta = (static_cast<long>(std::lround(dv)) == 1);
                             } else {
-                                long lv = pmt::to_long(detect_pmt);
-                                save_meta = (lv == 1);
+                                save_meta = (pmt::to_long(detect_pmt) == 1);
                             }
                         } else if (pmt::is_symbol(detect_pmt)) {
                             std::string s = pmt::symbol_to_string(detect_pmt);
-                            if (s == "1") {
+                            if (s == "1")
                                 save_meta = true;
-                            } else {
+                            else {
                                 try {
-                                    long lv = std::stol(s);
-                                    save_meta = (lv == 1);
+                                    save_meta = (std::stol(s) == 1);
                                 } catch (...) {
                                     save_meta = false;
                                 }
                             }
-                        } else {
-                            save_meta = false;
                         }
                     } catch (...) {
                         save_meta = false;
                     }
-                } else {
-                    // detect 필드가 없으면 탐지모드 ON일 때는 저장하지 않음
-                    save_meta = false;
                 }
             }
 
             if (save_meta) {
+                // 기존 구조 그대로 → meta 파싱
                 parse_meta(d_meta_dict, d_meta);
+
+                // 여기서 JSON 한 줄로 파일에 바로 append (jsonl)
+                d_meta_file << d_meta.dump() << "\n";
+                d_meta_file.flush();
+
+                // 초기화
                 d_meta_dict = pmt::make_dict();
             } else {
-                // 저장하지 않을 경우에도 메타 초기화(버림)
                 d_meta_dict = pmt::make_dict();
             }
         }
     }
 }
+
 
 
 

@@ -34,6 +34,7 @@ public:
                      int      fft_size,
                      size_t   ncol,
                      double   center_freq,
+                     bool detected_only,
                      QWidget* parent = nullptr);
 
     virtual ~spectro_sink() = default;

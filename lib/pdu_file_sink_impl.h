@@ -61,7 +61,8 @@ private:
      *
      */
     std::ofstream d_meta_file;
-    bool d_meta_save_on_detect{true};
+    bool detected_only;
+    
     /**
      * @brief Worker thread used for run() method
      *
@@ -127,7 +128,8 @@ private:
 public:
     pdu_file_sink_impl(size_t itemsize,
                        std::string& data_filename,
-                       std::string& meta_filename);
+                       std::string& meta_filename,
+                       bool detected_only);
     ~pdu_file_sink_impl();
 
     /**

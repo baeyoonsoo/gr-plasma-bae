@@ -126,7 +126,12 @@ private:
     std::string               filter{""};
     bool                      auto_filter{true};
     double                    pdu_duration{0.0};
-
+    
+    bool d_noise_floor_initialized{false};
+    double d_noise_floor{0.0};
+    double d_noise_alpha{0.01};
+    double d_detect_threshold_db{6.0};
+    std::chrono::steady_clock::time_point d_start_time = std::chrono::steady_clock::now();
     // Conversion blocks
     gr::blocks::short_to_float::sptr s2f_i, s2f_q;
     gr::blocks::float_to_complex::sptr  f2c;
@@ -143,6 +148,7 @@ private:
     pmt::pmt_t                        next_meta;
     pmt::pmt_t                        tx_data;
     size_t                            tx_buff_size{0};
+    
 
     // metadata keys
     std::string   tx_freq_key;

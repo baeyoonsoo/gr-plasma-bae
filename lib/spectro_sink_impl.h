@@ -18,6 +18,11 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <sqlite3.h>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <chrono>
+
 
 namespace gr {
 namespace plasma {
@@ -47,7 +52,7 @@ private:
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_center_freq_key;
     pmt::pmt_t d_n_matrix_col_key;
-    bool d_plot_on_detect_only{true};
+    bool detected_only;
     
     // time
     gr::high_res_timer_type d_update_time;
@@ -71,6 +76,7 @@ private:
     };
     // --- DB 옵션 (초기값; 환경변수/GRC로 교체 가능) ---
     bool        d_db_enable = false;
+    std::mutex d_db_mutex;
     std::string d_db_path   = "/var/tmp/spectrum.db";
     std::string d_device_id = "pluto-xx";
 
@@ -96,6 +102,7 @@ public:
                       int fft_size,
                       size_t ncol,
                       double center_freq,
+                      bool detected_only,
                       QWidget* parent);
     ~spectro_sink_impl();
 

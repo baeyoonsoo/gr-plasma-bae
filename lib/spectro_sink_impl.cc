@@ -18,10 +18,11 @@ spectro_sink::sptr spectro_sink::make(double samp_rate,
                               int fft_size,
                               size_t ncol,
                               double center_freq,
+                              bool detected_only,
                               QWidget* parent)
 {
     return gnuradio::make_block_sptr<spectro_sink_impl>(
-        samp_rate, fft_size, ncol, center_freq, parent);
+        samp_rate, fft_size, ncol, center_freq, detected_only, parent);
 }
 
 /*
@@ -31,6 +32,7 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
                              int fft_size,
                              size_t ncol,
                              double center_freq,
+                             bool detected_only,
                              QWidget* parent)
     : gr::block("spectro_sink",
               gr::io_signature::make(0,0,0),
@@ -38,7 +40,9 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
     d_samp_rate(samp_rate),
     d_fft_size(fft_size),   // 선언 순서와 맞춤
     d_ncol(ncol),
+    detected_only(detected_only),
     d_center_freq(center_freq)
+    
 {
     if (const char* p = std::getenv("PLASMA_DB_PATH"))   d_db_path   = p;
     if (const char* d = std::getenv("PLASMA_DEVICE_ID")) d_device_id = d;
@@ -193,9 +197,9 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         set_time_per_fft(frame_period_s);
 
         // --------------------------
-        // detect 체크: d_plot_on_detect_only 가 true 인 경우만 동작
+        // detect 체크: detected_only 가 true 인 경우만 동작
         bool allowed_to_plot = true; // 기본: 허용
-        if (d_plot_on_detect_only) {
+        if (detected_only) {
             allowed_to_plot = false; // 기본은 금지, detect가 1이면 허용
             pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
             if (!pmt::is_null(detect_pmt)) {

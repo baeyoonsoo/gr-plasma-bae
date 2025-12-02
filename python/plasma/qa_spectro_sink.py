@@ -52,9 +52,10 @@ class qa_spectro_sink(gr_unittest.TestCase):
         fft_size     = 1024
         ncol         = fft_size
         center_freq  = 100e6
+        detected_only = False
         parent_qw    = None  # QWidget* parent
 
-        inst = spectro_sink(samp_rate, fft_size, ncol, center_freq, parent_qw)
+        inst = spectro_sink(samp_rate, fft_size, ncol, center_freq, detected_only, parent_qw)
         # 옵션: 업데이트 주기/큐 길이 살짝 조정해 테스트 안정화
         try:
             inst.set_update_time(0.01)
@@ -71,9 +72,10 @@ class qa_spectro_sink(gr_unittest.TestCase):
         fft_size     = 256
         ncol         = fft_size
         center_freq  = 915e6
+        detected_only = False
         parent_qw    = None
 
-        sink = spectro_sink(samp_rate, fft_size, ncol, center_freq, parent_qw)
+        sink = spectro_sink(samp_rate, fft_size, ncol, center_freq, detected_only, parent_qw)
 
         # 테스트 실행 속도/부하를 낮추기 위한 설정(있으면)
         try:

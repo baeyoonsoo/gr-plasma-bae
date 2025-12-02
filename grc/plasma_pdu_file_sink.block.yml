@@ -4,7 +4,7 @@ category: "[plasma]/PDU"
 
 templates:
   imports: from gnuradio import plasma
-  make: plasma.pdu_file_sink(${type.size},${data_filename}, ${meta_filename})
+  make: plasma.pdu_file_sink(${type.size},${data_filename}, ${meta_filename}, ${detected_only})
 
 parameters:
   - id: type
@@ -27,6 +27,11 @@ parameters:
     label: Meta filename
     dtype: file_save
     hide: ${ 'all' if save_meta == False else 'none'}
+  - id: detected_only
+    label: Detected only
+    dtype: bool
+    default: False
+    options: [False, True]
 
 inputs:
   - label: in

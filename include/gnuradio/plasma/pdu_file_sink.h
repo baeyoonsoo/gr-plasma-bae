@@ -34,7 +34,7 @@ public:
      * creating new instances.
      */
     static sptr
-    make(size_t itemsize, std::string& data_filename, std::string& meta_filename);
+    make(size_t itemsize, std::string& data_filename, std::string& meta_filename, bool detected_only);
 };
 
 } // namespace plasma

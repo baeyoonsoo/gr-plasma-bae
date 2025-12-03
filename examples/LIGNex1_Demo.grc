@@ -37,7 +37,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2380000000'
+    value: 2.38e9
   states:
     bus_sink: false
     bus_source: false
@@ -49,7 +49,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2400000000'
+    value: 2.4e9
   states:
     bus_sink: false
     bus_source: false
@@ -61,7 +61,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2420000000'
+    value: 2.42e9
   states:
     bus_sink: false
     bus_source: false
@@ -73,7 +73,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2440000000'
+    value: 2.44e9
   states:
     bus_sink: false
     bus_source: false
@@ -85,7 +85,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2460000000'
+    value: 2.46e9
   states:
     bus_sink: false
     bus_source: false
@@ -97,7 +97,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '20000000'
+    value: 20e6
   states:
     bus_sink: false
     bus_source: false
@@ -226,6 +226,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
+    detected_only: 'False'
     device_id: '05'
     fft_size: '1024'
     gui_hint: ''
@@ -239,7 +240,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1736, 452.0]
+    coordinate: [1752, 452.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_0
@@ -253,6 +254,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
+    detected_only: 'False'
     device_id: '04'
     fft_size: '1024'
     gui_hint: ''
@@ -266,7 +268,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1736, 108.0]
+    coordinate: [1752, 108.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_1
@@ -280,6 +282,7 @@ blocks:
     db_enable: 'True'
     db_path: /var/tmp/spectrum.db
     depth: '1'
+    detected_only: 'False'
     device_id: '03'
     fft_size: '1024'
     gui_hint: ''
@@ -293,7 +296,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 804.0]
+    coordinate: [1000, 804.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_2
@@ -307,6 +310,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
+    detected_only: 'False'
     device_id: '02'
     fft_size: '1024'
     gui_hint: ''
@@ -320,7 +324,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 460.0]
+    coordinate: [1000, 460.0]
     rotation: 0
     state: enabled
 - name: plasma_spectro_sink_0_3
@@ -334,6 +338,7 @@ blocks:
     db_enable: '1'
     db_path: /var/tmp/spectrum.db
     depth: '1'
+    detected_only: 'False'
     device_id: '01'
     fft_size: '1024'
     gui_hint: ''
@@ -347,7 +352,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [984, 116.0]
+    coordinate: [1000, 116.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0
@@ -359,6 +364,7 @@ blocks:
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
@@ -375,7 +381,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [984, 288.0]
+    coordinate: [1000, 304.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0_0
@@ -387,6 +393,7 @@ blocks:
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
@@ -403,7 +410,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 632.0]
+    coordinate: [1000, 648.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0_1
@@ -415,6 +422,7 @@ blocks:
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
@@ -431,7 +439,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 976.0]
+    coordinate: [1000, 992.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0_2
@@ -443,6 +451,7 @@ blocks:
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
@@ -459,7 +468,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1736, 280.0]
+    coordinate: [1752, 296.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0_3
@@ -471,6 +480,7 @@ blocks:
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
@@ -487,7 +497,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1736, 624.0]
+    coordinate: [1752, 640.0]
     rotation: 0
     state: enabled
 - name: pluto_source_0

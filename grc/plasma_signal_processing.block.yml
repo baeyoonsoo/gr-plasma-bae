@@ -9,22 +9,28 @@ parameters:
   default: 1024
   options: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
   option_labels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+
 - id: backend
   label: Backend
   dtype: enum
   options: [plasma.Device.DEFAULT, plasma.Device.CPU, plasma.Device.CUDA, plasma.Device.OPENCL]
   option_labels: [Default, CPU, Cuda, OpenCL]
+
 - id: sample_rate
-  label: Sampling rate
-  dtype: int
+  label: Sample Rate (Hz)
+  dtype: float
+  default : "samp_rate"
+
 - id: fft_on
   label: FFT flag
   dtype: int
   default: 1
+
 - id: output_magnitude
   label: Magnitude flag
   dtype: int
   default: 1
+
 - id: window_type
   label: Window
   dtype: int

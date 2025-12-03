@@ -8,38 +8,46 @@ parameters:
     label: Sample Rate
     dtype: float
     default: "samp_rate"
+
   - id: nrow
     label: Num. matrix cols
     dtype: int
     default: 128
+
   - id: center_freq
     label: Center Frequency
     dtype: float
     default: "center_freq"
+
   - id: parent
     label: Parent
     dtype: raw
     default: None
+
   - id: mode
     label: Mode
     dtype: int
     options: [0, 1, 2]
     option_labels: ["Normal", "Max Hold", "Average"]
     default: 0
+
   - id: dynamic_range
     label: Dynamic Range (dB)
     dtype: float
     default: 60
     hide: part
+
   - id: depth
     label: Message Queue Depth
     dtype: int
     default: 1
     hide: part
+
   - id: gui_hint
     label: GUI Hint
     dtype: gui_hint
     hide: part
+
   - id: detected_only
     label: Detected only
     dtype: bool
@@ -53,18 +61,21 @@ parameters:
     default: core:frequency
     hide: part
     category: Metadata
+
   - id: dynamic_range_key
     label: Dynamic Range Key
     dtype: string
     default: dynamic_range
     hide: part
     category: Metadata
+
   - id: n_matrix_col_key
     label: Num. Matrix Cols Key
     dtype: string
     default: n_matrix_col
     hide: part
     category: Metadata
+
   - id: samp_rate_key
     label: Sample Rate Key
     dtype: string
@@ -79,12 +90,14 @@ parameters:
     default: 'detection_indices'
     hide: part
     category: Metadata
+
   - id: prf_key
     label: PRF Key
     dtype: string
     default: 'radar:prf'
     hide: part
     category: Metadata
+
   - id: pulsewidth_key
     label: Pulse Width Key
     dtype: string

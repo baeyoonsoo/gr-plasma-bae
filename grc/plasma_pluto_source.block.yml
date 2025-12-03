@@ -13,74 +13,92 @@ parameters:
     label: Device URI
     dtype: string
     default: '""'
+
   - id: frequency
     label: Center Frequency (Hz)
-    dtype: int
+    dtype: float
     default: 2400000000
+
   - id: samplerate
     label: Sample Rate (Hz)
-    dtype: int
+    dtype: float
     default: 2000000
+
   - id: bandwidth
     label: RF Bandwidth (Hz)
-    dtype: int
+    dtype: float
     default: 1500000
+
   - id: rx1_en
     label: Enable RX1
     dtype: bool
     default: true
+
   - id: rx2_en
     label: Enable RX2
     dtype: bool
-    default: false
+    default: true
+
   - id: buffer_size
     label: Buffer Size
     dtype: int
     default: 4096
+
   - id: quadrature
     label: Quadrature Tracking
     dtype: bool
     default: true
+
   - id: rfdc
     label: RF DC Tracking
     dtype: bool
     default: true
+
   - id: bbdc
     label: BB DC Tracking
     dtype: bool
     default: true
+
   - id: gain1
     label: RX1 Gain Mode
     dtype: string
     default: '"manual"'
+
   - id: gain1_value
     label: RX1 Gain Value (dB)
     dtype: float
     default: 10.0
+
   - id: gain2
     label: RX2 Gain Mode
     dtype: string
     default: '"manual"'
+
   - id: gain2_value
     label: RX2 Gain Value (dB)
     dtype: float
     default: 10.0
+
   - id: rf_port_select
     label: RF Port Select
     dtype: string
     default: '"A_BALANCED"'
+
   - id: filter
     label: FIR Filter File
     dtype: string
     default: '""'
+
   - id: auto_filter
     label: Auto Filter
     dtype: bool
     default: true
+
   - id: pdu_duration
     label: PDU Duration
     dtype: float
     default: 100e-6
+
   # Metadata keys
   - id: tx_freq_key
     label: Tx frequency key
@@ -88,12 +106,14 @@ parameters:
     default: core:tx_freq
     hide: part
     category: Metadata
+
   - id: rx_freq_key
     label: Rx frequency key
     dtype: string
     default: core:rx_freq
     hide: part
     category: Metadata
+
   - id: sample_start_key
     label: Sample start key
     dtype: string

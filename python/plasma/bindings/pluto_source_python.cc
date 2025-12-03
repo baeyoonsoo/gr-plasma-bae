@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(pluto_source.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(4a9ef3789fb0ddc4342a67b71c40e3a3)                     */
+/* BINDTOOL_HEADER_FILE_HASH(41b723dddbc77d442fa31373b84418b7)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -52,6 +52,7 @@ void bind_pluto_source(py::module& m)
            py::arg("gain2"),
            py::arg("gain2_value"),
            py::arg("rf_port_select"),
+           py::arg("d_noise_floor_dbm"),
            py::arg("filter") = "",
            py::arg("auto_filter") = true,
            py::arg("pdu_duration") = 100e-6,

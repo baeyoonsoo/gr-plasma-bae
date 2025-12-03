@@ -23,21 +23,9 @@ namespace plasma {
 class pluto_source_impl : public pluto_source
 {
 public:
-    //typedef std::shared_ptr<pluto_source_impl> sptr;
 
     // Factory
-    // static sptr make(const std::string &uri,
-    //                  unsigned long long frequency,
-    //                  unsigned long samplerate,
-    //                  unsigned long bandwidth,
-    //                  bool rx1_en, bool rx2_en,
-    //                  unsigned long buffer_size,
-    //                  bool quadrature, bool rfdc, bool bbdc,
-    //                  const char *gain1, double gain1_value,
-    //                  const char *gain2, double gain2_value,
-    //                  const char *rf_port_select,
-    //                  const char *filter = "",
-    //                  bool auto_filter = true);
+
     pluto_source_impl(const std::string &uri,
                          double frequency,
                          unsigned long samplerate,
@@ -48,6 +36,7 @@ public:
                          const char *gain1, double gain1_value,
                          const char *gain2, double gain2_value,
                          const char *rf_port_select,
+                         double d_noise_floor_dbm,
                          const char *filter,
                          bool auto_filter,
                          double pdu_duration);
@@ -82,8 +71,6 @@ private:
     void set_params(struct iio_device *phy,
 		    const std::vector<std::string> &params);
 
-    // Message handler
-    // void handle_message(const pmt::pmt_t &msg);
     // Main RX loop
     void run();
     void receive();
@@ -99,9 +86,7 @@ private:
     struct iio_device        *dev{nullptr}, *phy{nullptr};
     struct iio_buffer        *buf{nullptr};
     bool                      destroy_ctx{false};
-    size_t                    buffer_size{0x8000};
     size_t                    samples_per_pdu;
-    //std::vector<std::string>  channels;
     std::vector<struct iio_channel*> channel_list;
 
     // Context cache
@@ -114,7 +99,8 @@ private:
     unsigned long             samplerate{0};
     unsigned long             bandwidth{0};
     bool                      rx1_en{true};     // I channel
-    bool                      rx2_en{true};    // Q channel
+    bool                      rx2_en{true};     // Q channel
+    size_t                    buffer_size{0x8000};
     bool                      quadrature{true};
     bool                      rfdc{true};
     bool                      bbdc{true};
@@ -123,6 +109,7 @@ private:
     std::string               gain2{"manual"};
     double                    gain2_value{0.0};
     std::string               rf_port_select{"A_BALANCED"};
+    double                    d_noise_floor_dbm{-30.0};
     std::string               filter{""};
     bool                      auto_filter{true};
     double                    pdu_duration{0.0};
@@ -131,6 +118,7 @@ private:
     double d_noise_floor{0.0};
     double d_noise_alpha{0.01};
     double d_detect_threshold_db{6.0};
+
     std::chrono::steady_clock::time_point d_start_time = std::chrono::steady_clock::now();
     // Conversion blocks
     gr::blocks::short_to_float::sptr s2f_i, s2f_q;
@@ -149,7 +137,6 @@ private:
     pmt::pmt_t                        tx_data;
     size_t                            tx_buff_size{0};
     
-
     // metadata keys
     std::string   tx_freq_key;
     std::string   rx_freq_key;

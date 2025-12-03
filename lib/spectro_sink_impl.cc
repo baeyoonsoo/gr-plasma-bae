@@ -38,11 +38,10 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
               gr::io_signature::make(0,0,0),
               gr::io_signature::make(0,0,0)),
     d_samp_rate(samp_rate),
-    d_fft_size(fft_size),   // 선언 순서와 맞춤
+    d_fft_size(fft_size),
     d_ncol(ncol),
-    detected_only(detected_only),
-    d_center_freq(center_freq)
-    
+    d_center_freq(center_freq),
+    detected_only(detected_only)
 {
     if (const char* p = std::getenv("PLASMA_DB_PATH"))   d_db_path   = p;
     if (const char* d = std::getenv("PLASMA_DEVICE_ID")) d_device_id = d;
@@ -157,38 +156,32 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
     d_samp_rate = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
     d_center_freq = pmt::to_double(pmt::dict_ref(d_meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
 
-    // ===== 평균 누산 =====
-    // FFT 크기가 바뀌면 누산기 리셋
     if (d_accum_cols != ncol || d_accum_buf.size() != ncol) {
         d_accum_cols  = ncol;
         d_accum_buf.assign(ncol, 0.0);
         d_accum_count = 0;
     }
-    // 합계 누산
+
     for (size_t i = 0; i < ncol; ++i) d_accum_buf[i] += cur[i];
     d_accum_count += 1;
 
-    // ===== 타이머 체크 & 주기 갱신 =====
+
     const auto now_ticks = gr::high_res_timer_now();
     if (now_ticks - d_last_time >= d_update_time && d_accum_count > 0) {
         d_last_time = now_ticks;
 
-        // 평균 계산
         std::vector<double> avg(d_accum_cols);
         const double inv = 1.0 / static_cast<double>(d_accum_count);
         for (size_t i = 0; i < d_accum_cols; ++i) avg[i] = d_accum_buf[i] * inv;
 
-        // 시간 정보
         const auto tps = gr::high_res_timer_tps();
         const uint64_t now_us    = static_cast<uint64_t>((now_ticks * 1000000.0) / tps);
 
-        // 실제 이벤트 간 간격(측정치)
         double frame_period_s;
         if (d_have_emit_tick) {
             const uint64_t dt_ticks = now_ticks - d_last_emit_ticks;
             frame_period_s = static_cast<double>(dt_ticks) / static_cast<double>(tps);
         } else {
-            // 첫 이벤트는 설정값으로 초기화
             frame_period_s = d_update_sec;
             d_have_emit_tick = true;
         }
@@ -196,16 +189,14 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 
         set_time_per_fft(frame_period_s);
 
-        // --------------------------
-        // detect 체크: detected_only 가 true 인 경우만 동작
-        bool allowed_to_plot = true; // 기본: 허용
+        bool allowed_to_plot = true;
         if (detected_only) {
-            allowed_to_plot = false; // 기본은 금지, detect가 1이면 허용
+            allowed_to_plot = false;
             pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
             if (!pmt::is_null(detect_pmt)) {
                 try {
                     if (pmt::is_number(detect_pmt)) {
-                        // real(실수) 또는 integer 처리
+
                         if (pmt::is_real(detect_pmt)) {
                             double dv = pmt::to_double(detect_pmt);
                             allowed_to_plot = (static_cast<long>(std::lround(dv)) == 1);
@@ -226,29 +217,26 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
                             }
                         }
                     } else {
-                        // 그 외 타입은 허용하지 않음
+
                         allowed_to_plot = false;
                     }
                 } catch(...) {
                     allowed_to_plot = false;
                 }
             } else {
-                // d_meta에 detect 필드가 없으면 허용하지 않음 (정책)
                 allowed_to_plot = false;
             }
         }
 
-        // 이벤트 발송 (GUI/플롯) — detect==1이어야 함 (설정에 따라)
         if (allowed_to_plot) {
             d_qapp->postEvent(d_main_gui,
                 new SpectroUpdateEvent(avg.data(), /*rows*/1, d_accum_cols, d_meta, now_us, frame_period_s));
-        } // else: plot 생략
+        }
 
-        // DB로도 동일 프레임 전송 (기존 동작 유지)
         if (d_db_enable) {
             frame_row r;
             r.ts_us        = now_us;
-            r.device_id    = d_device_id;              // "pluto-01" 같은 값
+            r.device_id    = d_device_id;
             r.center_hz    = d_center_freq;
             r.samp_rate_hz = d_samp_rate;
             r.fft_size     = static_cast<int>(d_accum_cols);
@@ -257,12 +245,11 @@ void spectro_sink_impl::handle_rx_msg(pmt::pmt_t msg)
 
             r.power_db.resize(d_accum_cols);
             for (size_t i = 0; i < d_accum_cols; ++i)
-                r.power_db[i] = static_cast<float>(avg[i]); // float32로 저장
+                r.power_db[i] = static_cast<float>(avg[i]);
 
             enqueue_frame(std::move(r));
         }
 
-        // 누산기 리셋 (항상 리셋)
         std::fill(d_accum_buf.begin(), d_accum_buf.end(), 0.0);
         d_accum_count = 0;
     }
@@ -292,7 +279,6 @@ void spectro_sink_impl::set_metadata_keys(const std::string& samp_rate_key,
     d_n_matrix_col_key  = pmt::intern(n_matrix_col_key);
     d_center_freq_key   = pmt::intern(center_freq_key);
     d_main_gui->set_metadata_keys(samp_rate_key, n_matrix_col_key, center_freq_key);
-    // throw std::runtime_error("1\n");
 }
 
 void spectro_sink_impl::set_time_per_fft(double t) { 

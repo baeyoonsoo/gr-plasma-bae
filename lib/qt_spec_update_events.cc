@@ -1,4 +1,3 @@
-// qt_spec_update_events.cc
 #include <gnuradio/plasma/qt_spec_update_events.h>
 #include <algorithm>
 

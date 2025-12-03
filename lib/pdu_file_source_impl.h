@@ -28,16 +28,6 @@ private:
     pmt::pmt_t d_data;
     pmt::pmt_t d_meta;
     pmt::pmt_t d_out_port;
-
-    /**
-     * @brief Convert a JSON object to a PMT dictionary
-     * 
-     * Note that this function is recursive and will convert nested JSON objects
-     * to dictionaries of dictionaries.
-     * 
-     * @param json 
-     * @return pmt::pmt_t 
-     */
     pmt::pmt_t parse_meta(const nlohmann::json& json);
 
 public:

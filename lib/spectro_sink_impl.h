@@ -35,11 +35,12 @@ private:
     bool     d_have_emit_tick  = false;
 
     // Block parameters
-    int d_fft_size;
     double d_samp_rate;
+    int d_fft_size;
     size_t d_ncol;
     double d_center_freq;
-
+    bool detected_only;
+    
     // GUI parameters
     SpectroWindow* d_main_gui;
 
@@ -52,17 +53,17 @@ private:
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_center_freq_key;
     pmt::pmt_t d_n_matrix_col_key;
-    bool detected_only;
+    
     
     // time
     gr::high_res_timer_type d_update_time;
     gr::high_res_timer_type d_last_time;
-    double                  d_update_sec {0.1}; // 초 단위 갱신 주기
+    double                  d_update_sec {0.1};
 
     // averaging accumulator
-    std::vector<double> d_accum_buf; // 누산(합계) 버퍼
-    size_t              d_accum_cols {0}; // FFT 크기(열 수)
-    size_t              d_accum_count {0}; // 주기 내 PDU 개수
+    std::vector<double> d_accum_buf;
+    size_t              d_accum_cols {0};
+    size_t              d_accum_count {0};
 
     struct frame_row {
         long long ts_us;
@@ -72,15 +73,14 @@ private:
         double bin0_hz;
         double df_hz;
         int    fft_size;
-        std::vector<float> power_db; // length = fft_size
+        std::vector<float> power_db;
     };
-    // --- DB 옵션 (초기값; 환경변수/GRC로 교체 가능) ---
+ 
     bool        d_db_enable = false;
     std::mutex d_db_mutex;
     std::string d_db_path   = "/var/tmp/spectrum.db";
     std::string d_device_id = "pluto-xx";
 
-    // --- SQLite 비동기 writer 자원 ---
     sqlite3* d_db = nullptr;
     sqlite3_stmt* d_stmt = nullptr;
 
@@ -90,7 +90,6 @@ private:
     std::queue<frame_row>    d_q;
     bool                     d_stop = false;
 
-    // --- DB 관련 메서드 선언 ---
     void db_open_and_prepare();
     void db_thread_loop();
     void db_close();

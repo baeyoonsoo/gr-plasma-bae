@@ -106,9 +106,8 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
         samples = msg;
     }
 
-    // ===== detect gating =====
     if (detected_only) {
-        bool allowed_to_plot = false; // 기본 금지
+        bool allowed_to_plot = false;
         pmt::pmt_t detect_pmt = pmt::dict_ref(d_meta, pmt::intern("detect"), pmt::PMT_NIL);
         if (!pmt::is_null(detect_pmt)) {
             try {
@@ -139,15 +138,13 @@ void spectrum_sink_impl::handle_rx_msg(pmt::pmt_t msg)
                 allowed_to_plot = false;
             }
         } else {
-            // d_meta에 detect 필드가 없으면 허용하지 않음 (정책)
             allowed_to_plot = false;
         }
 
         if (!allowed_to_plot) {
-            return; // detect != 1 이면 플롯 생략
+            return;
         }
     }
-    // ===== 기존 처리 =====
     size_t n = pmt::length(samples);
     size_t nrow = n / d_ncol;
 

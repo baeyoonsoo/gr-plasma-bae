@@ -1,4 +1,3 @@
-// pluto_source_impl.cc
 #include "pluto_source_impl.h"
 #include <gnuradio/plasma/pluto_source.h>
 #include <gnuradio/io_signature.h>
@@ -24,6 +23,7 @@ pluto_source::sptr pluto_source::make(const std::string &uri,
                  const char *gain1, double gain1_value,
                  const char *gain2, double gain2_value,
                  const char *rf_port_select,
+                 double d_noise_floor_dbm,
                  const char *filter,
                  bool auto_filter,
                  double pdu_duration)
@@ -43,6 +43,7 @@ pluto_source::sptr pluto_source::make(const std::string &uri,
         gain2,
         gain2_value,
         rf_port_select,
+        d_noise_floor_dbm,
         filter,
         auto_filter,
         pdu_duration
@@ -100,6 +101,7 @@ pluto_source_impl::pluto_source_impl(const std::string &uri,
                  const char *gain1, double gain1_value,
                  const char *gain2, double gain2_value,
                  const char *rf_port_select,
+                 double d_noise_floor_dbm,
                  const char *filter = "",
                  bool auto_filter = true,
                  double pdu_duration = 100e-6)
@@ -119,13 +121,13 @@ pluto_source_impl::pluto_source_impl(const std::string &uri,
       gain2(gain2),
       gain2_value(gain2_value),
       rf_port_select(rf_port_select),
-      filter(filter),
-      auto_filter(auto_filter),
-      pdu_duration(pdu_duration)
+      d_noise_floor_dbm(d_noise_floor_dbm),
+      filter(filter),                   // no used, ad9361_load_fir_filter(phy, filter_file)
+      auto_filter(auto_filter),         // no used
+      pdu_duration(pdu_duration) 
 {
     message_port_register_in(pmt::mp("in"));
     message_port_register_out(pmt::mp("out"));
-    // set_msg_handler(PMT_IN, [this](const pmt::pmt_t& msg) { handle_message(msg); });
 }
 
 pluto_source_impl::~pluto_source_impl() {}
@@ -148,7 +150,6 @@ std::vector<std::string> pluto_source_impl::get_channels_vector(
 bool pluto_source_impl::start()
 {
     unsigned int nb_channels, i;
-	unsigned short vid, pid;
     // IIO setup
     // 1. context, device, physical
     ctx = uri.empty() ? iio_create_default_context() : iio_create_context_from_uri(uri.c_str());
@@ -278,9 +279,8 @@ bool pluto_source_impl::stop()
     return gr::block::stop();
 }
 
-void pluto_source_impl::receive() 
+void pluto_source_impl::receive()
 {
-    int cnt = 0;
     long seq = 0;
     std::vector<std::complex<float>> pbuf;
     pbuf.reserve(samples_per_pdu > 0 ? samples_per_pdu : 1024);
@@ -296,7 +296,6 @@ void pluto_source_impl::receive()
                 continue;
             }
 
-            // 
             void* ptr_i = iio_buffer_first(buf, channel_list[0]);
             void* ptr_q = (channel_list.size() > 1) ? iio_buffer_first(buf, channel_list[1]) : nullptr;
             void* ptr_end = iio_buffer_end(buf);
@@ -336,30 +335,25 @@ void pluto_source_impl::receive()
                 samples_available -= take;
                 consumed += take;
 
-                // publish (수정된 블록)
                 if (!pbuf.empty()) {
-                    // 1) 평균 전력 계산 (complex<float>의 제곱 크기 평균)
-                    double power = 0.0;
+                    double power_mean = 0.0;
+                    double power_max = 0.0;
+                    size_t max_index = 0;
                     for (size_t i = 0; i < pbuf.size(); ++i) {
-                        power += std::norm(pbuf[i]); // std::norm = re^2 + im^2
+                        double s_power = std::norm(pbuf[i]);
+                        power_mean += s_power;
+                        if (s_power > power_max) {
+                            power_max = s_power;
+                            max_index = i;
+                        }
                     }
-                    power /= static_cast<double>(pbuf.size()); // linear-domain mean power
+                    power_mean /= static_cast<double>(pbuf.size());
 
-                    // 2) 잡음바닥 초기화/적응 (EMA). 검출 상태일 때는 잡음 추정에 섞이지 않도록 비검출 때만 갱신
-                    if (!d_noise_floor_initialized) {
-                        d_noise_floor = power;
-                        d_noise_floor_initialized = true;
-                    }
+                    double power_mean_dbm = 10.0 * std::log10(power_mean + 1e-12);
+                    double power_max_dbm  = 10.0 * std::log10(power_max + 1e-12);
 
-                    double thresh_lin = std::pow(10.0, d_detect_threshold_db / 10.0); // dB -> 선형
-                    bool detected = (power > d_noise_floor * thresh_lin);
+                    bool detected = (power_max_dbm >= d_noise_floor_dbm);
 
-                    if (!detected) {
-                        // 비검출 구간에서만 잡음바닥 적응 (검출 구간을 포함하면 신호가 잡음추정에 섞일 수 있음)
-                        d_noise_floor = (1.0 - d_noise_alpha) * d_noise_floor + d_noise_alpha * power;
-                    }
-
-                    // 3) 기존처럼 PDU 생성 및 메타에 detect 추가
                     pmt::pmt_t pdu = pmt::init_c32vector(
                         static_cast<int>(pbuf.size()),
                         reinterpret_cast<const gr_complex*>(pbuf.data()));
@@ -368,26 +362,32 @@ void pluto_source_impl::receive()
                     meta = pmt::dict_add(meta, pmt::intern("center_freq"), pmt::from_double(frequency));
                     meta = pmt::dict_add(meta, pmt::intern("seq"), pmt::from_long(seq++));
 
-                    // elapsed time (us)
                     auto now = std::chrono::steady_clock::now();
                     auto elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(now - d_start_time).count();
-                    meta = pmt::dict_add(meta, pmt::intern("timestamp"), pmt::from_double(static_cast<double>(elapsed_us)));
 
-                    // detection metadata
+                    double sample_interval_us = 1e6 / static_cast<double>(samplerate);
+                    double max_sample_ts_us = static_cast<double>(elapsed_us)
+                                            - (static_cast<double>(pbuf.size() - 1 - max_index) * sample_interval_us);
+
+                    meta = pmt::dict_add(meta, pmt::intern("timestamp"), pmt::from_double(static_cast<double>(elapsed_us)));
                     meta = pmt::dict_add(meta, pmt::intern("detect"), pmt::from_long(detected ? 1 : 0));
-                    meta = pmt::dict_add(meta, pmt::intern("power"), pmt::from_double(power));           // linear power
-                    meta = pmt::dict_add(meta, pmt::intern("noise_floor"), pmt::from_double(d_noise_floor)); // linear
+                    meta = pmt::dict_add(meta, pmt::intern("power_mean_dbm"), pmt::from_double(power_mean_dbm));
+                    meta = pmt::dict_add(meta, pmt::intern("power_max_dbm"), pmt::from_double(power_max_dbm));
+                    meta = pmt::dict_add(meta, pmt::intern("max_index"), pmt::from_long(static_cast<long>(max_index)));
+                    meta = pmt::dict_add(meta, pmt::intern("max_sample_ts_us"), pmt::from_double(max_sample_ts_us));
+                    meta = pmt::dict_add(meta, pmt::intern("noise_floor_dbm"), pmt::from_double(d_noise_floor_dbm));
 
                     message_port_pub(pmt::mp("out"), pmt::cons(meta, pdu));
                 }
-            } // while samples_available
-        } // while !finished
+            }
+        }
     } catch (const std::exception &ex) {
         std::cerr << "[Pluto] receive() exception: " << ex.what() << std::endl;
     } catch (...) {
         std::cerr << "[Pluto] receive() unknown exception\n";
     }
 }
+
 
 void pluto_source_impl::run()
 {

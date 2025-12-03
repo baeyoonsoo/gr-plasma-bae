@@ -148,18 +148,16 @@ void SpectroWindow::set_time_axis()
     const double step = std::max(d_time_per_fft, 1e-12);
     const int rows = (d_cols > 0) ? (int)(d_water_values.size() / d_cols) : 0;
 
-    const double tmax       = d_last_row_end_s;              // 화면 상단 시각
-    const double data_span  = rows * step;                   // 버퍼가 실제로 덮는 시간
+    const double tmax       = d_last_row_end_s;
+    const double data_span  = rows * step;
     const double data_min   = std::max(0.0, tmax - data_span);
     const double data_max   = tmax;
 
-    // 축(보이는 창)은 d_time_window_s 만큼만 뒤로 보여줌 (반전 스케일 유지)
     const double tmin_axis  = tmax - d_time_window_s;
 
     d_plot->setAxisTitle(QwtPlot::yLeft, QString("Time (s)"));
     d_plot->setAxisScale(QwtPlot::yLeft, tmax, tmin_axis);
 
-    // ★ 핵심: 데이터 Y-interval을 [data_min, data_max]로!
     d_data->setInterval(Qt::YAxis, QwtInterval(data_min, data_max));
 }
 

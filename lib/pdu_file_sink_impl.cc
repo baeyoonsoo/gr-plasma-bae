@@ -12,14 +12,6 @@
 namespace gr {
 namespace plasma {
 
-/**
- * @brief Check if the system is big or little endian for the datatype string
- *
- * Shamelessly stolen from stackoverflow
- *
- * @return true
- * @return false
- */
 bool is_big_endian(void)
 {
     union {
@@ -39,7 +31,6 @@ pdu_file_sink::sptr pdu_file_sink::make(size_t itemsize,
     return gnuradio::make_block_sptr<pdu_file_sink_impl>(
         itemsize, data_filename, meta_filename, detected_only);
 }
-
 
 /*
  * The private constructor
@@ -192,14 +183,10 @@ void pdu_file_sink_impl::run()
             }
 
             if (save_meta) {
-                // 기존 구조 그대로 → meta 파싱
-                parse_meta(d_meta_dict, d_meta);
 
-                // 여기서 JSON 한 줄로 파일에 바로 append (jsonl)
+                parse_meta(d_meta_dict, d_meta);
                 d_meta_file << d_meta.dump() << "\n";
                 d_meta_file.flush();
-
-                // 초기화
                 d_meta_dict = pmt::make_dict();
             } else {
                 d_meta_dict = pmt::make_dict();

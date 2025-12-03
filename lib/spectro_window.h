@@ -2,8 +2,6 @@
 #define INCLUDED_PLASMA_SPECTRO_WINDOW_H
 #include <gnuradio/plasma/pmt_constants.h>
 #include <gnuradio/plasma/qt_spec_update_events.h>
-// #include <plasma_dsp/file.h>
-// #include <plasma_dsp/lfm.h>
 
 #include <pmt/pmt.h>
 
@@ -147,12 +145,12 @@ private:
     double t0_sec_  = 0.0;
     
     // Waterfall state
-    QVector<double> d_water_values; // (rows × d_cols) flattened row-major
-    int    d_cols            = 0;   // FFT size (num columns)
-    int    d_max_rows        = 512; // 화면에 유지할 최대 행 수
-    double d_time_per_fft    = 0.0; // 프레임 간격(초) – sink에서 세팅 or 이벤트 fp_s
-    double d_time_window_s   = 10.0; // 최근 몇 초를 표시할지
-    double d_last_row_end_s  = 0.0; // y축 최대(현재 끝 시각)
+    QVector<double> d_water_values; 
+    int    d_cols            = 0;
+    int    d_max_rows        = 512;
+    double d_time_per_fft    = 0.0;
+    double d_time_window_s   = 10.0;
+    double d_last_row_end_s  = 0.0;
 
     pmt::pmt_t d_samp_rate_key;
     pmt::pmt_t d_n_matrix_col_key;

@@ -69,6 +69,14 @@ parameters:
     label: RF Port Select
     dtype: string
     default: '"A_BALANCED"'
+  - id: d_noise_floor_dbm
+    label: Noise floor [dBm]
+    dtype: float
+    default: -30.0
+  - id: pdu_duration
+    label: PDU Duration
+    dtype: float
+    default: 100e-6
   - id: filter
     label: FIR Filter File
     dtype: string
@@ -77,10 +85,7 @@ parameters:
     label: Auto Filter
     dtype: bool
     default: true
-  - id: pdu_duration
-    label: PDU Duration
-    dtype: float
-    default: 100e-6
+  
   # Metadata keys
   - id: tx_freq_key
     label: Tx frequency key
@@ -130,6 +135,7 @@ templates:
       ${gain2},
       ${gain2_value},
       ${rf_port_select},
+      ${d_noise_floor_dbm},
       ${filter},
       ${auto_filter},
       ${pdu_duration})

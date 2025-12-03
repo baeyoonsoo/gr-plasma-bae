@@ -42,6 +42,7 @@ public:
                  const char *gain1, double gain1_value,
                  const char *gain2, double gain2_value,
                  const char *rf_port_select,
+                 double d_noise_floor_dbm,
                  const char *filter = "",
                  bool auto_filter = true,
                  double pdu_duration = 100e-6);

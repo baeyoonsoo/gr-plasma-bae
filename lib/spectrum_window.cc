@@ -119,14 +119,14 @@ void SpectrumWindow::customEvent(QEvent* e)
 
         SpectrumUpdateEvent* event = static_cast<SpectrumUpdateEvent*>(e);
         double* data = event->data();
-        size_t N = 1024;
+        long N1 = 1024;
 
         pmt::pmt_t meta = event->meta();
-        d_fft_size = pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(static_cast<long>(N))));
+        d_fft_size = pmt::to_long(pmt::dict_ref(meta, pmt::intern("fft_size"), pmt::from_long(N1)));
         d_samp_rate = pmt::to_double(pmt::dict_ref(meta, pmt::intern("samp_rate"), pmt::from_double(d_samp_rate)));
         d_center_freq = pmt::to_double(pmt::dict_ref(meta, pmt::intern("center_freq"), pmt::from_double(d_center_freq)));
         size_t fft_size = static_cast<size_t>(d_fft_size);
-        N = fft_size;
+        size_t N = fft_size;
 
         QVector<double> x(N);
         const double fs = d_samp_rate > 0 ? d_samp_rate : 1.0;
@@ -134,7 +134,7 @@ void SpectrumWindow::customEvent(QEvent* e)
 
         const double start = d_center_freq - fs / 2.0;
         for (size_t i = 0; i < N; ++i) {
-            x[static_cast<int>(i)] = start + i * df;
+            x[i] = start + i * df;
         }
 
         QVector<double> y(N);
@@ -149,12 +149,12 @@ void SpectrumWindow::customEvent(QEvent* e)
         }
             d_curve->setSamples(x.constData(),
                                 y.constData(),
-                                static_cast<int>(N));
+                                static_cast<int>(fft_size));
         } else if (d_mode == 1) {
-            if (d_max_hold.size() != N)
+            if (d_max_hold.size() != static_cast<size_t>(N))
             {
                 d_max_hold.resize(N);
-                for (int i = 0; i < N; ++i)
+                for (size_t i = 0; i < N; ++i)
                     d_max_hold[i] = y[i];
                 
                 if (!d_max_hold_curve) {
@@ -164,7 +164,7 @@ void SpectrumWindow::customEvent(QEvent* e)
             }
             else
             {
-               for (int i = 0; i < N; ++i)
+               for (size_t i = 0; i < N; ++i)
                     if (y[i] > d_max_hold[i])
                         d_max_hold[i] = y[i];
             }
@@ -172,10 +172,10 @@ void SpectrumWindow::customEvent(QEvent* e)
         }
         else if (d_mode == 2)
         {
-            if (d_avg.size() != N)
+            if (d_avg.size() != static_cast<size_t>(N))
             {
                 d_avg.resize(N);
-                for (int i = 0; i < N; ++i)
+                for (size_t i = 0; i < N; ++i)
                     d_avg[i] = y[i];
 
                 if (!d_avg_curve)
@@ -185,7 +185,7 @@ void SpectrumWindow::customEvent(QEvent* e)
                 }
             } else
             {
-                for (int i = 0; i < N; ++i)
+                for (size_t i = 0; i < N; ++i)
                     d_avg[i] = d_avg_alpha * y[i] + (1.0 - d_avg_alpha) * d_avg[i];
             }
             d_avg_curve->setSamples(x.constData(), d_avg.constData(), static_cast<int>(N));

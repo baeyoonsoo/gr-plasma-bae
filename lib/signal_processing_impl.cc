@@ -11,7 +11,7 @@
 #include <cmath>
 #include <vector>
 #include <cstring>
-#include <iostream> // for std::cerr
+#include <iostream>
 
 namespace gr {
 namespace plasma {
@@ -245,15 +245,11 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
             // Decide whether to run FFT or pass-through time-domain
             if (fft_on) {
                 af::array X; // result (complex) length fft_size (dim0)
-                bool used_inplace = false;
 
                 if (use_inplace_fft && n_samples == fft_size) {
-                    // in-place FFT (사용하는 ArrayFire 버전에 따라 함수명이 다를 수 있음)
-                    af::array x_copy = x; // 소유권/수정 가능하게 복사
-                    // 예: af::fftInPlace(x_copy); 또는 af::fft_inplace(x_copy);
+                    af::array x_copy = x;
                     af::fftInPlace(x_copy);
                     X = x_copy;
-                    used_inplace = true;
                 } else {
                     // out-of-place FFT with explicit output length (zero-pad/truncate)
                     X = af::fft(x, static_cast<int>(fft_size)); // 1D FFT
@@ -320,7 +316,6 @@ void signal_processing_impl::handle_rx_msg(pmt::pmt_t msg)
         // advance buffer position by hop
         buf_pos += hop;
     } // end while processing chunks
-
     // remove consumed samples from overlap_buffer (keep remainder)
     if (buf_pos > 0) {
         overlap_buffer.erase(overlap_buffer.begin(), overlap_buffer.begin() + buf_pos);

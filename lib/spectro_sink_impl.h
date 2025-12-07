@@ -78,7 +78,7 @@ private:
  
     bool        d_db_enable = false;
     std::mutex d_db_mutex;
-    std::string d_db_path   = "/var/tmp/spectrum.db";
+    std::string d_db_path   = "/var/tmp/spectrogram.db";
     std::string d_device_id = "pluto-xx";
 
     sqlite3* d_db = nullptr;

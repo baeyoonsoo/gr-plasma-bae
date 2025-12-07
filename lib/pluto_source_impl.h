@@ -28,8 +28,8 @@ public:
 
     pluto_source_impl(const std::string &uri,
                          double frequency,
-                         unsigned long samplerate,
-                         unsigned long bandwidth,
+                         double samplerate,
+                         double bandwidth,
                          bool rx1_en, bool rx2_en,
                          unsigned long buffer_size,
                          bool quadrature, bool rfdc, bool bbdc,
@@ -96,8 +96,8 @@ private:
 
     // Runtime configuration parameters
     double                    frequency{0};
-    unsigned long             samplerate{0};
-    unsigned long             bandwidth{0};
+    double                    samplerate{0};
+    double                    bandwidth{0};
     bool                      rx1_en{true};     // I channel
     bool                      rx2_en{true};     // Q channel
     size_t                    buffer_size{0x8000};

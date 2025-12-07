@@ -34,8 +34,8 @@ public:
      */
     static sptr make(const std::string &uri,
                  double frequency,
-                 unsigned long samplerate,
-                 unsigned long bandwidth,
+                 double samplerate,
+                 double bandwidth,
                  bool rx1_en, bool rx2_en,
                  unsigned long buffer_size,
                  bool quadrature, bool rfdc, bool bbdc,

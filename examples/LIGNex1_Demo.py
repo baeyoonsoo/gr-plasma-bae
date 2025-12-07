@@ -60,12 +60,12 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20000000
-        self.center_freq_5 = center_freq_5 = 2460000000
-        self.center_freq_4 = center_freq_4 = 2440000000
-        self.center_freq_3 = center_freq_3 = 2420000000
-        self.center_freq_2 = center_freq_2 = 2400000000
-        self.center_freq_1 = center_freq_1 = 2380000000
+        self.samp_rate = samp_rate = 20e6
+        self.center_freq_5 = center_freq_5 = 2.46e9
+        self.center_freq_4 = center_freq_4 = 2.44e9
+        self.center_freq_3 = center_freq_3 = 2.42e9
+        self.center_freq_2 = center_freq_2 = 2.4e9
+        self.center_freq_1 = center_freq_1 = 2.38e9
 
         ##################################################
         # Blocks
@@ -87,6 +87,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
@@ -107,6 +108,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
@@ -127,6 +129,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
@@ -147,6 +150,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
@@ -167,41 +171,42 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
         self.pluto_source_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.plasma_spectrum_sink_0_3 = plasma.spectrum_sink(samp_rate, 128, center_freq_5, None, 0)
+        self.plasma_spectrum_sink_0_3 = plasma.spectrum_sink(samp_rate, 128, center_freq_5, None, 0, False)
         self.plasma_spectrum_sink_0_3.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0_3.set_dynamic_range(60)
         self.plasma_spectrum_sink_0_3.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_3_win = sip.wrapinstance(self.plasma_spectrum_sink_0_3.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_3_win)
-        self.plasma_spectrum_sink_0_2 = plasma.spectrum_sink(samp_rate, 128, center_freq_4, None, 0)
+        self.plasma_spectrum_sink_0_2 = plasma.spectrum_sink(samp_rate, 128, center_freq_4, None, 0, False)
         self.plasma_spectrum_sink_0_2.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0_2.set_dynamic_range(60)
         self.plasma_spectrum_sink_0_2.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_2_win = sip.wrapinstance(self.plasma_spectrum_sink_0_2.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_2_win)
-        self.plasma_spectrum_sink_0_1 = plasma.spectrum_sink(samp_rate, 128, center_freq_3, None, 0)
+        self.plasma_spectrum_sink_0_1 = plasma.spectrum_sink(samp_rate, 128, center_freq_3, None, 0, False)
         self.plasma_spectrum_sink_0_1.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0_1.set_dynamic_range(60)
         self.plasma_spectrum_sink_0_1.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_1_win = sip.wrapinstance(self.plasma_spectrum_sink_0_1.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_1_win)
-        self.plasma_spectrum_sink_0_0 = plasma.spectrum_sink(samp_rate, 128, center_freq_2, None, 0)
+        self.plasma_spectrum_sink_0_0 = plasma.spectrum_sink(samp_rate, 128, center_freq_2, None, 0, False)
         self.plasma_spectrum_sink_0_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0_0.set_dynamic_range(60)
         self.plasma_spectrum_sink_0_0.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_0_win = sip.wrapinstance(self.plasma_spectrum_sink_0_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_0_win)
-        self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq_1, None, 0)
+        self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq_1, None, 0, False)
         self.plasma_spectrum_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0.set_dynamic_range(60)
         self.plasma_spectrum_sink_0.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_win = sip.wrapinstance(self.plasma_spectrum_sink_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_win)
-        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_1, None)
+        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_1, False, None)
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)
@@ -212,7 +217,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
 
         self._plasma_spectro_sink_0_3_win = sip.wrapinstance(self.plasma_spectro_sink_0_3.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_3_win)
-        self.plasma_spectro_sink_0_2 = self.plasma_spectro_sink_0_2 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_2, None)
+        self.plasma_spectro_sink_0_2 = self.plasma_spectro_sink_0_2 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_2, False, None)
         self.plasma_spectro_sink_0_2.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_2.set_update_time(0.1)
         self.plasma_spectro_sink_0_2.set_msg_queue_depth(1)
@@ -223,7 +228,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
 
         self._plasma_spectro_sink_0_2_win = sip.wrapinstance(self.plasma_spectro_sink_0_2.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_2_win)
-        self.plasma_spectro_sink_0_1 = self.plasma_spectro_sink_0_1 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_3, )
+        self.plasma_spectro_sink_0_1 = self.plasma_spectro_sink_0_1 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_3, False, )
         self.plasma_spectro_sink_0_1.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_1.set_update_time(0.1)
         self.plasma_spectro_sink_0_1.set_msg_queue_depth(1)
@@ -234,7 +239,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
 
         self._plasma_spectro_sink_0_1_win = sip.wrapinstance(self.plasma_spectro_sink_0_1.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_1_win)
-        self.plasma_spectro_sink_0_0 = self.plasma_spectro_sink_0_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_4, None)
+        self.plasma_spectro_sink_0_0 = self.plasma_spectro_sink_0_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_4, False, None)
         self.plasma_spectro_sink_0_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_0.set_update_time(0.1)
         self.plasma_spectro_sink_0_0.set_msg_queue_depth(1)
@@ -245,7 +250,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
 
         self._plasma_spectro_sink_0_0_win = sip.wrapinstance(self.plasma_spectro_sink_0_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectro_sink_0_0_win)
-        self.plasma_spectro_sink_0 = self.plasma_spectro_sink_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_5, None)
+        self.plasma_spectro_sink_0 = self.plasma_spectro_sink_0 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq_5, False, None)
         self.plasma_spectro_sink_0.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0.set_update_time(0.1)
         self.plasma_spectro_sink_0.set_msg_queue_depth(1)

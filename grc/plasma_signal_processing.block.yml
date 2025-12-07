@@ -9,22 +9,28 @@ parameters:
   default: 1024
   options: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
   option_labels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
+
 - id: backend
   label: Backend
   dtype: enum
   options: [plasma.Device.DEFAULT, plasma.Device.CPU, plasma.Device.CUDA, plasma.Device.OPENCL]
   option_labels: [Default, CPU, Cuda, OpenCL]
-- id: sample_rate
-  label: Sampling rate
-  dtype: int
+
+- id: samplerate
+  label: Sample Rate (Hz)
+  dtype: float
+  default : "samp_rate"
+
 - id: fft_on
   label: FFT flag
-  dtype: int
-  default: 1
+  dtype: bool
+  default: True
+
 - id: output_magnitude
   label: Magnitude flag
-  dtype: int
-  default: 1
+  dtype: bool
+  default: True
+
 - id: window_type
   label: Window
   dtype: int
@@ -51,7 +57,7 @@ outputs:
 templates:
   imports: from gnuradio import plasma
   make: |-
-    plasma.signal_processing(${fft_size},${sample_rate},${fft_on},${output_magnitude},${window_type})
+    plasma.signal_processing(${fft_size},${samplerate},${fft_on},${output_magnitude},${window_type})
 #    self.${id}.set_metadata_keys(${n_pulse_cpi_key})
 #    self.${id}.set_msg_queue_depth(${depth})
 #    self.${id}.set_backend(${backend})

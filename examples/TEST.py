@@ -82,22 +82,23 @@ class TEST(gr.top_block, Qt.QWidget):
           "manual",
           10.0,
           "A_BALANCED",
+          -30.0,
           "",
           True,
           100e-6)
         self.pluto_source_0_0_0_0.set_metadata_keys('core:tx_freq', 'core:rx_freq', 'core:sample_start')
-        self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq, None, 0)
+        self.plasma_spectrum_sink_0 = plasma.spectrum_sink(samp_rate, 128, center_freq, None, 0, False)
         self.plasma_spectrum_sink_0.set_metadata_keys('core:sample_rate', 'n_matrix_col', 'core:frequency', 'dynamic_range', 'radar:prf', 'radar:duration', 'detection_indices')
         self.plasma_spectrum_sink_0.set_dynamic_range(60)
         self.plasma_spectrum_sink_0.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_win = sip.wrapinstance(self.plasma_spectrum_sink_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_win)
-        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq, None)
+        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq, False, None)
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0_3.set_db_enable(0)
         self.plasma_spectro_sink_0_3.set_device_id('01')
 

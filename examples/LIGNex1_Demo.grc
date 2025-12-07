@@ -223,7 +223,7 @@ blocks:
     center_freq_key: center_freq
     comment: ''
     db_enable: '1'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
     detected_only: 'False'
     device_id: '05'
@@ -251,7 +251,7 @@ blocks:
     center_freq_key: center_freq
     comment: ''
     db_enable: '1'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
     detected_only: 'False'
     device_id: '04'
@@ -279,7 +279,7 @@ blocks:
     center_freq_key: center_freq
     comment: ''
     db_enable: 'True'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
     detected_only: 'False'
     device_id: '03'
@@ -307,7 +307,7 @@ blocks:
     center_freq_key: center_freq
     comment: ''
     db_enable: '1'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
     detected_only: 'False'
     device_id: '02'
@@ -335,7 +335,7 @@ blocks:
     center_freq_key: center_freq
     comment: ''
     db_enable: '1'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
     detected_only: 'False'
     device_id: '01'

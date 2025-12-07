@@ -70,7 +70,7 @@ blocks:
     minoutbuf: '0'
     n_pulse_cpi_key: n_pulse_cpi
     output_magnitude: '1'
-    sample_rate: samp_rate
+    samplerate: samp_rate
     window_type: '0'
   states:
     bus_sink: false
@@ -84,20 +84,21 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    center_freq: center_freq
     center_freq_key: center_freq
     comment: ''
     db_enable: '0'
-    db_path: /var/tmp/spectrum.db
+    db_path: /var/tmp/spectrogram.db
     depth: '1'
+    detected_only: 'False'
     device_id: '01'
     fft_size: '1024'
+    frequency: center_freq
     gui_hint: ''
     n_matrix_col_key: fft_size
     ncol: '128'
     parent: None
-    samp_rate: samp_rate
     samp_rate_key: samp_rate
+    samplerate: samp_rate
     update_time: '0.1'
   states:
     bus_sink: false
@@ -111,13 +112,14 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    center_freq: center_freq
     center_freq_key: core:frequency
     comment: ''
     depth: '1'
+    detected_only: 'False'
     detection_indices_key: detection_indices
     dynamic_range: '60'
     dynamic_range_key: dynamic_range
+    frequency: center_freq
     gui_hint: ''
     mode: '0'
     n_matrix_col_key: n_matrix_col
@@ -125,13 +127,13 @@ blocks:
     parent: None
     prf_key: radar:prf
     pulsewidth_key: radar:duration
-    samp_rate: samp_rate
     samp_rate_key: core:sample_rate
+    samplerate: samp_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 384.0]
+    coordinate: [904, 400.0]
     rotation: 0
     state: enabled
 - name: pluto_source_0_0_0_0
@@ -144,6 +146,7 @@ blocks:
     bbdc: 'True'
     buffer_size: '4096'
     comment: ''
+    d_noise_floor_dbm: '-30.0'
     filter: '""'
     frequency: center_freq
     gain1: '"manual"'

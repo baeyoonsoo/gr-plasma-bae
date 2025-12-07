@@ -211,7 +211,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_3.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0_3.set_db_enable(1)
         self.plasma_spectro_sink_0_3.set_device_id('01')
 
@@ -222,7 +222,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_2.set_update_time(0.1)
         self.plasma_spectro_sink_0_2.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0_2.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_2.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0_2.set_db_enable(1)
         self.plasma_spectro_sink_0_2.set_device_id('02')
 
@@ -233,7 +233,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_1.set_update_time(0.1)
         self.plasma_spectro_sink_0_1.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0_1.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_1.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0_1.set_db_enable(True)
         self.plasma_spectro_sink_0_1.set_device_id('03')
 
@@ -244,7 +244,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0_0.set_update_time(0.1)
         self.plasma_spectro_sink_0_0.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0_0.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0_0.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0_0.set_db_enable(1)
         self.plasma_spectro_sink_0_0.set_device_id('04')
 
@@ -255,7 +255,7 @@ class LIGNex1_Demo(gr.top_block, Qt.QWidget):
         self.plasma_spectro_sink_0.set_update_time(0.1)
         self.plasma_spectro_sink_0.set_msg_queue_depth(1)
 
-        self.plasma_spectro_sink_0.set_db_path('/var/tmp/spectrum.db')
+        self.plasma_spectro_sink_0.set_db_path('/var/tmp/spectrogram.db')
         self.plasma_spectro_sink_0.set_db_enable(1)
         self.plasma_spectro_sink_0.set_device_id('05')
 

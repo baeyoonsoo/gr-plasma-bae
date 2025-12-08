@@ -93,7 +93,7 @@ class TEST(gr.top_block, Qt.QWidget):
         self.plasma_spectrum_sink_0.set_msg_queue_depth(1)
         self._plasma_spectrum_sink_0_win = sip.wrapinstance(self.plasma_spectrum_sink_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._plasma_spectrum_sink_0_win)
-        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 1024, 128, center_freq, False, None)
+        self.plasma_spectro_sink_0_3 = self.plasma_spectro_sink_0_3 = plasma.spectro_sink.make(samp_rate, 128, center_freq, False, None)
         self.plasma_spectro_sink_0_3.set_metadata_keys('samp_rate', 'fft_size', 'center_freq')
         self.plasma_spectro_sink_0_3.set_update_time(0.1)
         self.plasma_spectro_sink_0_3.set_msg_queue_depth(1)

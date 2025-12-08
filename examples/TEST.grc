@@ -91,7 +91,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '01'
-    fft_size: '1024'
     frequency: center_freq
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -104,7 +103,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 212.0]
+    coordinate: [904, 204.0]
     rotation: 0
     state: enabled
 - name: plasma_spectrum_sink_0
@@ -133,7 +132,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 400.0]
+    coordinate: [904, 376.0]
     rotation: 0
     state: enabled
 - name: pluto_source_0_0_0_0

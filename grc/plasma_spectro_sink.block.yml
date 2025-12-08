@@ -9,13 +9,6 @@ parameters:
     dtype: float
     default: samp_rate
 
-  - id: fft_size
-    label: FFT Size (cols)
-    dtype: int
-    default: 1024
-    options: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-    option_labels: [128, 256, 512, 1024, 2048, 4096, 8192, 16384]
-
   - id: ncol
     label: Num. Matrix Cols (history)
     dtype: int
@@ -104,7 +97,7 @@ templates:
     <%
       win = 'self._%s_win'%id
     %>\
-    self.${id} = plasma.spectro_sink.make(${samplerate}, ${fft_size}, ${ncol}, ${frequency}, ${detected_only}, ${parent})
+    self.${id} = plasma.spectro_sink.make(${samplerate}, ${ncol}, ${frequency}, ${detected_only}, ${parent})
     self.${id}.set_metadata_keys(${samp_rate_key}, ${n_matrix_col_key}, ${center_freq_key})
     self.${id}.set_update_time(${update_time})
     self.${id}.set_msg_queue_depth(${depth})

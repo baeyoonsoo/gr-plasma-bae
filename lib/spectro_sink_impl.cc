@@ -15,21 +15,19 @@ namespace gr {
 namespace plasma {
 
 spectro_sink::sptr spectro_sink::make(double samp_rate,
-                              int fft_size,
                               size_t ncol,
                               double center_freq,
                               bool detected_only,
                               QWidget* parent)
 {
     return gnuradio::make_block_sptr<spectro_sink_impl>(
-        samp_rate, fft_size, ncol, center_freq, detected_only, parent);
+        samp_rate, ncol, center_freq, detected_only, parent);
 }
 
 /*
  * The private constructor
  */
 spectro_sink_impl::spectro_sink_impl(double samp_rate,
-                             int fft_size,
                              size_t ncol,
                              double center_freq,
                              bool detected_only,
@@ -38,7 +36,7 @@ spectro_sink_impl::spectro_sink_impl(double samp_rate,
               gr::io_signature::make(0,0,0),
               gr::io_signature::make(0,0,0)),
     d_samp_rate(samp_rate),
-    d_fft_size(fft_size),
+    d_fft_size(1024),
     d_ncol(ncol),
     d_center_freq(center_freq),
     detected_only(detected_only)
@@ -300,19 +298,19 @@ void spectro_sink_impl::db_open_and_prepare() {
   sqlite3_exec(d_db, "PRAGMA synchronous=NORMAL;", nullptr, nullptr, nullptr);
 
   const char* ddl =
-    "CREATE TABLE IF NOT EXISTS spectrum_frames("
+    "CREATE TABLE IF NOT EXISTS spectrogram_frames("
     " ts_us INTEGER NOT NULL, device_id TEXT NOT NULL,"
     " center_hz REAL NOT NULL, samp_rate_hz REAL NOT NULL,"
     " fft_size INTEGER NOT NULL, bin0_hz REAL NOT NULL, df_hz REAL NOT NULL,"
     " power_db BLOB NOT NULL );"
-    "CREATE INDEX IF NOT EXISTS idx_frames_ts ON spectrum_frames(ts_us DESC);"
-    "CREATE INDEX IF NOT EXISTS idx_frames_dev_ts ON spectrum_frames(device_id, ts_us DESC);";
+    "CREATE INDEX IF NOT EXISTS idx_frames_ts ON spectrogram_frames(ts_us DESC);"
+    "CREATE INDEX IF NOT EXISTS idx_frames_dev_ts ON spectrogram_frames(device_id, ts_us DESC);";
   sqlite3_exec(d_db, "BEGIN;", nullptr, nullptr, nullptr);
   sqlite3_exec(d_db, ddl,       nullptr, nullptr, nullptr);
   sqlite3_exec(d_db, "COMMIT;", nullptr, nullptr, nullptr);
 
   const char* SQL =
-    "INSERT INTO spectrum_frames"
+    "INSERT INTO spectrogram_frames"
     " (ts_us, device_id, center_hz, samp_rate_hz, fft_size, bin0_hz, df_hz, power_db)"
     " VALUES (?,?,?,?,?,?,?,?);";
   if (sqlite3_prepare_v2(d_db, SQL, -1, &d_stmt, nullptr) != SQLITE_OK)

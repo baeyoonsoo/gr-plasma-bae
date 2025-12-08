@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(1)                                                       */
 /* BINDTOOL_USE_PYGCCXML(1)                                                        */
 /* BINDTOOL_HEADER_FILE(spectro_sink.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(e8f23edf59b20a09d87286b2203b67bf)                     */
+/* BINDTOOL_HEADER_FILE_HASH(f99268c5fd8ad7f69b2d39089610b9f5)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -41,7 +41,6 @@ void bind_spectro_sink(py::module& m)
         .def_static("make",
                     &spectro_sink::make,
                     py::arg("samp_rate"),
-                    py::arg("fft_size"),
                     py::arg("ncol"),
                     py::arg("center_freq"),
                     py::arg("detected_only"),
@@ -50,7 +49,6 @@ void bind_spectro_sink(py::module& m)
 
         .def(py::init(&spectro_sink::make),
              py::arg("samp_rate"),
-             py::arg("fft_size"),
              py::arg("ncol"),
              py::arg("center_freq"),
              py::arg("detected_only"),

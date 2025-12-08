@@ -98,7 +98,6 @@ private:
 
 public:
     spectro_sink_impl(double samp_rate,
-                      int fft_size,
                       size_t ncol,
                       double center_freq,
                       bool detected_only,

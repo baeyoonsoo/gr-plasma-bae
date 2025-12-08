@@ -227,7 +227,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '05'
-    fft_size: '1024'
     frequency: center_freq_5
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -255,7 +254,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '04'
-    fft_size: '1024'
     frequency: center_freq_4
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -283,7 +281,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '03'
-    fft_size: '1024'
     frequency: center_freq_3
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -311,7 +308,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '02'
-    fft_size: '1024'
     frequency: center_freq_2
     gui_hint: ''
     n_matrix_col_key: fft_size
@@ -339,7 +335,6 @@ blocks:
     depth: '1'
     detected_only: 'False'
     device_id: '01'
-    fft_size: '1024'
     frequency: center_freq_1
     gui_hint: ''
     n_matrix_col_key: fft_size

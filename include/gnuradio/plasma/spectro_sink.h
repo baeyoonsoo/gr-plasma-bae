@@ -31,7 +31,6 @@ public:
     using sptr = std::shared_ptr<spectro_sink>;
 
     static sptr make(double   samp_rate,
-                     int      fft_size,
                      size_t   ncol,
                      double   center_freq,
                      bool detected_only,
